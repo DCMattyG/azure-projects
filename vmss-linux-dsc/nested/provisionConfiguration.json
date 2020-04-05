@@ -47,6 +47,10 @@
       "xStorage": {
         "name": "xStorage",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xstorage.3.2.0.nupkg"
+      },
+        "nx": {
+        "name": "nx",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
       }
     }
   },
@@ -88,6 +92,20 @@
           "properties": {
             "contentLink": {
               "uri": "[variables('dscResources').xStorage.url]"
+            }
+          }
+        },
+                {
+          "name": "[variables('dscResources').nx.name]",
+          "type": "modules",
+          "apiVersion": "2018-01-15",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[parameters('AutomationAccountName')]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('dscResources').nx.url]"
             }
           }
         },

@@ -48,7 +48,7 @@
         "name": "xStorage",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xstorage.3.2.0.nupkg"
       },
-        "nx": {
+      "nx": {
         "name": "nx",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
       }
@@ -175,17 +175,6 @@
           }
         }
       ]
-    },
-    {
-      "type": "Microsoft.Automation/automationAccounts/modules",
-      "apiVersion": "2015-10-32",
-      "name": "[concat(parameters('automationAccountName'), '/nx')]",
-      "dependsOn": [
-          "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
-      ],
-      "properties": {
-          "contentLink": {}
-      }
     }
   ],
   "outputs": {}

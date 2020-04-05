@@ -95,7 +95,7 @@
             }
           }
         },
-                {
+        {
           "name": "[variables('dscResources').nx.name]",
           "type": "modules",
           "apiVersion": "2018-01-15",

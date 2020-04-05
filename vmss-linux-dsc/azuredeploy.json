@@ -67,7 +67,7 @@
       "metadata": {
         "description": "Path to the nested templates used in this deployment"
       },
-      "defaultValue": "./"
+      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/"
     },
     "_artifactsLocationSasToken": {
       "type": "string",

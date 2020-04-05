@@ -160,7 +160,7 @@
     },
     {
       "type": "Microsoft.Automation/automationAccounts/modules",
-      "apiVersion": "2018-01-15",
+      "apiVersion": "2015-10-32",
       "name": "[concat(parameters('automationAccountName'), '/nx')]",
       "dependsOn": [
           "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"

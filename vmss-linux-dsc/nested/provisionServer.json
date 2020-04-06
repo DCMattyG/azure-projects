@@ -112,6 +112,11 @@
               "TypeName": "System.String"
             },
             {
+              "Name": "ExtensionAction",
+              "Value": "Register",
+              "TypeName": "System.String"
+            },
+            {
               "Name": "ConfigurationMode",
               "Value": "ApplyandAutoCorrect",
               "TypeName": "System.String"

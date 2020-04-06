@@ -36,10 +36,10 @@
       "type": "Microsoft.Automation/automationAccounts",
       "apiVersion": "2018-01-15",
       "location": "[parameters('location')]",
-      "comments": "Automation account for OMS",
+      "comments": "Automation account",
       "properties": {
         "sku": {
-          "name": "OMS"
+          "name": "Basic"
         }
       }
     },

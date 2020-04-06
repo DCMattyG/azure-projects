@@ -26,7 +26,7 @@
     },
     "nodeConfigurationName": {
       "type": "string",
-      "defaultValue": "dsctestlinux.TestDSCLinuxfile"
+      "defaultValue": "dsctestlinux.dscwebserver"
     }
   },
   "variables": {},

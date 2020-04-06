@@ -86,7 +86,8 @@
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
-            "[variables('dscResources').nx.name]"           
+            "[variables('dscResources').nx.name]",
+            "[variables('dscResources').nxNetworking.name]"
           ],
           "properties": {
             "state": "Published",

@@ -109,8 +109,8 @@
           "Properties": [
             {
               "Name": "RegistrationKey",
-              "Value": "[reference(concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))).registrationKey]",
-              "TypeName": "System.String"
+              "Value": "PrivateSettingsRef:registrationKeyPrivate",
+              "TypeName": "System.Management.Automation.PSCredential"
             },
             {
               "Name": "RegistrationUrl",

@@ -14,15 +14,6 @@
     "location": {
       "type": "string"
     },
-    "adminUsername": {
-      "type": "string"
-    },
-    "adminPassword": {
-      "type": "securestring"
-    },
-    "safeModePassword": {
-      "type": "securestring"
-    },
     "domainName": {
       "type": "string"
     },
@@ -36,7 +27,7 @@
       "DomainControllerConfig": {
         "name": "dsctestlinux",
         "description": "minimum viable configuration for a domain controller role",
-        "script": "dscConfigurations/DomainControllerConfig.ps1"
+        "script": "dscConfigurations/dsctestlinux.ps1"
       }
     },
     "dscResources": {
@@ -70,6 +61,24 @@
           "properties": {
             "contentLink": {
               "uri": "[variables('dscResources').nx.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('dscConfigurations').DomainControllerConfig.name]",
+          "type": "configurations",
+          "apiVersion": "2018-01-15",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[parameters('AutomationAccountName')]",
+            "[variables('dscResources').nx.name]"           
+          ],
+          "properties": {
+            "state": "Published",
+            "overwrite": "true",
+            "source": {
+              "type": "uri",
+              "value": "[concat(parameters('_artifactsLocation'), variables('dscConfigurations').DomainControllerConfig.script, parameters('_artifactsLocationSasToken'))]"
             }
           }
         },

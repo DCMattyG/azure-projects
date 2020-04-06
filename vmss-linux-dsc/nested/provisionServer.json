@@ -101,22 +101,11 @@
         "typeHandlerVersion": "2.70",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "Items": {
-            "registrationKeyPrivate": "[listKeys(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')), '2018-01-15').Keys[0].value]"
-          }
+          "RegistrationUrl": "[listKeys(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')), '2018-01-15').Keys[0].value]",
+          "RegistrationKey": "[reference(concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))).registrationUrl]"
         },
         "settings": {
           "Properties": [
-            {
-              "Name": "RegistrationKey",
-              "Value": "PrivateSettingsRef:registrationKeyPrivate",
-              "TypeName": "System.Management.Automation.PSCredential"
-            },
-            {
-              "Name": "RegistrationUrl",
-              "Value": "[reference(concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))).registrationUrl]",
-              "TypeName": "System.String"
-            },
             {
               "Name": "NodeConfigurationName",
               "Value": "[parameters('nodeConfigurationName')]",

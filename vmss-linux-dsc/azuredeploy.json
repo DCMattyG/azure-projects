@@ -53,7 +53,7 @@
       "metadata": {
         "description": "The size of the VM Created"
       },
-      "defaultValue": "Standard_F2s_v2"
+      "defaultValue": "Standard_D1"
     },
     "domainName": {
       "type": "string",

@@ -74,32 +74,6 @@
           }
         },
         {
-          "name": "domainCredential",
-          "type": "credentials",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "userName": "[parameters('adminUsername')]",
-            "password": "[parameters('adminPassword')]"
-          }
-        },
-        {
-          "name": "safeModeCredential",
-          "type": "credentials",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "userName": "[parameters('adminUsername')]",
-            "password": "[parameters('safeModePassword')]"
-          }
-        },
-        {
           "name": "[parameters('compileName')]",
           "type": "compilationjobs",
           "apiVersion": "2018-01-15",

@@ -24,27 +24,27 @@ Configuration dsctestlinux {
         }
     }
 
-    # Node "dscwebserver" {
-    #     nxPackage nginx {
-    #         Name = "nginx"
-    #         Ensure = "Present"
-    #         PackageManager = "apt"
-    #     }
+    Node "dscwebserver" {
+        nxPackage nginx {
+            Name = "nginx"
+            Ensure = "Present"
+            PackageManager = "apt"
+        }
 
-    #     nxFile index_html {
-    #         DestinationPath = "/var/www/html/index.html"
-    #         Type = "file"
-    #         Contents = $IndexPage
-    #         DependsOn = "[nxPackage]nginx"
-    #     }
+        nxFile index_html {
+            DestinationPath = "/var/www/html/index.html"
+            Type = "file"
+            Contents = $IndexPage
+            DependsOn = "[nxPackage]nginx"
+        }
 
-    #     nxService nginxservice {
-    #         Name = "nginx"
-    #         State = "running"
-    #         Enabled = $true
-    #         Controller = "systemd"
-    #         DependsOn = "[nxFile]index_html"
-    #     }
+        nxService nginxservice {
+            Name = "nginx"
+            State = "running"
+            Enabled = $true
+            Controller = "systemd"
+            DependsOn = "[nxFile]index_html"
+        }
 
     #     nxFirewall FWConfig {
     #         Name = "Allow Nginx HTTP"
@@ -56,5 +56,5 @@ Configuration dsctestlinux {
     #         DestinationPort = "80"
     #         Position = "Before-End"
     #    }
-    # }
+    }
 }

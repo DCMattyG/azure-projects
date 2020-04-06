@@ -62,9 +62,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "18.04-LTS",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2016-Datacenter-Server-Core",
             "version": "latest"
           },
           "osDisk": {
@@ -89,16 +89,16 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('VMName'),'/enabledsc')]",
+      "name": "[concat(parameters('VMName'),'/OnboardToDSC')]",
       "apiVersion": "2017-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', parameters('VMName'))]"
       ],
       "properties": {
-        "publisher": "Microsoft.OSTCExtentions",
-        "type": "DSCForLinux",
-        "typeHandlerVersion": "2.0",
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.75",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
           "Items": {

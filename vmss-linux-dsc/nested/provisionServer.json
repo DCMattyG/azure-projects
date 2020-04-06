@@ -96,7 +96,7 @@
         "[concat('Microsoft.Compute/virtualMachines/', parameters('VMName'))]"
       ],
       "properties": {
-        "publisher": "Microsoft.OSTCExtentions",
+        "publisher": "Microsoft.OSTCExtensions",
         "type": "DSCForLinux",
         "typeHandlerVersion": "2.70",
         "autoUpgradeMinorVersion": true,

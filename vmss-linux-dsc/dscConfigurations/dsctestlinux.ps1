@@ -12,8 +12,8 @@
 Configuration dsctestlinux {
 
     Import-DscResource -Module PSDesiredStateConfiguration
-    Import-DscResource -Module nxNetworking
     Import-DscResource -Module nx
+    Import-DscResource -Module nxNetworking
   
     Node "TestDSCLinuxfile" {
         nxFile ExampleFile {

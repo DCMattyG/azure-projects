@@ -107,7 +107,9 @@
         "settings": {
           "NodeConfigurationName": "[parameters('nodeConfigurationName')]",
           "ExtensionAction": "Register",
-          "ConfigurationMode": "ApplyandAutoCorrect"
+          "ConfigurationMode": "ApplyandAutoCorrect",
+          "RefreshFrequencyMins": 5,
+          "ConfigurationModeFrequencyMins": 5
         }
       }
     }

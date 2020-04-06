@@ -98,7 +98,7 @@
       "properties": {
         "publisher": "Microsoft.OSTCExtentions",
         "type": "DSCForLinux",
-        "typeHandlerVersion": "2.0",
+        "typeHandlerVersion": "2.70",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
           "Items": {

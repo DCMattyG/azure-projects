@@ -91,9 +91,6 @@
           "properties": {
             "configuration": {
               "name": "[variables('dscConfigurations').DomainControllerConfig.name]"
-            },
-            "parameters": {
-              "configurationData": "[concat('{\"AllNodes\":{\"nodename\":\"localhost\",\"domainname\":\"', parameters('domainName'), '\"}}')]"
             }
           }
         }

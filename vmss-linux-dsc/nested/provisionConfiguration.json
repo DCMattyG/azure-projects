@@ -14,9 +14,6 @@
     "location": {
       "type": "string"
     },
-    "domainName": {
-      "type": "string"
-    },
     "compileName": {
       "type": "string",
       "defaultValue": "[guid(resourceGroup().id, deployment().name)]"

@@ -127,18 +127,6 @@
           "automationAccountName": {
             "value": "[variables('automationAccountName')]"
           },
-          "adminUsername": {
-            "value": "[parameters('adminUsername')]"
-          },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
-          },
-          "safeModePassword": {
-            "value": "[parameters('safeModePassword')]"
-          },
-          "domainName": {
-            "value": "[parameters('domainName')]"
-          },
           "location": {
             "value": "[parameters('location')]"
           },

@@ -38,7 +38,7 @@
     {
       "name": "[parameters('automationAccountName')]",
       "type": "Microsoft.Automation/automationAccounts",
-      "apiversion": "2015-10-31",
+      "apiversion": "2018-01-15",
       "location": "[parameters('location')]",
       "comments": "Automation account for OMS",
       "properties": {
@@ -50,7 +50,7 @@
         {
           "name": "[variables('dscResources').nx.name]",
           "type": "modules",
-          "apiVersion": "2015-10-131",
+          "apiVersion": "2018-01-15",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]"
@@ -64,7 +64,7 @@
         {
           "name": "[variables('dscConfigurations').DomainControllerConfig.name]",
           "type": "configurations",
-          "apiVersion": "2015-10-31",
+          "apiVersion": "2018-01-15",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
@@ -82,7 +82,7 @@
         {
           "name": "[parameters('compileName')]",
           "type": "compilationjobs",
-          "apiVersion": "2015-10-31",
+          "apiVersion": "2018-01-15",
           "tags": {},
           "dependsOn": [
             "[parameters('AutomationAccountName')]",

@@ -44,16 +44,5 @@ Configuration dsctestlinux {
             Controller = "systemd"
             DependsOn = "[nxFile]index_html"
         }
-
-        nxFirewall FWConfig {
-            Name = "Allow Nginx HTTP"
-            InterfaceName = "eth0" 
-            FirewallType = "firewalld"
-            Ensure = "Present"
-            Access = "Allow"
-            Direction = "Input"
-            DestinationPort = "80"
-            Position = "Before-End"
-       }
     }
 }

@@ -31,6 +31,10 @@
       "nx": {
         "name": "nx",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
+      },
+      "nxNetworking": {
+        "name": "nxNetworking",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg"
       }
     }
   },
@@ -58,6 +62,20 @@
           "properties": {
             "contentLink": {
               "uri": "[variables('dscResources').nx.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('dscResources').nxNetworking.name]",
+          "type": "modules",
+          "apiVersion": "2018-01-15",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[parameters('AutomationAccountName')]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('dscResources').nxNetworking.url]"
             }
           }
         },

@@ -14,18 +14,6 @@
     "location": {
       "type": "string"
     },
-    "adminUsername": {
-      "type": "string"
-    },
-    "adminPassword": {
-      "type": "securestring"
-    },
-    "safeModePassword": {
-      "type": "securestring"
-    },
-    "domainName": {
-      "type": "string"
-    },
     "compileName": {
       "type": "string",
       "defaultValue": "[guid(resourceGroup().id, deployment().name)]"
@@ -33,144 +21,101 @@
   },
   "variables": {
     "dscConfigurations": {
-      "DomainControllerConfig": {
-        "name": "DomainControllerConfig",
-        "description": "minimum viable configuration for a domain controller role",
-        "script": "dscConfigurations/DomainControllerConfig.ps1"
+      "WindowsIISServerConfig": {
+        "name": "WindowsIISServerConfig",
+        "description": "minimum viable configuration for a web server role",
+        "script": "dscConfigurations/WindowsIISServerConfig.ps1"
       }
     },
     "dscResources": {
-      "xActiveDirectory": {
-        "name": "xActiveDirectory",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xactivedirectory.2.16.0.nupkg"
-      },
-      "xStorage": {
-        "name": "xStorage",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xstorage.3.2.0.nupkg"
-      },
-      "nx": {
-        "name": "nx",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
+      "xWebAdministration": {
+        "name": "xWebAdministration",
+        "url": "https://psg-prod-eastus.azureedge.net/packages/xwebadministration.2.4.0.nupkg"
       }
+    },
+    "runbook": {
+      "Name": "TombstoneDSCNodes",
+      "Uri": "runbooks/TombstoneDSCNodes.ps1",
+      "Description": "This script provides an example for how to use a runbook in Azure Automation to tombstone stale DSC nodes from State Configuration.",
+      "Version": "1.0.0"
     }
   },
   "resources": [
     {
       "name": "[parameters('automationAccountName')]",
       "type": "Microsoft.Automation/automationAccounts",
-      "apiversion": "2018-01-15",
+      "apiversion": "2018-06-30",
       "location": "[parameters('location')]",
-      "comments": "Automation account for OMS",
       "properties": {
         "sku": {
-          "name": "OMS"
+          "name": "Basic"
         }
       },
       "resources": [
         {
-          "name": "[variables('dscResources').xActiveDirectory.name]",
+          "name": "[variables('dscResources').xWebAdministration.name]",
           "type": "modules",
-          "apiVersion": "2018-01-15",
+          "apiVersion": "2018-06-30",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]"
           ],
           "properties": {
             "contentLink": {
-              "uri": "[variables('dscResources').xActiveDirectory.url]"
+              "uri": "[variables('dscResources').xWebAdministration.url]"
             }
           }
         },
         {
-          "name": "[variables('dscResources').xStorage.name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources').xStorage.url]"
-            }
-          }
-        },
-        {
-          "name": "[variables('dscResources').nx.name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources').nx.url]"
-            }
-          }
-        },
-        {
-          "name": "domainCredential",
-          "type": "credentials",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "userName": "[parameters('adminUsername')]",
-            "password": "[parameters('adminPassword')]"
-          }
-        },
-        {
-          "name": "safeModeCredential",
-          "type": "credentials",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "userName": "[parameters('adminUsername')]",
-            "password": "[parameters('safeModePassword')]"
-          }
-        },
-        {
-          "name": "[variables('dscConfigurations').DomainControllerConfig.name]",
+          "name": "[variables('dscConfigurations').WindowsIISServerConfig.name]",
           "type": "configurations",
-          "apiVersion": "2018-01-15",
+          "apiVersion": "2018-06-30",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
-            "[variables('dscResources').xActiveDirectory.name]",
-            "[variables('dscResources').xStorage.name]",
-            "domainCredential",
-            "safeModeCredential"            
+            "[variables('dscResources').xWebAdministration.name]"
           ],
           "properties": {
             "state": "Published",
             "overwrite": "true",
             "source": {
               "type": "uri",
-              "value": "[concat(parameters('_artifactsLocation'), variables('dscConfigurations').DomainControllerConfig.script, parameters('_artifactsLocationSasToken'))]"
+              "value": "[concat(parameters('_artifactsLocation'), variables('dscConfigurations').WindowsIISServerConfig.script, parameters('_artifactsLocationSasToken'))]"
             }
           }
         },
         {
           "name": "[parameters('compileName')]",
           "type": "compilationjobs",
-          "apiVersion": "2018-01-15",
+          "apiVersion": "2018-06-30",
           "tags": {},
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
-            "[variables('dscConfigurations').DomainControllerConfig.name]"
+            "[variables('dscConfigurations').WindowsIISServerConfig.name]"
           ],
           "properties": {
             "configuration": {
-              "name": "[variables('dscConfigurations').DomainControllerConfig.name]"
+              "name": "[variables('dscConfigurations').WindowsIISServerConfig.name]"
             },
-            "parameters": {
-              "configurationData": "[concat('{\"AllNodes\":{\"nodename\":\"localhost\",\"domainname\":\"', parameters('domainName'), '\"}}')]"
+            "parameters": {}
+          }
+        },
+        {
+          "name": "[variables('runbook').Name]",
+          "type": "runbooks",
+          "apiversion": "2018-06-30",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[parameters('AutomationAccountName')]",
+          ],
+          "properties": {
+            "runbookType": "PowerShell",
+            "logProgress": false,
+            "logVerbose": false,
+            "description": "[variables('runbook').Description]",
+            "publishContentLink": {
+              "uri": "[concat(parameters('_artifactsLocation'), variables('runbook').Uri, parameters('_artifactsLocationSasToken'))]",
+              "version": "[variables('runbook').Version]"
             }
           }
         }

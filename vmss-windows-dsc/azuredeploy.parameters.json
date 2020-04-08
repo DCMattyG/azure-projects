@@ -2,17 +2,17 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "value": "eastus2"
+        },
         "adminUsername": {
-            "value": "GEN-UNIQUE"
+            "value": "GEN-UNIQUE-6"
         },
         "adminPassword": {
             "value": "GEN-PASSWORD"
         },
-        "safeModePassword": {
-            "value": "GEN-PASSWORD"
-        },
-        "location": {
-            "value": "westus2"
+        "instanceCount": {
+            "value": 10
         }
     }
 }

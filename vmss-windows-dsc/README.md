@@ -1,71 +1,61 @@
-# Azure Automation Managed Node template
 
-<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/101-automation-configuration/PublicLastTestDate.svg" />&nbsp;
-<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/101-automation-configuration/PublicDeployment.svg" />&nbsp;
+# VM Scale Set Configuration managed by Azure Automation DSC
 
-<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/101-automation-configuration/FairfaxLastTestDate.svg" />&nbsp;
-<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/101-automation-configuration/FairfaxDeployment.svg" />&nbsp;
+<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/201-vmss-automation-dsc/PublicLastTestDate.svg" />&nbsp;
+<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/201-vmss-automation-dsc/PublicDeployment.svg" />&nbsp;
 
-<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/101-automation-configuration/BestPracticeResult.svg" />&nbsp;
-<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/101-automation-configuration/CredScanResult.svg" />&nbsp;
+<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/201-vmss-automation-dsc/FairfaxLastTestDate.svg" />&nbsp;
+<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/201-vmss-automation-dsc/FairfaxDeployment.svg" />&nbsp;
 
-[![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2F101-automation-configuration%2Fazuredeploy.json)
-[![Visualize](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png)](http://armviz.io/#/?loadhttp://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Fazure-quickstart-templates%2Fmaster%2F101-automation-configuration%2Fazuredeploy.json)
+<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/201-vmss-automation-dsc/BestPracticeResult.svg" />&nbsp;
+<IMG SRC="https://azurequickstartsservice.blob.core.windows.net/badges/201-vmss-automation-dsc/CredScanResult.svg" />&nbsp;
 
-This template demonstrates a managed virtual machine where the configuration
-will be maintained by Azure for the life of the node as opposed to only applying
-the configuration at the time of deployment.
+[![Deploy to Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmgreenegit%2FARM-ScaleSetmanagedbyAADSC%2Fmaster%2Fazuredeploy.json)
 
-For details about Azure Operations Management services,
-see the [Azure Automation Documentation](https://docs.microsoft.com/en-us/azure/automation/).
+This repo serves to prove an ARM template to deploy a VM Scale Set where virtual machines are deployed as registered nodes in the Azure Automation Desired State Configuration service, and node configuration is guaranteed consistent after deployment, and the AADSC service components are provided in the same deployment template.
 
-## What is new in this template
+The Azure Resource Manager template includes:
 
-Unlike previous examples, this template includes examples of nested templates
-that create an automation account, publish a configuration script and supporting modules
-from the [PowerShell Gallery](http://www.powershellgallery.com),
-compile the configuration, bootstrap the machine to the service,
-and wait for the initial delivery of the configuration to complete,
-all from a single deployment.
-This is possible because new API methods (reference, listkeys) are now available
-for the Automation service.
+- Deploy virtual machines in Scale Set with autoscale rules defined
+- Distribute VHD files across 5 storage accounts
+- Configure Azure Automation DSC service with configuration and modules to manage the virtual machines
+  - Note that the Local Configuration Manager setting **Mode** will be set to **ApplyandAutoCorrect**
+- Boostrap the virtual machines as registered nodes of the service using DSC extension
+- Load balance traffic to web servers across the VM Scale Set
+- NAT remote management ports across VM Scale Set
 
-Notice that no custom scripts or chained-together ARM templates are required in this example.
+Tested scenarios:
 
-There is one important concept to note when using nested templates such as this,
-where dependencies flow across separate declared deployments.
-In order for the Server template to "depend on" the Configuration template,
-the Automation Account is declared again in the Server template.
-Since the account already exists,
-this is essentially verifying the account before the server deployment.
+- End to end deployment
+- Modify configuration of live VM Scale Set by updating Configuration in AADSC
+- Report on VM configuration consistency from AADSC
+- Add and remove nodes from the VM Scale set and maintain consistency
+- Deployed VM's return to configuration after a forced drift out of compliance
+- VM AutoScale based on CPU % with bursted VM's remaining in consistent state through DSC
 
-## What is unique about this concept
+Future work:
 
-This model is the go-forward recommendation for utilizing DSC with Azure Virtual Machines.
-The [DSC Extension](https://blogs.msdn.microsoft.com/powershell/2014/08/07/introducing-the-azure-powershell-dsc-desired-state-configuration-extension/)
-is used only to apply settings to the Local Configuration Manager (LCM) and direct it
-to use the [Azure Automation DSC](https://docs.microsoft.com/en-us/azure/automation/automation-dsc-overview)
-service to deliver *and maintain* the state of the machine.
-The compliance state or any error messages from DSC can be viewed in the reporting
-available with the service.
+- Add Operational Validation
+- Deliver web app using Containers managed by [DSC](https://github.com/bgelens/cWindowsContainer)
 
-Users of the service also have tools to support Operations practices,
-such as publishing changes to the configuration without re-deployment of the virtual machine,
-or [linking the Automation Account with Log Analytics](https://docs.microsoft.com/en-us/azure/automation/automation-dsc-diagnostics)
-for alerting (including notifications to mobile devices) when a node has drifted from
-the intended configuration.
+## Release Notes
 
-## Is it acceptable to link directly to PowerShell Gallery in Azure-Quickstart-Templates?
+2019-02-20: Updated and revised entire solution to align with [101-automation-configuration](https://github.com/Azure/azure-quickstart-templates/tree/master/101-automation-configuration) example.  Also added runbook solution for tombstoning stale nodes per customer request.
 
-The expected workflow from any public gallery is to download/save an artifact,
-review the source code and test it to verify functionality,
-and then publish it to a private, trusted feed for usage.
-However, since module authors releasing to PowerShell Gallery increment the version number
-when changes are made,
-if template authors would like to validate and test *specific versions* of modules
-in the gallery and use *static links* to those artifacts,
-those artifacts can be expected to remain unchanged.
-**This does not change the operational best practice behavior of reviewing, validating, and testing
-all code artifacts including ARM templates, PowerShell scripts, and DSC resources,
-before production deployment.**
+## To verify the nodes are deployed and configured (manual operational validation)
+
+The webServer configuration adds the Windows Features to support IIS and manages the Windows Firewall settings to allow access to the default site.  To verify, open the Public FQDN of the deployment in a browser and confirm the default IIS page.
+
+## To clone the module to your local machine from Git Shell
+
+```PowerShell
+git clone https://github.com/Azure/azure-quickstart-templates/blob/master/201-vmss-automation-dsc
+```
+
+## Prior Examples
+
+[Register an existing Azure virtual machine as a managed DSC node in Azure Automation DSC](https://github.com/Azure/azure-quickstart-templates/tree/master/dsc-extension-azure-automation-pullserver)<br>
+[Deployment of Multiple VM Scale Sets of Windows VMs](https://github.com/Azure/azure-quickstart-templates/tree/02d32850258f5b172266896e498e30e8e526080a/301-multi-vmss-windows)<br>
+[Copy a DSC Configuration to Azure Automation and compile](https://github.com/azureautomation/automation-packs/tree/master/201-Deploy-And-Compile-DSC-Configuration-Credentials)<br>
+[azure-myriad](https://github.com/gbowerman/azure-myriad) - this repo is a great resource for learning about VM Scale Sets!
 

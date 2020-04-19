@@ -1,87 +1,97 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "location": {
-        "type": "string"
-      },
-      "appName": {
-        "type": "string"
-      }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
     },
-    "variables": {
-      "virtualNetworkName": "[concat(parameters('appName'), '-net')]",
-      "subnets": [
-        {
-            "name": "default",
-            "properties": {
-                "addressPrefix": "10.0.0.0/24"
-            }
-        }
-      ],
-      "addressPrefixes": [
-        "10.0.0.0/16"
-      ],
-      "networkSecurityGroups": [
-        {
-          "name": "[concat(parameters('appName'), '-nsg-vnet-nic01')]",
-          "rules": [
-            {
-              "name": "HTTP",
-              "properties": {
-                "priority": 300,
-                "protocol": "TCP",
-                "access": "Allow",
-                "direction": "Inbound",
-                "sourceAddressPrefix": "*",
-                "sourcePortRange": "*",
-                "destinationAddressPrefix": "*",
-                "destinationPortRange": "80"
-              }
-            },
-            {
-              "name": "SSH",
-              "properties": {
-                "priority": 320,
-                "protocol": "TCP",
-                "access": "Allow",
-                "direction": "Inbound",
-                "sourceAddressPrefix": "*",
-                "sourcePortRange": "*",
-                "destinationAddressPrefix": "*",
-                "destinationPortRange": "22"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    "resources": [
+    "appName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "virtualNetworkName": "[concat(parameters('appName'), '-net')]",
+    "nsgName": "[concat(parameters('appName'), '-nsg-vnet-nic01')]",
+    "subnets": [
       {
-        "name": "[variables('virtualNetworkName')]",
-        "type": "Microsoft.Network/virtualNetworks",
-        "apiVersion": "2019-09-01",
-        "location": "[parameters('location')]",
-        "properties": {
-            "addressSpace": {
-                "addressPrefixes": "[variables('addressPrefixes')]"
-            },
-            "subnets": "[variables('subnets')]"
-        }
-      },
-      {
-        "name": "[variables('networkSecurityGroups')[copyIndex()].name]",
-        "type": "Microsoft.Network/networkSecurityGroups",
-        "apiVersion": "2019-02-01",
-        "location": "[parameters('location')]",
-        "properties": {
-            "securityRules": "[variables('networkSecurityGroups')[copyIndex()].rules]"
-        },
-        "copy": {
-            "name": "networkSecurityGroups",
-            "count": "[length(variables('networkSecurityGroups'))]"
-        }
+          "name": "default",
+          "properties": {
+              "addressPrefix": "10.0.0.0/24"
+          }
       }
     ],
-    "outputs": {}
+    "addressPrefixes": [
+      "10.0.0.0/16"
+    ],
+    "networkSecurityGroups": [
+      {
+        "name": "[variables('nsgName')]",
+        "rules": [
+          {
+            "name": "HTTP",
+            "properties": {
+              "priority": 300,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "80"
+            }
+          },
+          {
+            "name": "SSH",
+            "properties": {
+              "priority": 320,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[variables('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "location": "[parameters('location')]",
+      "properties": {
+          "addressSpace": {
+              "addressPrefixes": "[variables('addressPrefixes')]"
+          },
+          "subnets": "[variables('subnets')]"
+      }
+    },
+    {
+      "name": "[variables('networkSecurityGroups')[copyIndex()].name]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2019-02-01",
+      "location": "[parameters('location')]",
+      "properties": {
+          "securityRules": "[variables('networkSecurityGroups')[copyIndex()].rules]"
+      },
+      "copy": {
+          "name": "networkSecurityGroups",
+          "count": "[length(variables('networkSecurityGroups'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "virtualNetworkName": {
+        "type": "string",
+        "value": "[variables('virtualNetworkName')]"
+    },
+    "nsgName": {
+       "type": "string",
+       "value": "[variables('nsgName')]"
+    }
+  }
 }

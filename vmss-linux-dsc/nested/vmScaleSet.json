@@ -1,0 +1,156 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "string"
+    },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "loadBalancerId": {
+      "type": "string"
+    },
+    "nsgName": {
+      "type": "string"
+    },
+    "backendPoolId": {
+      "type": "String"
+    },
+    "inboundNatPoolId": {
+      "type": "String"
+    }
+  },
+  "variables": {
+    "instanceSize": "Standard_D2s_v3",
+    "instanceCount": 3,
+    "upgradePolicy": "Manual",
+    "singlePlacementGroup": true,
+    "osDiskType": "Premium_LRS",
+    "priority": "Regular",
+    "platformFaultDomainCount": 5,
+    "nicName": "[concat(parameters('appName'), '-nic01')]",
+    "namingInfix": "[toLower(substring(concat(parameters('appName'), uniqueString(resourceGroup().id)), 0, 9))]",
+    "scaleInPolicy": {
+      "rules": [
+        "Default"
+      ]
+    },
+    "networkInterfaceConfigurations": [
+      {
+        "name": "[variables('nicName')]",
+        "primary": true,
+        "applicationGatewayBackendAddressPools": [],
+        "loadBalancerBackendAddressPools": [
+          {
+            "id": "[parameters('backendPoolId')]"
+          }
+        ],
+        "applicationSecurityGroups": [],
+        "loadBalancerInboundNatPools": [
+          {
+            "id": "[parameters('inboundNatPoolId')]"
+          }
+        ],
+        "enableAcceleratedNetworking": false,
+        "nsgName": "[parameters('nsgName')]",
+        "pipName": ""
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[parameters('appName')]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2019-07-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+        "networkSecurityGroups",
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+        "[parameters('loadBalancerId')]"
+      ],
+      "sku": {
+        "name": "[variables('instanceSize')]",
+        "tier": "Standard",
+        "capacity": "[variables('instanceCount')]"
+      },
+      "properties": {
+        "overprovision": true,
+        "upgradePolicy": {
+          "mode": "[variables('upgradePolicy')]"
+        },
+        "singlePlacementGroup": "[variables('singlePlacementGroup')]",
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "fromImage",
+              "caching": "ReadWrite",
+              "managedDisk": {
+                "storageAccountType": "[variables('osDiskType')]"
+              }
+            },
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "18.04-LTS",
+              "version": "latest"
+            }
+          },
+          "priority": "[variables('priority')]",
+          "networkProfile": {
+            "copy": [
+              {
+                "name": "networkInterfaceConfigurations",
+                "count": "[length(variables('networkInterfaceConfigurations'))]",
+                "input": {
+                  "name": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].name]",
+                  "properties": {
+                    "primary": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].primary]",
+                    "enableAcceleratedNetworking": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].enableAcceleratedNetworking]",
+                    "ipConfigurations": [
+                      {
+                        "name": "[concat(variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].name, '-defaultIpConfiguration')]",
+                        "properties": {
+                          "subnet": {
+                              "id": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].subnetId]"
+                          },
+                          "primary": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].primary]",
+                          "applicationGatewayBackendAddressPools": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].applicationGatewayBackendAddressPools]",
+                          "loadBalancerBackendAddressPools": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].loadBalancerBackendAddressPools]",
+                          "loadBalancerInboundNatPools": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].loadBalancerInboundNatPools]",
+                          "publicIPAddressConfiguration": "[if( equals( variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, ''), json('null'), union(json(concat('{\"name\": \"', variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, '\"}')) ,json('{\"properties\": { \"idleTimeoutInMinutes\": 15}}')))]"
+                        }
+                      }
+                    ],
+                    "networkSecurityGroup": "[if( equals( variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].nsgId, ''), json('null'),json(concat('{\"id\": \"', variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].nsgId, '\"}')))]"
+                  }
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": []
+          },
+          "osProfile": {
+            "computerNamePrefix": "[variables('namingInfix')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          }
+        },
+        "scaleInPolicy": "[variables('scaleInPolicy')]",
+        "platformFaultDomainCount": "[variables('platformFaultDomainCount')]"
+      }
+    }
+  ],
+  "outputs": {}
+}

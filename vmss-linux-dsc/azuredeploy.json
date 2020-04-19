@@ -1,117 +1,170 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "location": {
-        "type": "string",
-        "metadata": {
-          "description": "The Azure location to deploy all resources"
-        },
-        "allowedValues": [
-          "japaneast",
-          "eastus2",
-          "westeurope",
-          "southeastasia",
-          "southcentralus",
-          "australiaeast",
-          "koreacentral",
-          "westus2",
-          "brazilsouth",
-          "uksouth",
-          "westcentralus",
-          "northeurope",
-          "canadacentral",
-          "australiasoutheast",
-          "centralindia",
-          "francecentral"
-          ]
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure location to deploy all resources"
       },
-      "appName": {
-         "type": "string"
+      "allowedValues": [
+        "japaneast",
+        "eastus2",
+        "westeurope",
+        "southeastasia",
+        "southcentralus",
+        "australiaeast",
+        "koreacentral",
+        "westus2",
+        "brazilsouth",
+        "uksouth",
+        "westcentralus",
+        "northeurope",
+        "canadacentral",
+        "australiasoutheast",
+        "centralindia",
+        "francecentral"
+        ]
+    },
+    "appName": {
+        "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "string"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
       },
-      "_artifactsLocation": {
-        "type": "string",
-        "metadata": {
-          "description": "Path to the nested templates used in this deployment"
-        },
-        "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/"
+      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
       },
-      "_artifactsLocationSasToken": {
-        "type": "string",
-        "metadata": {
-          "description": "SAS token to access artifacts location, if required"
+      "defaultValue": ""
+    }
+  },
+  "functions": [],
+  "variables": {
+    "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
+    "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
+    "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
+    "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]"
+  },
+  "resources": [
+    {
+      "name": "publicIPAddress",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('publicIpAddress')]",
+          "contentVersion": "1.0.0.0"
         },
-        "defaultValue": ""
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "appName": {
+            "value": "[parameters('appName')]"
+          }
+        }
       }
     },
-    "functions": [],
-    "variables": {
-      "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
-      "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
-      "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]"
-    },
-    "resources": [
-      {
-        "name": "publicIPAddress",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2018-02-01",
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri": "[variables('publicIpAddress')]",
-            "contentVersion": "1.0.0.0"
+    {
+      "name": "networking",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('networking')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
           },
-          "parameters": {
-            "location": {
-              "value": "[parameters('location')]"
-            },
-            "appName": {
-              "value": "[parameters('appName')]"
-            }
+          "appName": {
+            "value": "[parameters('appName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "loadBalancer",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('loadBalancer')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "appName": {
+            "value": "[parameters('appName')]"
           }
         }
       },
-      {
-        "name": "networking",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2018-02-01",
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri": "[variables('networking')]",
-            "contentVersion": "1.0.0.0"
+      "dependsOn": ["publicIpAddress"]
+    },
+    {
+      "name": "vmScaleSet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vmScaleSet')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
           },
-          "parameters": {
-            "location": {
-              "value": "[parameters('location')]"
-            },
-            "appName": {
-              "value": "[parameters('appName')]"
-            }
+          "appName": {
+            "value": "[parameters('appName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "virtualNetworkName": {
+            "value": "[reference('networking').outputs.virtualNetworkName.value]"
+          },
+          "loadBalancerId": {
+            "value": "[reference('loadBalancer').outputs.loadBalancerId.value]"
+          },
+          "nsgName": {
+            "value": "[reference('networking').outputs.nsgName.value]"
+          },
+          "backendPoolId": {
+            "value": "[reference('loadBalancer').outputs.backendPoolId.value]"
+          },
+          "inboundNatPoolId": {
+            "value": "[reference('loadBalancer').outputs.inboundNatPoolId.value]"
           }
         }
       },
-      {
-        "name": "loadBalancer",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2018-02-01",
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri": "[variables('loadBalancer')]",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "location": {
-              "value": "[parameters('location')]"
-            },
-            "appName": {
-              "value": "[parameters('appName')]"
-            }
-          }
-        },
-        "dependsOn": ["publicIpAddress"]
-      }
-    ],
-    "outputs": {}
+      "dependsOn": [
+        "publicIpAddress",
+        "networking",
+        "loadBalancer"
+      ]
+    }
+  ],
+  "outputs": {}
 }

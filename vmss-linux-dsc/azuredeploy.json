@@ -47,7 +47,7 @@
     "functions": [],
     "variables": {
       "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
-      "networks": "[uri(parameters('_artifactsLocation'), concat('nested/networks.json', parameters('_artifactsLocationSasToken')))]"
+      "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]"
     },
     "resources": [
       {
@@ -71,13 +71,13 @@
         }
       },
       {
-        "name": "networks",
+        "name": "networking",
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2018-02-01",
         "properties": {
           "mode": "Incremental",
           "templateLink": {
-            "uri": "[variables('networks')]",
+            "uri": "[variables('networking')]",
             "contentVersion": "1.0.0.0"
           },
           "parameters": {

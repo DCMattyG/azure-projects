@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+        "type": "string"
+      },
+      "appName": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "virtualNetworkName": "[concat(parameters('appName'), '-net')]",
+      "subnets": [
+        {
+            "name": "default",
+            "properties": {
+                "addressPrefix": "10.0.0.0/24"
+            }
+        }
+      ],
+      "addressPrefixes": [
+        "10.0.0.0/16"
+      ],
+      "networkSecurityGroups": [
+        {
+          "name": "basicNsgtest-rg-w2-vnet-nic01",
+          "id": "/subscriptions/06ab9b7c-e59e-4664-a86d-f4342a134257/resourceGroups/test-rg-w2/providers/Microsoft.Network/networkSecurityGroups/basicNsgtest-rg-w2-vnet-nic01",
+          "rules": [
+            {
+              "name": "HTTP",
+              "properties": {
+                "priority": 300,
+                "protocol": "TCP",
+                "access": "Allow",
+                "direction": "Inbound",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "80"
+              }
+            },
+            {
+              "name": "SSH",
+              "properties": {
+                "priority": 320,
+                "protocol": "TCP",
+                "access": "Allow",
+                "direction": "Inbound",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "22"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "resources": [
+      {
+        "name": "[variables('virtualNetworkName')]",
+        "type": "Microsoft.Network/virtualNetworks",
+        "apiVersion": "2019-09-01",
+        "location": "[parameters('location')]",
+        "properties": {
+            "addressSpace": {
+                "addressPrefixes": "[variables('addressPrefixes')]"
+            },
+            "subnets": "[variables('subnets')]"
+        }
+      },
+      {
+        "name": "[variables('networkSecurityGroups')[copyIndex()].name]",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "apiVersion": "2019-02-01",
+        "location": "[parameters('location')]",
+        "properties": {
+            "securityRules": "[variables('networkSecurityGroups')[copyIndex()].rules]"
+        },
+        "copy": {
+            "name": "networkSecurityGroups",
+            "count": "[length(variables('networkSecurityGroups'))]"
+        }
+      }
+    ],
+    "outputs": {}
+}

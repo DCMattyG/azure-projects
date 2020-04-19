@@ -59,7 +59,7 @@
   },
   "resources": [
     {
-      "name": "publicIPAddress",
+      "name": "publicIpAddress",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-02-01",
       "properties": {

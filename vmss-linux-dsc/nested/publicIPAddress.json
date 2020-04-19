@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+        "type": "string"
+      },
+      "appName": {
+         "type": "string"
+      }
+    },
+    "variables": {
+      "publicIpAddressName": "[concat(parameters('appName'), '-ip')]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIpAddressName')]",
+        "location": "[parameters('location')]",
+        "apiVersion": "2019-02-01",
+        "sku": {
+            "name": "Standard"
+        },
+        "properties": {
+            "publicIPAllocationMethod": "Static"
+        }
+      }
+    ],
+    "outputs": {}
+}

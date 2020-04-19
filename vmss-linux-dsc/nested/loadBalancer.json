@@ -15,7 +15,7 @@
     "publicIpAddressName": "[concat(parameters('appName'), '-ip')]",
     "loadBalancerId": "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
     "backendPoolId": "[concat(variables('loadBalancerId'), '/backendAddressPools/', variables('backendPoolName'))]",
-    "inboundNatPoolId": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/loadBalancerFrontEnd')]"
+    "frontEndIpId": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/loadBalancerFrontEnd')]"
   },
   "resources": [
     {
@@ -48,7 +48,7 @@
             "name": "natpool",
             "properties": {
               "frontendIPConfiguration": {
-                  "id": "[variables('inboundNatPoolId')]"
+                  "id": "[variables('frontEndIpId')]"
               },
               "protocol": "tcp",
               "frontendPortRangeStart": 50000,
@@ -103,9 +103,9 @@
        "type": "string",
        "value": "[variables('backendPoolId')]"
     },
-    "inboundNatPoolId": {
+    "frontEndIpId": {
        "type": "string",
-       "value": "[variables('inboundNatPoolId')]"
+       "value": "[variables('frontEndIpId')]"
     }
   }
 }

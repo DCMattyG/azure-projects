@@ -20,10 +20,10 @@
     "nsgName": {
       "type": "string"
     },
-    "backendPoolId": {
-      "type": "String"
+    "loadBalancerId": {
+      "type": "string"
     },
-    "inboundNatPoolId": {
+    "backendPoolId": {
       "type": "String"
     }
   },
@@ -56,7 +56,7 @@
         "applicationSecurityGroups": [],
         "loadBalancerInboundNatPools": [
           {
-            "id": "[parameters('inboundNatPoolId')]"
+            "id": "[concat(parameters('loadBalancerId'), 'inboundNatPools/natpool')]"
           }
         ],
         "enableAcceleratedNetworking": false,

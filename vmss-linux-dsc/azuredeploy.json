@@ -33,7 +33,7 @@
       "type": "string"
     },
     "adminPassword": {
-      "type": "string"
+      "type": "securestring"
     },
     "_artifactsLocation": {
       "type": "string",
@@ -147,6 +147,9 @@
           },
           "nsgName": {
             "value": "[reference('networking').outputs.nsgName.value]"
+          },
+          "loadBalancerId": {
+            "value": "[reference('loadBalancer').outputs.loadBalancerId.value]"
           },
           "backendPoolId": {
             "value": "[reference('loadBalancer').outputs.backendPoolId.value]"

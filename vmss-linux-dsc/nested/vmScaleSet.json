@@ -73,12 +73,6 @@
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "apiVersion": "2019-07-01",
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-        "networkSecurityGroups",
-        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-        "[parameters('loadBalancerId')]"
-      ],
       "sku": {
         "name": "[variables('instanceSize')]",
         "tier": "Standard",

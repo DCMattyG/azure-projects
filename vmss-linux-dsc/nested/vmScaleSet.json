@@ -17,9 +17,6 @@
     "virtualNetworkName": {
       "type": "string"
     },
-    "loadBalancerId": {
-      "type": "string"
-    },
     "nsgName": {
       "type": "string"
     },
@@ -49,6 +46,7 @@
       {
         "name": "[variables('nicName')]",
         "primary": true,
+        "subnetId": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '/subnets/default')]",
         "applicationGatewayBackendAddressPools": [],
         "loadBalancerBackendAddressPools": [
           {
@@ -63,6 +61,7 @@
         ],
         "enableAcceleratedNetworking": false,
         "nsgName": "[parameters('nsgName')]",
+        "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('nsgName'))]",
         "pipName": ""
       }
     ]

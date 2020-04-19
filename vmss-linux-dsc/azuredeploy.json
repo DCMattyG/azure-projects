@@ -145,9 +145,6 @@
           "virtualNetworkName": {
             "value": "[reference('networking').outputs.virtualNetworkName.value]"
           },
-          "loadBalancerId": {
-            "value": "[reference('loadBalancer').outputs.loadBalancerId.value]"
-          },
           "nsgName": {
             "value": "[reference('networking').outputs.nsgName.value]"
           },

@@ -153,9 +153,6 @@
           },
           "backendPoolId": {
             "value": "[reference('loadBalancer').outputs.backendPoolId.value]"
-          },
-          "inboundNatPoolId": {
-            "value": "[reference('loadBalancer').outputs.inboundNatPoolId.value]"
           }
         }
       },

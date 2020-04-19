@@ -24,8 +24,7 @@
       ],
       "networkSecurityGroups": [
         {
-          "name": "basicNsgtest-rg-w2-vnet-nic01",
-          "id": "/subscriptions/06ab9b7c-e59e-4664-a86d-f4342a134257/resourceGroups/test-rg-w2/providers/Microsoft.Network/networkSecurityGroups/basicNsgtest-rg-w2-vnet-nic01",
+          "name": "[concat(parameters('appName'), '-nsg-vnet-nic01')]",
           "rules": [
             {
               "name": "HTTP",

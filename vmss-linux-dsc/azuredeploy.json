@@ -27,11 +27,7 @@
           ]
       },
       "appName": {
-         "type": "string",
-         "defaultValue": "[concat(parameters('appName'), '-ip')]"
-      },
-      "publicIpAddressName": {
-        "type": "string"
+         "type": "string"
       },
       "_artifactsLocation": {
         "type": "string",
@@ -67,8 +63,8 @@
             "location": {
               "value": "[parameters('location')]"
             },
-            "publicIpAddressName": {
-              "value": "[parameters('publicIpAddressName')]"
+            "appName": {
+              "value": "[parameters('appName')]"
             }
           }
         }

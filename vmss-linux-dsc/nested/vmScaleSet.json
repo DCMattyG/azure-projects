@@ -56,7 +56,7 @@
         "applicationSecurityGroups": [],
         "loadBalancerInboundNatPools": [
           {
-            "id": "[concat(parameters('loadBalancerId'), 'inboundNatPools/natpool')]"
+            "id": "[concat(parameters('loadBalancerId'), '/inboundNatPools/natpool')]"
           }
         ],
         "enableAcceleratedNetworking": false,

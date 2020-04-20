@@ -99,13 +99,9 @@
       "type": "string",
        "value": "[variables('loadBalancerName')]"
     },
-    "backendPoolId": {
+    "backendPoolName": {
       "type": "string",
       "value": "[variables('backendPoolId')]"
-    },
-    "frontEndIpId": {
-      "type": "string",
-      "value": "[variables('frontEndIpId')]"
     }
   }
 }

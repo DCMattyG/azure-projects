@@ -23,7 +23,7 @@
     "loadBalancerName": {
       "type": "string"
     },
-    "backendPoolId": {
+    "backendPoolName": {
       "type": "String"
     }
   },
@@ -50,7 +50,7 @@
         "applicationGatewayBackendAddressPools": [],
         "loadBalancerBackendAddressPools": [
           {
-            "id": "[parameters('backendPoolId')]"
+            "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancerName'), parameters('backendPoolName'))]"
           }
         ],
         "applicationSecurityGroups": [],

@@ -77,7 +77,7 @@
                   "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancerName'), 'loadBalancerFrontEnd')]"
               },
               "backendAddressPool": {
-                  "id": "[variables('backendPoolId')]"
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), variables('backendPoolName'))]"
               },
               "protocol": "tcp",
               "frontendPort": 80,
@@ -86,7 +86,7 @@
               "idleTimeoutInMinutes": 5,
               "loadDistribution": "Default",
               "probe": {
-                  "id": "[concat(variables('loadBalancerId'),'/probes/tcpProbe')]"
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancerName'), 'tcpProbe')]"
               }
             }
           }

@@ -101,7 +101,7 @@
     },
     "backendPoolName": {
       "type": "string",
-      "value": "[variables('backendPoolId')]"
+      "value": "[variables('backendPoolName')]"
     }
   }
 }

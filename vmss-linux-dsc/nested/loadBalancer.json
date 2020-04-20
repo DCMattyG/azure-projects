@@ -95,10 +95,6 @@
     }
   ],
   "outputs": {
-    "loadBalancerId": {
-      "type": "string",
-      "value": "[variables('loadBalancerId')]"
-    },
     "loadBalancerName": {
       "type": "string",
        "value": "[variables('loadBalancerName')]"

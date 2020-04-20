@@ -56,7 +56,7 @@
         "applicationSecurityGroups": [],
         "loadBalancerInboundNatPools": [
           {
-            "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatPools', parameters('loadBalancerName'))]"
+            "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatPools', parameters('loadBalancerName'), 'natpool')]"
           }
         ],
         "enableAcceleratedNetworking": false,

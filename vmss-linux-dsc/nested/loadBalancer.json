@@ -74,7 +74,7 @@
             "name": "LBRule",
             "properties": {
               "frontendIPConfiguration": {
-                  "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/loadBalancerFrontEnd')]"
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancerName'), 'loadBalancerFrontEnd')]"
               },
               "backendAddressPool": {
                   "id": "[variables('backendPoolId')]"

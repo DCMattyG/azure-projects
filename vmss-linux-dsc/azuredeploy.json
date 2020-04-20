@@ -152,7 +152,7 @@
             "value": "[reference('loadBalancer').outputs.loadBalancerName.value]"
           },
           "backendPoolName": {
-            "value": "[reference('loadBalancer').outputs.backendPoolId.value]"
+            "value": "[reference('loadBalancer').outputs.backendPoolName.value]"
           }
         }
       },

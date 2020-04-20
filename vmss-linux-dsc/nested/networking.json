@@ -76,22 +76,22 @@
       "apiVersion": "2019-02-01",
       "location": "[parameters('location')]",
       "properties": {
-          "securityRules": "[variables('networkSecurityGroups')[copyIndex()].rules]"
+        "securityRules": "[variables('networkSecurityGroups')[copyIndex()].rules]"
       },
       "copy": {
-          "name": "networkSecurityGroups",
-          "count": "[length(variables('networkSecurityGroups'))]"
+        "name": "networkSecurityGroups",
+        "count": "[length(variables('networkSecurityGroups'))]"
       }
     }
   ],
   "outputs": {
     "virtualNetworkName": {
-        "type": "string",
-        "value": "[variables('virtualNetworkName')]"
+      "type": "string",
+      "value": "[variables('virtualNetworkName')]"
     },
     "nsgName": {
-       "type": "string",
-       "value": "[variables('nsgName')]"
+      "type": "string",
+      "value": "[variables('nsgName')]"
     }
   }
 }

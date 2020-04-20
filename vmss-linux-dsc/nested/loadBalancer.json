@@ -96,16 +96,20 @@
   ],
   "outputs": {
     "loadBalancerId": {
-       "type": "string",
-       "value": "[variables('loadBalancerId')]"
+      "type": "string",
+      "value": "[variables('loadBalancerId')]"
+    },
+    "loadBalancerName": {
+      "type": "string",
+       "value": "[variables('loadBalancerName')]"
     },
     "backendPoolId": {
-       "type": "string",
-       "value": "[variables('backendPoolId')]"
+      "type": "string",
+      "value": "[variables('backendPoolId')]"
     },
     "frontEndIpId": {
-       "type": "string",
-       "value": "[variables('frontEndIpId')]"
+      "type": "string",
+      "value": "[variables('frontEndIpId')]"
     }
   }
 }

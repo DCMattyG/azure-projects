@@ -148,8 +148,8 @@
           "nsgName": {
             "value": "[reference('networking').outputs.nsgName.value]"
           },
-          "loadBalancerId": {
-            "value": "[reference('loadBalancer').outputs.loadBalancerId.value]"
+          "loadBalancerName": {
+            "value": "[reference('loadBalancer').outputs.loadBalancerName.value]"
           },
           "backendPoolId": {
             "value": "[reference('loadBalancer').outputs.backendPoolId.value]"

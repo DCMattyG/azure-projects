@@ -20,7 +20,7 @@
     "nsgName": {
       "type": "string"
     },
-    "loadBalancerId": {
+    "loadBalancerName": {
       "type": "string"
     },
     "backendPoolId": {
@@ -56,7 +56,7 @@
         "applicationSecurityGroups": [],
         "loadBalancerInboundNatPools": [
           {
-            "id": "[concat(parameters('loadBalancerId'), '/inboundNatPools/natpool')]"
+            "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatPools', parameters('loadBalancerName'))]"
           }
         ],
         "enableAcceleratedNetworking": false,

@@ -46,7 +46,7 @@
       {
         "name": "[variables('nicName')]",
         "primary": true,
-        "subnetId": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '/subnets/default')]",
+        "subnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'), 'subnets', 'default')]",
         "applicationGatewayBackendAddressPools": [],
         "loadBalancerBackendAddressPools": [
           {

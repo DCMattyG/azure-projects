@@ -137,7 +137,7 @@
                 "name": "config-app",
                 "type": "extensions",
                 "properties": {
-                  "publisher": "Microsoft.Azure.Extensions",
+                  "publisher": "Microsoft.OSTCExtensions",
                   "type": "CustomScriptForLinux",
                   "typeHandlerVersion": "1.5",
                   "autoUpgradeMinorVersion": true,

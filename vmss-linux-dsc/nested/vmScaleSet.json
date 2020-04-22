@@ -136,15 +136,13 @@
               {
                 "name": "config-app",
                 "type": "extensions",
-                "location": "[resourceGroup().location]",
-                "apiVersion": "2019-03-01",
                 "tags": {
                   "displayName": "config-app"
                 },
                 "properties": {
                   "publisher": "Microsoft.Azure.Extensions",
-                  "type": "CustomScript",
-                  "typeHandlerVersion": "2.1",
+                  "type": "CustomScriptForLinux",
+                  "typeHandlerVersion": "1.5",
                   "autoUpgradeMinorVersion": true,
                   "settings": {
                   },

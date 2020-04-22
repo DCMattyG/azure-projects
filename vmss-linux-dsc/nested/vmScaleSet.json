@@ -136,9 +136,6 @@
               {
                 "name": "config-app",
                 "type": "extensions",
-                "tags": {
-                  "displayName": "config-app"
-                },
                 "properties": {
                   "publisher": "Microsoft.Azure.Extensions",
                   "type": "CustomScriptForLinux",

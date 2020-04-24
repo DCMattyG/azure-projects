@@ -21,7 +21,7 @@
   "variables": {
     "dscConfigurations": {
       "NginxWebServerConfig": {
-        "name": "nginxwebserver",
+        "name": "linuxconfig",
         "description": "Nginx web server install and configuration",
         "script": "dsc/nginxWebServer.ps1"
       }

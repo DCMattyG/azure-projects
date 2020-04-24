@@ -9,13 +9,13 @@
 </html>
 '@
 
-Configuration nginxwebserver {
+Configuration linuxconfig {
 
   Import-DscResource -Module PSDesiredStateConfiguration
   Import-DscResource -Module nx
   # Import-DscResource -Module nxNetworking
   
-  Node "TestDSCLinuxfile" {
+  Node "TestLinuxfile" {
     nxFile ExampleFile {
       DestinationPath = "/tmp/example"
       Contents = "hello world `n"
@@ -24,7 +24,7 @@ Configuration nginxwebserver {
     }
   }
 
-  Node "dscwebserver" {
+  Node "NginxWebServer" {
     nxPackage nginx {
       Name = "nginx"
       Ensure = "Present"

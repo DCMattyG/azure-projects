@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+    "type": "string",
+    "metadata": {
+      "description": "The Azure location to deploy all resources"
+    },
+    "allowedValues": [
+      "japaneast",
+      "eastus2",
+      "westeurope",
+      "southeastasia",
+      "southcentralus",
+      "australiaeast",
+      "koreacentral",
+      "westus2",
+      "brazilsouth",
+      "uksouth",
+      "westcentralus",
+      "northeurope",
+      "canadacentral",
+      "australiasoutheast",
+      "centralindia",
+      "francecentral"
+      ]
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      },
+      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/automation-dsc/"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
+      },
+      "defaultValue": ""
+    },
+    "compileName": {
+      "type": "string",
+      "defaultValue": "[guid(resourceGroup().id, deployment().name)]"
+    }
+  },
+  "variables": {
+    "automationAccountName": "[concat('DSC-',take(guid(resourceGroup().id),5))]",
+    "provisionAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/provisionAutomation.json', parameters('_artifactsLocationSasToken')))]"
+  },
+  "resources": [
+    {
+      "name": "provisionAutomation",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('provisionAutomation')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "automationAccountName": {
+            "value": "[variables('automationAccountName')]"
+          },
+          "compileName": {
+            "value": "[parameters('compileName')]"
+          },
+          "artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

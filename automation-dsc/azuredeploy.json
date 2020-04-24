@@ -3,28 +3,11 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-    "type": "string",
-    "metadata": {
-      "description": "The Azure location to deploy all resources"
-    },
-    "allowedValues": [
-      "japaneast",
-      "eastus2",
-      "westeurope",
-      "southeastasia",
-      "southcentralus",
-      "australiaeast",
-      "koreacentral",
-      "westus2",
-      "brazilsouth",
-      "uksouth",
-      "westcentralus",
-      "northeurope",
-      "canadacentral",
-      "australiasoutheast",
-      "centralindia",
-      "francecentral"
-      ]
+      "type": "string",
+      "metadata": {
+        "description": "The Azure location to deploy all resources"
+      },
+      "defaultValue": "[resourceGroup().location]"
     },
     "_artifactsLocation": {
       "type": "string",

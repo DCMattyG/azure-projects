@@ -53,10 +53,10 @@
           "compileName": {
             "value": "[parameters('compileName')]"
           },
-          "artifactsLocation": {
+          "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },
-          "artifactsLocationSasToken": {
+          "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
           }
         }

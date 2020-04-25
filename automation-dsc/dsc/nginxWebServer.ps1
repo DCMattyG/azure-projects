@@ -1,13 +1,15 @@
-﻿$IndexPage = @'
+﻿$computerName = [Environment]::MachineName
+
+$IndexPage = @"
 <html>
 <head>
 <title>My DSC Page</title>
 </head>
 <body>
-<H1>Awesome DSC Test Page in the house!</H1>
+<H1>Nginx DSC WebServer - ($computerName)</H1>
 </body>
 </html>
-'@
+"@
 
 Configuration linuxconfig {
 

@@ -43,6 +43,7 @@
     "platformFaultDomainCount": 5,
     "nicName": "[concat(parameters('appName'), '-nic01')]",
     "namingInfix": "[toLower(substring(concat(parameters('appName'), uniqueString(resourceGroup().id)), 0, 9))]",
+    "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
     "scaleInPolicy": {
       "rules": [
         "Default"
@@ -84,7 +85,7 @@
         "capacity": "[variables('instanceCount')]"
       },
       "properties": {
-        "overprovision": true,
+        "overprovision": false,
         "upgradePolicy": {
           "mode": "[variables('upgradePolicy')]"
         },
@@ -162,8 +163,8 @@
                   "typeHandlerVersion": "2.70",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
-                    "RegistrationKey": "[listKeys(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')), '2018-01-15').Keys[0].value]",
-                    "RegistrationUrl": "[reference(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')), '2018-01-15').registrationUrl]"
+                    "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",
+                    "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
                   },
                   "settings": {
                     "NodeConfigurationName": "[parameters('nodeConfigurationName')]",

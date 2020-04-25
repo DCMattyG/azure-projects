@@ -32,7 +32,7 @@ Configuration linuxconfig {
     }
 
     nxPackage php {
-      Name = "php7.2-fpm"
+      Name = "php7.0-fpm"
       Ensure = "Present"
       PackageManager = "apt"
       DependsOn = "[nxPackage]nginx"

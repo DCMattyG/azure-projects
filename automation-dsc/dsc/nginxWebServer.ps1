@@ -1,4 +1,4 @@
-﻿$computerName = [Environment]::MachineName
+﻿$computerName = [IO.File]::ReadAllText("/etc/hostname").Trim()
 
 $IndexPage = @"
 <html>

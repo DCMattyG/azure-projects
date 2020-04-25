@@ -163,7 +163,7 @@
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
                     "RegistrationKey": "[listKeys(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')), '2018-01-15').Keys[0].value]",
-                    "RegistrationUrl": "[reference(concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))).registrationUrl]"
+                    "RegistrationUrl": "[reference(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')), '2018-01-15').registrationUrl]"
                   },
                   "settings": {
                     "NodeConfigurationName": "[parameters('nodeConfigurationName')]",

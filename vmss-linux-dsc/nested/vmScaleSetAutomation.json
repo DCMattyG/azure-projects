@@ -85,7 +85,7 @@
         "capacity": "[variables('instanceCount')]"
       },
       "properties": {
-        "overprovision": false,
+        "overprovision": true,
         "upgradePolicy": {
           "mode": "[variables('upgradePolicy')]"
         },

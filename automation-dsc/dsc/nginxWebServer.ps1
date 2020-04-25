@@ -1,12 +1,10 @@
-﻿$computerName = [IO.File]::ReadAllText("/etc/hostname").Trim()
-
-$IndexPage = @"
+﻿$IndexPage = @"
 <html>
 <head>
 <title>My DSC Page</title>
 </head>
 <body>
-<H1>Nginx DSC WebServer - ($computerName)</H1>
+<H1>Nginx DSC WebServer - (<?php echo gethostname(); ?>)</H1>
 </body>
 </html>
 "@
@@ -33,19 +31,44 @@ Configuration linuxconfig {
       PackageManager = "apt"
     }
 
-    nxFile index_html {
-      DestinationPath = "/var/www/html/index.html"
-      Type = "file"
-      Contents = $IndexPage
+    nxPackage php {
+      Name = "php7.2-fpm"
+      Ensure = "Present"
+      PackageManager = "apt"
       DependsOn = "[nxPackage]nginx"
     }
 
-    nxService nginxservice {
+    nxService nginxsvcstop {
+      Name = "nginx"
+      State = "stopped"
+      Enabled = $true
+      Controller = "systemd"
+      DependsOn = "[nxPackage]php"
+    }
+
+    nxFile nginxconfig
+    {
+       SourcePath = "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/config/default"
+       DestinationPath = "/etc/nginx/sites-available/default"
+       Mode = "644"
+       Type = "file"
+       DependsOn = "[nxService]nginxsvcstop"
+    }
+
+    nxFile nginxphp {
+      DestinationPath = "/var/www/html/index.php"
+      Type = "file"
+      Contents = $IndexPage
+      Force = $true
+      DependsOn = "[nxService]nginxsvcstop"
+    }
+
+    nxService nginxsvcstart {
       Name = "nginx"
       State = "running"
       Enabled = $true
       Controller = "systemd"
-      DependsOn = "[nxFile]index_html"
+      DependsOn = "[nxFile]nginxconfig", "[nxFile]nginxphp"
     }
 
     # nxFirewall FWConfig {

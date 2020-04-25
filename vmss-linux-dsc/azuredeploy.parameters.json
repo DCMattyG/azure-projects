@@ -4,6 +4,12 @@
   "parameters": {
     "location": {
       "value": "westus2"
+    },
+    "automationAccountName": {
+      "value": "DSC-75dac"
+    },
+    "nodeConfigurationName": {
+      "value": "linuxconfig.NginxWebServer"
     }
   }
 }

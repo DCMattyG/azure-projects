@@ -35,6 +35,12 @@
     "adminPassword": {
       "type": "securestring"
     },
+    "automationAccountName": {
+      "type": "String"
+    },
+    "nodeConfigurationName": {
+      "type": "String"
+    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
@@ -55,7 +61,8 @@
     "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
     "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
-    "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]"
+    "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]",
+    "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]"
   },
   "resources": [
     {
@@ -119,14 +126,57 @@
       },
       "dependsOn": ["publicIpAddress"]
     },
+    // {
+    //   "name": "vmScaleSet",
+    //   "type": "Microsoft.Resources/deployments",
+    //   "apiVersion": "2018-02-01",
+    //   "properties": {
+    //     "mode": "Incremental",
+    //     "templateLink": {
+    //       "uri": "[variables('vmScaleSet')]",
+    //       "contentVersion": "1.0.0.0"
+    //     },
+    //     "parameters": {
+    //       "location": {
+    //         "value": "[parameters('location')]"
+    //       },
+    //       "appName": {
+    //         "value": "[parameters('appName')]"
+    //       },
+    //       "adminUsername": {
+    //         "value": "[parameters('adminUsername')]"
+    //       },
+    //       "adminPassword": {
+    //         "value": "[parameters('adminPassword')]"
+    //       },
+    //       "virtualNetworkName": {
+    //         "value": "[reference('networking').outputs.virtualNetworkName.value]"
+    //       },
+    //       "nsgName": {
+    //         "value": "[reference('networking').outputs.nsgName.value]"
+    //       },
+    //       "loadBalancerName": {
+    //         "value": "[reference('loadBalancer').outputs.loadBalancerName.value]"
+    //       },
+    //       "backendPoolName": {
+    //         "value": "[reference('loadBalancer').outputs.backendPoolName.value]"
+    //       }
+    //     }
+    //   },
+    //   "dependsOn": [
+    //     "publicIpAddress",
+    //     "networking",
+    //     "loadBalancer"
+    //   ]
+    // },
     {
-      "name": "vmScaleSet",
+      "name": "vmScaleSetAutomation",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-02-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('vmScaleSet')]",
+          "uri": "[variables('vmScaleSetAutomation')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -141,6 +191,12 @@
           },
           "adminPassword": {
             "value": "[parameters('adminPassword')]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('automationAccountName')]"
+          },
+          "nodeConfigurationName": {
+            "value": "[parameters('nodeConfigurationName')]"
           },
           "virtualNetworkName": {
             "value": "[reference('networking').outputs.virtualNetworkName.value]"

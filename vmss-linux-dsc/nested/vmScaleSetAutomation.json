@@ -155,7 +155,7 @@
                 }
               },
               {
-                "name": "[concat(variables('namingInfix'),'/enabledsc')]",
+                "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
                 "properties": {
                   "publisher": "Microsoft.OSTCExtensions",
                   "type": "DSCForLinux",

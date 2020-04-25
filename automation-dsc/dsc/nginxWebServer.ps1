@@ -25,25 +25,11 @@ Configuration linuxconfig {
   }
 
   Node "NginxWebServer" {
-    nxPackage nginx {
-      Name = "nginx"
-      Ensure = "Present"
-      PackageManager = "apt"
-    }
-
-    nxPackage php {
-      Name = "php7.0-fpm"
-      Ensure = "Present"
-      PackageManager = "apt"
-      DependsOn = "[nxPackage]nginx"
-    }
-
-    nxService nginxsvcstop {
-      Name = "nginx"
-      State = "stopped"
-      Enabled = $true
-      Controller = "systemd"
-      DependsOn = "[nxPackage]php"
+    nxFile nginxphp {
+      DestinationPath = "/var/www/html/index.php"
+      Type = "file"
+      Contents = $IndexPage
+      Force = $true
     }
 
     nxFile nginxconfig
@@ -52,16 +38,26 @@ Configuration linuxconfig {
        DestinationPath = "/etc/nginx/sites-available/default"
        Mode = "644"
        Type = "file"
-       DependsOn = "[nxService]nginxsvcstop"
+       Force = $true
+       DependsOn = "[nxFile]nginxphp"
     }
 
-    nxFile nginxphp {
-      DestinationPath = "/var/www/html/index.php"
-      Type = "file"
-      Contents = $IndexPage
-      Force = $true
-      DependsOn = "[nxService]nginxsvcstop"
+    nxPackage php {
+      Name = "php7.0-fpm"
+      Ensure = "Present"
+      PackageManager = "apt"
+      Arguments = "-o Dpkg::Options::='--force-confold'"
+      DependsOn = "[nxFile]nginxconfig"
     }
+
+    nxPackage nginx {
+      Name = "nginx"
+      Ensure = "Present"
+      PackageManager = "apt"
+      DependsOn = "[nxPackage]php"
+    }
+
+
 
     nxService nginxsvcstart {
       Name = "nginx"

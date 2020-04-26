@@ -110,6 +110,10 @@
           "properties": {
             "configuration": {
               "name": "[variables('dscConfigurations').NginxWebServerConfig.name]"
+            },
+            "parameters": {
+              "fileShareURL": "abc123",
+              "fileShareKey": "http://file.share.com"
             }
           }
         }

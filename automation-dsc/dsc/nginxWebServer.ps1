@@ -1,13 +1,13 @@
-﻿$IndexPage = @"
-<html>
-<head>
-<title>My DSC Page</title>
-</head>
-<body>
-<H1>Nginx DSC WebServer - (<?php echo gethostname(); ?>)</H1>
-</body>
-</html>
-"@
+﻿# $IndexPage = @"
+# <html>
+# <head>
+# <title>My DSC Page</title>
+# </head>
+# <body>
+# <H1>Nginx DSC WebServer - (<?php echo gethostname(); ?>)</H1>
+# </body>
+# </html>
+# "@
 
 Configuration linuxconfig {
   param
@@ -29,7 +29,7 @@ Configuration linuxconfig {
   Import-DscResource -Module nx
   # Import-DscResource -Module nxNetworking
 
-  $mntPath="/mnt/nginx"
+  # $mntPath="/mnt/nginx"
   $smbPath="//$storageAccountName.file.core.windows.net/$fileShareName"
   $smbCredentialFile="/etc/smbcredentials/$storageAccountName.cred"
 
@@ -89,12 +89,12 @@ fi
       DependsOn = "[nxPackage]autofs"
     }
 
-    nxFile nginxphp_folder {
-      DestinationPath = "/var/www/html"
-      Type = "directory"
-      Recurse = $true
-      Force = $true
-    }
+    # nxFile nginxphp_folder {
+    #   DestinationPath = "/var/www/html"
+    #   Type = "directory"
+    #   Recurse = $true
+    #   Force = $true
+    # }
 
     nxFile nginxconfig_folder {
       DestinationPath = "/etc/nginx/sites-available"
@@ -103,13 +103,13 @@ fi
       Force = $true
    }
 
-    nxFile nginxphp {
-      DestinationPath = "/var/www/html/index.php"
-      Type = "file"
-      Contents = $IndexPage
-      Force = $true
-      DependsOn = "[nxFile]nginxphp_folder"
-    }
+    # nxFile nginxphp {
+    #   DestinationPath = "/var/www/html/index.php"
+    #   Type = "file"
+    #   Contents = $IndexPage
+    #   Force = $true
+    #   DependsOn = "[nxFile]nginxphp_folder"
+    # }
 
     nxFile nginxconfig {
        SourcePath = "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/config/default"
@@ -124,7 +124,7 @@ fi
       Name = "php7.0-fpm"
       Ensure = "Present"
       PackageManager = "apt"
-      DependsOn = "[nxFile]nginxphp", "[nxFile]nginxconfig", "[nxScript]mountFileShare"
+      DependsOn = "[nxFile]nginxconfig", "[nxScript]mountFileShare"#, "[nxFile]nginxphp"
     }
 
     nxPackage nginx {

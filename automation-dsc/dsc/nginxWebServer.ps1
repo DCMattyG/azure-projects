@@ -14,32 +14,79 @@ Configuration linuxconfig {
   (
     [parameter(Mandatory)]
     [String]
-    $fileShareURL,
+    $storageAccountName,
 
     [parameter(Mandatory)]
     [String]
-    $fileShareKey
+    $storageAccountKey,
+
+    [parameter(Mandatory)]
+    [String]
+    $fileShareName
   )
 
   Import-DscResource -Module PSDesiredStateConfiguration
   Import-DscResource -Module nx
   # Import-DscResource -Module nxNetworking
 
-  # Node "TestLinuxfile" {
-  #   nxFile ExampleFile {
-  #     DestinationPath = "/tmp/example"
-  #     Contents = "hello world `n"
-  #     Ensure = "Present"
-  #     Type = "File"
-  #   }
-  # }
+  $mntPath="/mnt/nginx"
+  $smbPath="//$storageAccountName.file.core.windows.net/$fileShareName"
+  $smbCredentialFile="/etc/smbcredentials/$storageAccountName.cred"
 
   Node "NginxWebServer" {
-    nxFile ExampleFile {
-      DestinationPath = "/tmp/example"
-      Contents = "URL: $($fileShareURL)`nKey: $($fileShareKey)`n"
+    nxPackage autofs {
+      Name = "autofs"
       Ensure = "Present"
-      Type = "File"
+      PackageManager = "apt"
+    }
+
+    nxScript mountFileShare {
+      GetScript = @"
+#!/bin/bash
+ls /fileshares/$fileShareName
+"@
+      SetScript = @"
+#!/bin/bash
+if [ ! -d "/etc/smbcredentials" ]; then
+  sudo mkdir "/etc/smbcredentials"
+fi
+
+if [ ! -f $smbCredentialFile ]; then
+    echo "username=$storageAccountName" | sudo tee $smbCredentialFile > /dev/null
+    echo "password=$storageAccountKey" | sudo tee -a $smbCredentialFile > /dev/null
+else 
+    echo "The credential file $smbCredentialFile already exists, and was not modified."
+fi
+
+sudo chmod 600 $smbCredentialFile
+
+if [ ! -d "/fileshares" ]; then
+  sudo mkdir "/fileshares"
+fi
+
+if [ ! -f "/etc/auto.fileshares" ]; then
+  sudo touch /etc/auto.fileshares
+  echo "$fileShareName -fstype=cifs,credentials=$smbCredentialFile :$smbPath" | sudo tee /etc/auto.fileshares > /dev/null
+fi
+
+if ! grep -q "/fileshares" /etc/auto.master
+then
+  echo "/fileshares /etc/auto.fileshares --timeout=60" | sudo tee -a /etc/auto.master > /dev/null
+fi
+
+sudo service autofs restart
+"@
+
+      TestScript = @"
+#!/bin/bash
+if [ -d "/fileshares/$fileShareName" ]
+then
+    exit 0
+else
+    exit 1
+fi
+"@
+      DependsOn = "[nxPackage]autofs"
     }
 
     nxFile nginxphp_folder {
@@ -77,7 +124,7 @@ Configuration linuxconfig {
       Name = "php7.0-fpm"
       Ensure = "Present"
       PackageManager = "apt"
-      DependsOn = "[nxFile]nginxphp", "[nxFile]nginxconfig"
+      DependsOn = "[nxFile]nginxphp", "[nxFile]nginxconfig", "[nxScript]mountFileShare"
     }
 
     nxPackage nginx {

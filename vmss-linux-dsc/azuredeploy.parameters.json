@@ -6,7 +6,7 @@
       "value": "westus2"
     },
     "automationAccountName": {
-      "value": "dscauto"
+      "value": "DSC-75dac"
     },
     "nodeConfigurationName": {
       "value": "linuxconfig.NginxWebServer"

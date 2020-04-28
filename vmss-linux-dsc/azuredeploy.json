@@ -61,7 +61,7 @@
     "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
     "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
-    "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]",
+    // "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]",
     "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]",
     "cloudInitData": "[concat('#include\n', uri(parameters('_artifactsLocation'), concat('/cloud-init/cloud-init.txt', parameters('_artifactsLocationSasToken'))))]"
   },

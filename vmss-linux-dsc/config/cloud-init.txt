@@ -1,2 +1,2 @@
 #cloud-config
-apt_update: true
+package_update: true

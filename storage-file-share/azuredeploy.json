@@ -91,8 +91,8 @@
             "properties": {
               "image": "[variables('containerImage')]",
               "command": [
-                "[concat('wget',variables('webSiteFile'), '&&')]",
-                "[concat('unzip', 'website.zip', '&&')]",
+                "[concat('wget ',variables('webSiteFile'), ' &&')]",
+                "[concat('unzip ', 'website.zip', ' &&')]",
                 "azcopy",
                 "copy",
                 "/",

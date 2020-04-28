@@ -99,8 +99,8 @@
                 "&&",
                 "azcopy",
                 "copy",
-                "website.zip",
-                "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file, parameters('fileShareName'), '/website.zip?', listAccountSas(parameters('storageAccountName'), '2019-06-01', variables('accountSasProperties')).accountSasToken)]"
+                "/",
+                "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file, parameters('fileShareName'), '?', listAccountSas(parameters('storageAccountName'), '2019-06-01', variables('accountSasProperties')).accountSasToken)]"
               ],
               "resources": {
                 "requests": {

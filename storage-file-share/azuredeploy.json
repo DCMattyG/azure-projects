@@ -4,10 +4,10 @@
   "parameters": {
     "storageAccountName": {
       "type": "string",
-        "defaultValue": "[concat('storage', uniqueString(resourceGroup().id))]",
-        "metadata": {
-          "description": "Specifies the name of the Azure Storage account."
-        }
+      "defaultValue": "[concat('storage', uniqueString(resourceGroup().id))]",
+      "metadata": {
+        "description": "Specifies the name of the Azure Storage account."
+      }
     },
     "fileShareName": {
       "type": "string",
@@ -16,6 +16,24 @@
       "metadata": {
         "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
       }
+    },
+    "keyStartTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      },
+      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/storage-file-share/"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
+      },
+      "defaultValue": ""
     }
   },
   "functions": [],
@@ -26,13 +44,12 @@
     "cpuCores": "1.0",
     "memoryInGb": "1.5",
     "accountSasProperties": {
-      "type": "object",
-      "defaultValue": {
-        "signedServices": "b",
-        "signedPermission": "r",
-        "signedExpiry": "2020-08-20T11:00:00Z",
-        "signedResourceTypes": "s"
-      }
+      "signedServices": "f",
+      "signedPermission": "rw",
+      "signedResourceTypes": "o",
+      // "signedExpiry": "2020-04-30T00:00:01Z",
+      "signedExpiry": "[dateTimeAdd(parameters('keyStartTime'), 'PT1H')]",
+      "keyToSign": "key2"
     }
   },
   "resources": [
@@ -57,57 +74,54 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
       ]
+    },
+    {
+      "name": "[variables('containerGroupName')]",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2018-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "[variables('containerName')]",
+            "properties": {
+              "image": "[variables('containerImage')]",
+              "command": [
+                "azcopy",
+                "copy",
+                "[concat(parameters('_artifactsLocation'), '/data', parameters('_artifactsLocationSasToken'))]",
+                "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file, parameters('fileShareName'), '/?', listAccountSas(parameters('storageAccountName'), '2019-06-01', variables('accountSasProperties')).accountSasToken)]",
+                "--recursive=true"
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": "[variables('cpuCores')]",
+                  "memoryInGB": "[variables('memoryInGb')]"
+                }
+              }
+            }
+          }
+        ],
+        "osType": "Linux",
+        "restartPolicy": "OnFailure"
+      }
     }
-    // {
-    //   "name": "[variables('containerGroupName')]",
-    //   "type": "Microsoft.ContainerInstance/containerGroups",
-    //   "apiVersion": "2018-10-01",
-    //   "location": "[resourceGroup().location]",
-    //   "dependsOn": [
-    //     "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
-    //   ],
-    //   "properties": {
-    //     "containers": [
-    //       {
-    //         "name": "[variables('containerName')]",
-    //         "properties": {
-    //           "image": "[variables('containerImage')]",
-    //           "command": [
-    //             "az",
-    //             "storage",
-    //             "share",
-    //             "create",
-    //             "--name",
-    //             "[parameters('fileShareName')]"
-    //           ],
-    //           "environmentVariables": [
-    //             {
-    //               "name": "AZURE_STORAGE_KEY",
-    //               "value": "[listKeys(parameters('storageAccountName'),'2019-06-01').keys[0].value]"
-    //             },
-    //             {
-    //               "name": "AZURE_STORAGE_ACCOUNT",
-    //               "value": "[parameters('storageAccountName')]"
-    //             }
-    //           ],
-    //           "resources": {
-    //             "requests": {
-    //               "cpu": "[variables('cpuCores')]",
-    //               "memoryInGB": "[variables('memoryInGb')]"
-    //             }
-    //           }
-    //         }
-    //       }
-    //     ],
-    //     "osType": "Linux",
-    //     "restartPolicy": "OnFailure"
-    //   }
-    // }
   ],
   "outputs": {
-    "accountSAS": {
-      "type": "object",
-      "value": "[listAccountSas(parameters('storageAccountName'), '2018-02-01', variables('accountSasProperties'))]"
-    }
+    // "keys": {
+    //   "type": "object",
+    //   "value": "[listKeys(parameters('storageAccountName'), '2018-02-01')]"
+    // },
+    // "fileEndpoint": {
+    //   "type": "string",
+    //   "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file]"
+    // },
+    // "sasConnString": {
+    //   "type": "string",
+    //   "value": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file, parameters('fileShareName'), '/?', listAccountSas(parameters('storageAccountName'), '2019-06-01', variables('accountSasProperties')).accountSasToken)]"
+    // }
   }
 }

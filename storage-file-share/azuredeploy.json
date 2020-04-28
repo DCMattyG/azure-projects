@@ -19,7 +19,22 @@
     }
   },
   "functions": [],
-  "variables": {},
+  "variables": {
+    "containerGroupName": "createshare-containerinstance",
+    "containerName": "createshare",
+    "containerImage": "microsoft/azure-cli",
+    "cpuCores": "1.0",
+    "memoryInGb": "1.5",
+    "accountSasProperties": {
+      "type": "object",
+      "defaultValue": {
+        "signedServices": "b",
+        "signedPermission": "r",
+        "signedExpiry": "2020-08-20T11:00:00Z",
+        "signedResourceTypes": "s"
+      }
+    }
+  },
   "resources": [
     {
       "name": "[parameters('storageAccountName')]",
@@ -43,6 +58,56 @@
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
       ]
     }
+    // {
+    //   "name": "[variables('containerGroupName')]",
+    //   "type": "Microsoft.ContainerInstance/containerGroups",
+    //   "apiVersion": "2018-10-01",
+    //   "location": "[resourceGroup().location]",
+    //   "dependsOn": [
+    //     "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+    //   ],
+    //   "properties": {
+    //     "containers": [
+    //       {
+    //         "name": "[variables('containerName')]",
+    //         "properties": {
+    //           "image": "[variables('containerImage')]",
+    //           "command": [
+    //             "az",
+    //             "storage",
+    //             "share",
+    //             "create",
+    //             "--name",
+    //             "[parameters('fileShareName')]"
+    //           ],
+    //           "environmentVariables": [
+    //             {
+    //               "name": "AZURE_STORAGE_KEY",
+    //               "value": "[listKeys(parameters('storageAccountName'),'2019-06-01').keys[0].value]"
+    //             },
+    //             {
+    //               "name": "AZURE_STORAGE_ACCOUNT",
+    //               "value": "[parameters('storageAccountName')]"
+    //             }
+    //           ],
+    //           "resources": {
+    //             "requests": {
+    //               "cpu": "[variables('cpuCores')]",
+    //               "memoryInGB": "[variables('memoryInGb')]"
+    //             }
+    //           }
+    //         }
+    //       }
+    //     ],
+    //     "osType": "Linux",
+    //     "restartPolicy": "OnFailure"
+    //   }
+    // }
   ],
-  "outputs": {}
+  "outputs": {
+    "accountSAS": {
+      "type": "object",
+      "value": "[listAccountSas(parameters('storageAccountName'), '2018-02-01', variables('accountSasProperties'))]"
+    }
+  }
 }

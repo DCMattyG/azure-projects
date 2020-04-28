@@ -23,7 +23,7 @@
     },
     "storageAccountKey": {
       "type": "string",
-      "defaultValue":"EwfWUuNzOANhX8TuruxiMYKSCJhS/mk0gNPoQsJ9vjlKAEC41BK/+EoFUMrDzgGVsqxZsvZrpdtTtg5zzMDoJA=="
+      "defaultValue":"nYeZqUef4SHXQ27h3Vl34Ol+2TnSyDYVGODhR0HQrGh+GPhQsPRUqEwUaELSo+12g03aaWcNSKR+u6FCTHV36g=="
     },
     "fileShareName": {
       "type": "string",

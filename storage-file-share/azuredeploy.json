@@ -91,11 +91,8 @@
             "properties": {
               "image": "[variables('containerImage')]",
               "command": [
-                "wget",
-                "[variables('webSiteFile')]",
-                "&&",
-                "unzip",
-                "website.zip",
+                "wget [variables('webSiteFile')];",
+                "unzip website.zip;",
                 "&&",
                 "azcopy",
                 "copy",

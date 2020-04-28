@@ -14,6 +14,9 @@
     "adminPassword": {
       "type": "string"
     },
+    "cloudInitData": {
+      "type": "string"
+    },
     "virtualNetworkName": {
       "type": "string"
     },
@@ -140,21 +143,21 @@
           },
           "extensionProfile": {
             "extensions": [
-              {
-                "name": "config-app",
-                "type": "extensions",
-                "properties": {
-                  "publisher": "Microsoft.OSTCExtensions",
-                  "type": "CustomScriptForLinux",
-                  "typeHandlerVersion": "1.5",
-                  "autoUpgradeMinorVersion": true,
-                  "settings": {
-                  },
-                  "protectedSettings": {
-                    "commandToExecute": "sudo apt update"
-                  }
-                }
-              },
+              // {
+              //   "name": "config-app",
+              //   "type": "extensions",
+              //   "properties": {
+              //     "publisher": "Microsoft.OSTCExtensions",
+              //     "type": "CustomScriptForLinux",
+              //     "typeHandlerVersion": "1.5",
+              //     "autoUpgradeMinorVersion": true,
+              //     "settings": {
+              //     },
+              //     "protectedSettings": {
+              //       "commandToExecute": "sudo apt update"
+              //     }
+              //   }
+              // },
               {
                 "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
                 "properties": {
@@ -180,7 +183,8 @@
           "osProfile": {
             "computerNamePrefix": "[variables('namingInfix')]",
             "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]"
+            "adminPassword": "[parameters('adminPassword')]",
+            "customData": "[base64(parameters('cloudInitData'))]"
           }
         },
         "scaleInPolicy": "[variables('scaleInPolicy')]",

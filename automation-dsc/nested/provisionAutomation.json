@@ -16,6 +16,18 @@
     },
     "compileName": {
       "type": "string"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "dcmattygstorage"
+    },
+    "storageAccountKey": {
+      "type": "string",
+      "defaultValue":"EwfWUuNzOANhX8TuruxiMYKSCJhS/mk0gNPoQsJ9vjlKAEC41BK/+EoFUMrDzgGVsqxZsvZrpdtTtg5zzMDoJA=="
+    },
+    "fileShareName": {
+      "type": "string",
+      "defaultValue": "dcmattyg"
     }
   },
   "variables": {
@@ -112,8 +124,9 @@
               "name": "[variables('dscConfigurations').NginxWebServerConfig.name]"
             },
             "parameters": {
-              "fileShareURL": "abc123",
-              "fileShareKey": "http://file.share.com"
+              "storageAccountName": "[parameters('storageAccountName')]",
+              "storageAccountKey": "[parameters('storageAccountKey')]",
+              "fileShareName": "[parameters('fileShareName')]"
             }
           }
         }

@@ -43,6 +43,7 @@
     "containerImage": "microsoft/azure-cli",
     "cpuCores": "1.0",
     "memoryInGb": "1.5",
+    "webSiteFile": "[concat(parameters('_artifactsLocation'), '/data/website.zip', parameters('_artifactsLocationSasToken'))]",
     "accountSasProperties": {
       "signedServices": "f",
       "signedPermission": "rw",
@@ -90,11 +91,16 @@
             "properties": {
               "image": "[variables('containerImage')]",
               "command": [
+                "wget",
+                "[variables('webSiteFile')]",
+                "&&",
+                "unzip",
+                "website.zip",
+                "&&",
                 "azcopy",
                 "copy",
-                "[concat(parameters('_artifactsLocation'), '/data', parameters('_artifactsLocationSasToken'))]",
-                "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file, parameters('fileShareName'), '/?', listAccountSas(parameters('storageAccountName'), '2019-06-01', variables('accountSasProperties')).accountSasToken)]",
-                "--recursive=true"
+                "website.zip",
+                "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').primaryEndpoints.file, parameters('fileShareName'), '/website.zip?', listAccountSas(parameters('storageAccountName'), '2019-06-01', variables('accountSasProperties')).accountSasToken)]"
               ],
               "resources": {
                 "requests": {

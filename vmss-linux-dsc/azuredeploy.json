@@ -63,7 +63,7 @@
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
     // "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]",
     "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]",
-    "cloudInitData": "[concat('#include\n', uri(parameters('_artifactsLocation'), concat('/cloud-init/cloud-init.txt', parameters('_artifactsLocationSasToken'))))]"
+    "cloudInitData": "[concat('#include\n', uri(parameters('_artifactsLocation'), concat('/config/cloud-init.txt', parameters('_artifactsLocationSasToken'))))]"
   },
   "resources": [
     {

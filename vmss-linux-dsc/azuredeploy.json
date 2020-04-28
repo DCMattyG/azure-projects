@@ -223,10 +223,5 @@
       ]
     }
   ],
-  "outputs": {
-    "cloudInitData": {
-      "type": "string",
-       "value": "[variables('cloudInitData')]"
-    }
-  }
+  "outputs": {}
 }

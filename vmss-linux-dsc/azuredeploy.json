@@ -24,10 +24,10 @@
         "australiasoutheast",
         "centralindia",
         "francecentral"
-        ]
+      ]
     },
     "appName": {
-        "type": "string"
+      "type": "string"
     },
     "adminUsername": {
       "type": "string"

@@ -24,7 +24,7 @@
     "containerName": "transfer",
     "containerImage": "alpine",
     "cpuCores": "1.0",
-    "memoryInGb": "1.5"
+    "memoryInGb": "1.0"
   },
   "resources": [
     {

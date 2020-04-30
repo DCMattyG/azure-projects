@@ -135,8 +135,11 @@
               "apiVersion": "2019-10-01",
               "properties": {
                 "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
                 "templateLink": {
-                  "uri": "[uri(parameters('_artifactsLocation'), concat('master/storage-file-share/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
+                  "uri": "[variables('storageFileShare')]",
                   "contentVersion": "1.0.0.0"
                 },
                 "parameters": {

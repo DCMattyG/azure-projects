@@ -126,7 +126,7 @@
           "contentVersion": "1.0.0.0",
           "parameters": {},
           "variables": {
-            "storageFileShare": "[uri(parameters('_artifactsLocation'), concat('master/vmss-linux-dsc/azuredeploy.json', parameters('_artifactsLocationSasToken')))]"
+            "storageFileShare": "[uri(parameters('_artifactsLocation'), concat('master/storage-file-share/azuredeploy.json', parameters('_artifactsLocationSasToken')))]"
           },
           "resources": [
             {

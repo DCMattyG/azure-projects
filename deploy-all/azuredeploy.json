@@ -121,6 +121,9 @@
       ],
       "properties": {
         "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
@@ -135,9 +138,6 @@
               "apiVersion": "2019-10-01",
               "properties": {
                 "mode": "Incremental",
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
                 "templateLink": {
                   "uri": "[variables('storageFileShare')]",
                   "contentVersion": "1.0.0.0"

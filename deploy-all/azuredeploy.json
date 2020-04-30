@@ -1,0 +1,159 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+          "description": "Azure resource location"
+      },
+      "defaultValue": "westus2"
+    },
+    "mgmtRg": {
+      "type": "string",
+      "metadata": {
+          "description": "Resource group for management components"
+      },
+      "defaultValue": "mgmt-rg"
+    },
+    "networkRg": {
+      "type": "string",
+      "metadata": {
+          "description": "Resource group for networking components"
+      },
+      "defaultValue": "net-rg"
+    },
+    "linuxRg": {
+      "type": "string",
+      "metadata": {
+          "description": "Resource group for linux components"
+      },
+      "defaultValue": "linux-rg"
+    },
+    "winRg": {
+      "type": "string",
+      "metadata": {
+          "description": "Resource group for windows components"
+      },
+      "defaultValue": "windows-rg"
+    },
+    // "appName": {
+    //   "type": "string",
+    //   "metadata": {
+    //     "description": "Application name prepended with win-* and linux-* accordingly"
+    //   }
+    // },
+    // "adminUsername": {
+    //   "type": "string",
+    //   "metadata": {
+    //     "description": "Username for Windows and Linux VM's"
+    //   }
+    // },
+    // "adminPassword": {
+    //   "type": "securestring",
+    //   "metadata": {
+    //     "description": "Password for Windows and Linux VM's"
+    //   }
+    // },
+    "storageDetails": {
+      "type": "object",
+      "metadata": {
+        "description": "Variables for Storage and File Share creation"
+      },
+      "defaultValue": {
+        "storageAccountName": "[concat('storage', uniqueString(parameters('mgmtRg')))]",
+        "fileShareName": "website"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      },
+      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location (if required)"
+      },
+      "defaultValue": ""
+    }
+  },
+  "functions": [],
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[parameters('mgmtRg')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[parameters('networkRg')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[parameters('linuxRg')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[parameters('winRg')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "storageDeployment",
+      "resourceGroup": "[parameters('mgmtRg')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('mgmtRg'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {
+            "storageFileShare": "[uri(parameters('_artifactsLocation'), concat('master/vmss-linux-dsc/azuredeploy.json', parameters('_artifactsLocationSasToken')))]"
+          },
+          "resources": [
+            {
+              "name": "storageFileShare",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2019-10-01",
+              "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                  "uri": "[variables('storageFileShare')]",
+                  "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                  "storageAccountName": {
+                    "value": "[parameters('storageDetails').storageAccountName]"
+                  },
+                  "fileShareName": {
+                    "value": "[parameters('storageDetails').fileShareName]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

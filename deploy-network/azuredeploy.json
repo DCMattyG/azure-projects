@@ -3,32 +3,50 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "virtualNetworks": {
-       "type": "object",
-       "metadata": {
-            "description": "description"
+      "type": "array",
+      "metadata": {
+        "description": "description"
+      },
+      "defaultValue": [
+        {
+          "vnetName": "management-vnet",
+          "addressSpace": "10.0.0.0/16",
+          "subnets": [
+            {
+              "subnetName": "mgmt",
+              "addressPrefix": "10.0.0.0/24"
+            }
+          ]
         },
-        "defaultValue": [
-          {
-            "vnetName": "management-vnet",
-            "addressSpace": "10.0.0.0/16",
-            "subnets": [
-              {
-                "subnetName": "mgmt",
-                "addressPrefix": "10.0.0.0/24"
-              }
-            ]
-          },
-          {
-            "vnetName": "computer-vnet",
-            "addressSpace": "10.1.0.0/16",
-            "subnets": [
-              {
-                "subnetName": "computers",
-                "addressPrefix": "10.1.0.0/24"
-              }
-            ]
-          }
-        ]
+        {
+          "vnetName": "computer-vnet",
+          "addressSpace": "10.1.0.0/16",
+          "subnets": [
+            {
+              "subnetName": "computers",
+              "addressPrefix": "10.1.0.0/24"
+            }
+          ]
+        }
+      ]
+    },
+    "vnetPeers": {
+      "type": "array",
+      "metadata": {
+          "description": "description"
+      },
+      "defaultValue": [
+        {
+          "name": "management-to-computer",
+          "from": "management-vnet",
+          "to": "computer-vnet"
+        },
+        {
+          "name": "computer-to-management",
+          "from": "computer-vnet",
+          "to": "management-vnet"
+        }
+      ]
     }
   },
   "functions": [],
@@ -39,28 +57,48 @@
         "name": "vnetLoop",
         "count": "[length(parameters('virtualNetworks'))]"
       },
-      "name": "[parameters('virtualNetworks')[copyIndex()].vnetName]",
+      "name": "[parameters('virtualNetworks')[copyIndex('vnetLoop')].vnetName]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2019-11-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[parameters('virtualNetworks')[copyIndex()].addressPrefix]"
+            "[parameters('virtualNetworks')[copyIndex('vnetLoop')].addressSpace]"
           ]
         },
         "copy": [
           {
             "name": "subnets",
-            "count": "[length(parameters('virtualNetworks')[copyIndex()].subnets)]",
+            "count": "[length(parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets)]",
             "input": {
-              "name": "[parameters('virtualNetworks')[copyIndex()].subnets[copyIndex()].subnetName]",
+              "name": "[parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets[copyIndex('subnets')].subnetName]",
               "properties": {
-                "addressPrefix": "[parameters('virtualNetworks')[copyIndex()].subnets[copyIndex()].addressPrefix]"
+                "addressPrefix": "[parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets[copyIndex('subnets')].addressPrefix]"
               }
             }
           }
         ]
+      }
+    },
+    {
+      "copy": {
+        "name": "peerLoop",
+        "count": "[length(parameters('vnetPeers'))]"
+      },
+      "name": "[concat(parameters('vnetPeers')[copyIndex('peerLoop')].from, '/', parameters('vnetPeers')[copyIndex('peerLoop')].name)]",
+      "dependsOn": ["vnetLoop"],
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetPeers')[copyIndex('peerLoop')].to)]"
+        }
       }
     }
   ],

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetworks": {
+       "type": "object",
+       "metadata": {
+            "description": "description"
+        },
+        "defaultValue": [
+          {
+            "vnetName": "management-vnet",
+            "addressSpace": "10.0.0.0/16",
+            "subnets": [
+              {
+                "subnetName": "mgmt",
+                "addressPrefix": "10.0.0.0/24"
+              }
+            ]
+          },
+          {
+            "vnetName": "computer-vnet",
+            "addressSpace": "10.1.0.0/16",
+            "subnets": [
+              {
+                "subnetName": "computers",
+                "addressPrefix": "10.1.0.0/24"
+              }
+            ]
+          }
+        ]
+    }
+  },
+  "functions": [],
+  "variables": {},
+  "resources": [
+    {
+      "copy": {
+        "name": "vnetLoop",
+        "count": "[length(parameters('virtualNetworks'))]"
+      },
+      "name": "[parameters('virtualNetworks')[copyIndex()].vnetName]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('virtualNetworks')[copyIndex()].addressPrefix]"
+          ]
+        },
+        "copy": [
+          {
+            "name": "subnets",
+            "count": "[length(parameters('virtualNetworks')[copyIndex()].subnets)]",
+            "input": {
+              "name": "[parameters('virtualNetworks')[copyIndex()].subnets[copyIndex()].subnetName]",
+              "properties": {
+                "addressPrefix": "[parameters('virtualNetworks')[copyIndex()].subnets[copyIndex()].addressPrefix]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {}
+}

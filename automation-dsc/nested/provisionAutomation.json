@@ -127,7 +127,7 @@
           "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
         }
       }
-    }
+    },
     {
       "copy": {
         "name": "compileLoop",

@@ -1,15 +1,35 @@
-$phpPath = 'http://windows.php.net/downloads/releases/'
-$phpZipFile = 'php-7.4.5-nts-Win32-vc15-x64.zip'
-$vcRedistPath = 'https://aka.ms/vs/15/release/'
-$vcRedistFile = 'VC_redist.x64.exe'
-$phpIniPath = 'https://raw.githubusercontent.com/dsccommunity/xPhp/dev/Samples/PhpConfigTemplate.txt'
-$websitePath = 'https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-windows-dsc/data/website.zip'
-$siteName = 'Default Web Site'
-$siteID = 1
-$handlerName = "PHP"
-
 Configuration windowsconfig
 {
+  param
+  (
+    [String]
+    $phpPath = 'http://windows.php.net/downloads/releases/',
+
+    [String]
+    $phpZipFile = 'php-7.4.5-nts-Win32-vc15-x64.zip',
+
+    [String]
+    $vcRedistPath = 'https://aka.ms/vs/15/release/',
+
+    [String]
+    $vcRedistFile = 'VC_redist.x64.exe',
+
+    [String]
+    $vcRedistName = 'Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27033',
+
+    [String]
+    $websiteZip = 'https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-windows-dsc/data/website.zip',
+
+    [String]
+    $siteName = 'Default Web Site',
+
+    [Int32]
+    $siteID = 1,
+
+    [String]
+    $handlerName = "PHP"
+  )
+
   Import-DscResource -Module xPSDesiredStateConfiguration
   Import-DscResource -Module xWebAdministration
   Import-DscResource -Module xPhp
@@ -58,14 +78,14 @@ Configuration windowsconfig
 
     xRemoteFile websiteFile {
       DependsOn = "[File]dscPath"
-      Uri = $websitePath
+      Uri = $websiteZip
       DestinationPath = "C:\dsc\website.zip"
     }
     
     Package VS2015-64 {
       DependsOn = "[xRemoteFile]vcRedistFile"
       Ensure = "Present"
-      Name = "Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27033"
+      Name = $vcRedistName
       Path = ("C:\dsc\" + $vcRedistFile)
       Arguments = "/install /quiet"
       ProductId = ""
@@ -145,12 +165,12 @@ Configuration windowsconfig
         }
       }
       TestScript = {
-        $fastcgi = Get-WebConfiguration "/system.webserver/fastcgi" -PSPath "IIS:\" | select -expandproperty collection | ?{$_.fullpath -eq "C:\PHP\php-cgi.exe"}
+        $fastcgi = Get-WebConfiguration "/system.webserver/fastcgi" -PSPath "IIS:\" | Select-Object -expandproperty collection | Where-Object {$_.fullpath -eq "C:\PHP\php-cgi.exe"}
 
         return $(If ($fastcgi) { $true} Else { $false} )
       }
       GetScript = {
-        @{ Result = (Get-WebConfiguration "/system.webserver/fastcgi" -PSPath "IIS:\" | select -expandproperty collection | ?{$_.fullpath -eq "C:\PHP\php-cgi.exe"}) }
+        @{ Result = (Get-WebConfiguration "/system.webserver/fastcgi" -PSPath "IIS:\" | Select-Object -expandproperty collection | Where-Object {$_.fullpath -eq "C:\PHP\php-cgi.exe"}) }
       }
     }
 

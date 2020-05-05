@@ -111,7 +111,7 @@
           "dependsOn": "[variables('dscResources')[copyIndex('moduleLoop')].dependsOn]",
           "properties": {
             "contentLink": {
-              "uri": "[variables('dscResources').nx.url]"
+              "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
             }
           }
         },

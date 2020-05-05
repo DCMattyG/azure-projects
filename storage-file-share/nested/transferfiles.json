@@ -13,6 +13,12 @@
         "metadata": {
           "description": "description"
         }
+      },
+      "zipFilePath": {
+        "type": "string",
+        "metadata": {
+          "description": "description"
+        }
       }
     },
     "functions": [],
@@ -37,9 +43,9 @@
                 "image": "[variables('containerImage')]",
                 "command": [
                   "unzip",
-                  "/mnt/webrepo/azure-projects/storage-file-share/data/linuxWebsite.zip",
+                  "[concat('/mnt/from', parameters('zipFilePath'))]",
                   "-d",
-                  "/mnt/webshare"
+                  "/mnt/to"
                 ],
                 "environmentVariables": [],
                 "resources": {
@@ -50,12 +56,12 @@
                 },
                 "volumeMounts": [
                   {
-                    "name": "websiterepo",
-                    "mountPath": "/mnt/webrepo"
+                    "name": "[parameters('fromVolume').name]",
+                    "mountPath": "/mnt/from"
                   },
                   {
-                    "name": "websiteshare",
-                    "mountPath": "/mnt/webshare"
+                    "name": "[parameters('toVolume').name]",
+                    "mountPath": "/mnt/to"
                   }
                 ]
               }

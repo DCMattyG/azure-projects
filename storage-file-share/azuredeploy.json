@@ -87,6 +87,9 @@
                 "storageAccountKey": "[reference('storageDeploy').outputs.storageAccountKey.value]"
               }
             }
+          },
+          "zipFilePath": {
+            "value": "/azure-projects/storage-file-share/data/linuxWebsite.zip"
           }
         }
       }

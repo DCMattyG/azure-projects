@@ -106,46 +106,46 @@
           "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
         }
       }
-    },
-    {
-      "copy": {
-        "name": "configLoop",
-        "count": "[length(variables('dscConfigurations'))]"
-      },
-      "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
-      "type": "Microsoft.Automation/automationAccounts/configurations",
-      "apiVersion": "2018-01-15",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "moduleLoop"
-      ],
-      "properties": {
-        "state": "Published",
-        "overwrite": "true",
-        "source": {
-          "type": "uri",
-          "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
-        }
-      }
-    },
-    {
-      "copy": {
-        "name": "compileLoop",
-        "count": "[length(variables('dscConfigurations'))]"
-      },
-      "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].compileName]",
-      "type": "Microsoft.Automation/automationAccounts/compilationjobs",
-      "apiVersion": "2018-01-15",
-      "dependsOn": [
-        "configLoop"
-      ],
-      "properties": {
-        "configuration": {
-          "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
-        },
-        "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
-      }
     }
+    // {
+    //   "copy": {
+    //     "name": "configLoop",
+    //     "count": "[length(variables('dscConfigurations'))]"
+    //   },
+    //   "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
+    //   "type": "Microsoft.Automation/automationAccounts/configurations",
+    //   "apiVersion": "2018-01-15",
+    //   "location": "[parameters('location')]",
+    //   "dependsOn": [
+    //     "moduleLoop"
+    //   ],
+    //   "properties": {
+    //     "state": "Published",
+    //     "overwrite": "true",
+    //     "source": {
+    //       "type": "uri",
+    //       "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
+    //     }
+    //   }
+    // }
+    // {
+    //   "copy": {
+    //     "name": "compileLoop",
+    //     "count": "[length(variables('dscConfigurations'))]"
+    //   },
+    //   "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].compileName]",
+    //   "type": "Microsoft.Automation/automationAccounts/compilationjobs",
+    //   "apiVersion": "2018-01-15",
+    //   "dependsOn": [
+    //     "configLoop"
+    //   ],
+    //   "properties": {
+    //     "configuration": {
+    //       "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
+    //     },
+    //     "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
+    //   }
+    // }
   ],
   "outputs": {}
 }

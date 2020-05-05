@@ -94,7 +94,6 @@
         "count": "[length(variables('dscResources'))]",
         "mode": "serial"
       },
-      // "name": "[variables('dscResources').nx.name]",
       "name": "[concat(parameters('automationAccountName'), '/', variables('dscResources')[copyIndex('moduleLoop')].name)]",
       "type": "Microsoft.Automation/automationAccounts/modules",
       "apiVersion": "2018-01-15",
@@ -137,7 +136,6 @@
       "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].compileName]",
       "type": "Microsoft.Automation/automationAccounts/compilationjobs",
       "apiVersion": "2018-01-15",
-      "tags": {},
       "dependsOn": [
         "configLoop"
       ],

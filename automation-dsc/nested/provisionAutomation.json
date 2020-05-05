@@ -37,11 +37,7 @@
         "compileName": "[guid('AzureAutomationCompile', 'linuxconfig')]",
         "description": "Nginx web server install and configuration",
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/nginxWebServer.ps1', parameters('_artifactsLocationSasToken'))]",
-        "parameters": {
-          "storageAccountName": "[parameters('storageAccountName')]",
-          "storageAccountKey": "[parameters('storageAccountKey')]",
-          "fileShareName": "[parameters('fileShareName')]"
-        }
+        "parameters": {}
       },
       {
         "name": "windowsconfig",
@@ -114,7 +110,7 @@
       },
       "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
       "type": "Microsoft.Automation/automationAccounts/configurations",
-      "apiVersion": "2015-10-31",
+      "apiVersion": "2018-01-15",
       "location": "[parameters('location')]",
       "dependsOn": [
         "moduleLoop"

@@ -114,7 +114,7 @@
       },
       "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
       "type": "Microsoft.Automation/automationAccounts/configurations",
-      "apiVersion": "2018-01-15",
+      "apiVersion": "2015-10-31",
       "location": "[parameters('location')]",
       "dependsOn": [
         "moduleLoop"

@@ -106,28 +106,28 @@
           "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
         }
       }
+    },
+    {
+      "copy": {
+        "name": "configLoop",
+        "count": "[length(variables('dscConfigurations'))]"
+      },
+      "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
+      "type": "Microsoft.Automation/automationAccounts/configurations",
+      "apiVersion": "2018-01-15",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "moduleLoop"
+      ],
+      "properties": {
+        "state": "Published",
+        "overwrite": "true",
+        "source": {
+          "type": "uri",
+          "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
+        }
+      }
     }
-    // {
-    //   "copy": {
-    //     "name": "configLoop",
-    //     "count": "[length(variables('dscConfigurations'))]"
-    //   },
-    //   "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
-    //   "type": "Microsoft.Automation/automationAccounts/configurations",
-    //   "apiVersion": "2018-01-15",
-    //   "location": "[parameters('location')]",
-    //   "dependsOn": [
-    //     "moduleLoop"
-    //   ],
-    //   "properties": {
-    //     "state": "Published",
-    //     "overwrite": "true",
-    //     "source": {
-    //       "type": "uri",
-    //       "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
-    //     }
-    //   }
-    // }
     // {
     //   "copy": {
     //     "name": "compileLoop",

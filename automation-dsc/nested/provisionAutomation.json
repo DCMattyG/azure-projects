@@ -45,28 +45,28 @@
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/iisWebServer.ps1', parameters('_artifactsLocationSasToken'))]"
       }
     },
-    "dscResources": {
-      "nx": {
+    "dscResources": [
+      {
         "name": "nx",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
       },
-      "nxNetworking": {
+      {
         "name": "nxNetworking",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg"
       },
-      "xWebAdministraton": {
+      {
         "name": "xWebAdministration",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg"
       },
-      "xPSDesiredStateConfiguration": {
+      {
         "name": "xPSDesiredStateConfiguration",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg"
       },
-      "xPhp": {
+      {
         "name": "xPhp",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg"
       }
-    }
+    ]
   },
   "resources": [
     {

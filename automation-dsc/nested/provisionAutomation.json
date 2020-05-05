@@ -48,23 +48,40 @@
     "dscResources": {
       "nx": {
         "name": "nx",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg",
+        "dependsOn": [
+          "[parameters('automationAccountName')]"
+        ]
       },
       "nxNetworking": {
         "name": "nxNetworking",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg"
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg",
+        "dependsOn": [
+          "[parameters('automationAccountName')]"
+        ]
       },
       "xWebAdministraton": {
         "name": "xWebAdministration",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg"
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg",
+        "dependsOn": [
+          "[parameters('automationAccountName')]"
+        ]
       },
       "xPSDesiredStateConfiguration": {
         "name": "xPSDesiredStateConfiguration",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg"
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg",
+        "dependsOn": [
+          "[parameters('automationAccountName')]"
+        ]
       },
       "xPhp": {
         "name": "xPhp",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg"
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg",
+        "dependsOn": [
+          "[parameters('automationAccountName')]",
+          "xWebAdministration",
+          "xPSDesiredStateConfiguration"
+        ]
       }
     }
   },
@@ -82,77 +99,80 @@
       },
       "resources": [
         {
-          "name": "[variables('dscResources').nx.name]",
+          "copy": {
+            "name": "moduleLoop",
+            "count": "[length(variables('dscResources'))]"
+          },
+          // "name": "[variables('dscResources').nx.name]",
+          "name": "[variables('dscResources')[copyIndex('moduleLoop')].name]",
           "type": "modules",
           "apiVersion": "2018-01-15",
           "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('automationAccountName')]"
-          ],
+          "dependsOn": "[variables('dscResources')[copyIndex('moduleLoop')].dependsOn]",
           "properties": {
             "contentLink": {
               "uri": "[variables('dscResources').nx.url]"
             }
           }
         },
-        {
-          "name": "[variables('dscResources').nxNetworking.name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources').nxNetworking.url]"
-            }
-          }
-        },
-        {
-          "name": "[variables('dscResources').xWebAdministraton.name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources').xWebAdministraton.url]"
-            }
-          }
-        },
-        {
-          "name": "[variables('dscResources').xPSDesiredStateConfiguration.name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources').xPSDesiredStateConfiguration.url]"
-            }
-          }
-        },
-        {
-          "name": "[variables('dscResources').xPhp.name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('AutomationAccountName')]",
-            "[variables('dscResources').xWebAdministraton.name]",
-            "[variables('dscResources').xPSDesiredStateConfiguration.name]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources').xPhp.url]"
-            }
-          }
-        },
+        // {
+        //   "name": "[variables('dscResources').nxNetworking.name]",
+        //   "type": "modules",
+        //   "apiVersion": "2018-01-15",
+        //   "location": "[parameters('location')]",
+        //   "dependsOn": [
+        //     "[parameters('AutomationAccountName')]"
+        //   ],
+        //   "properties": {
+        //     "contentLink": {
+        //       "uri": "[variables('dscResources').nxNetworking.url]"
+        //     }
+        //   }
+        // },
+        // {
+        //   "name": "[variables('dscResources').xWebAdministraton.name]",
+        //   "type": "modules",
+        //   "apiVersion": "2018-01-15",
+        //   "location": "[parameters('location')]",
+        //   "dependsOn": [
+        //     "[parameters('AutomationAccountName')]"
+        //   ],
+        //   "properties": {
+        //     "contentLink": {
+        //       "uri": "[variables('dscResources').xWebAdministraton.url]"
+        //     }
+        //   }
+        // },
+        // {
+        //   "name": "[variables('dscResources').xPSDesiredStateConfiguration.name]",
+        //   "type": "modules",
+        //   "apiVersion": "2018-01-15",
+        //   "location": "[parameters('location')]",
+        //   "dependsOn": [
+        //     "[parameters('AutomationAccountName')]"
+        //   ],
+        //   "properties": {
+        //     "contentLink": {
+        //       "uri": "[variables('dscResources').xPSDesiredStateConfiguration.url]"
+        //     }
+        //   }
+        // },
+        // {
+        //   "name": "[variables('dscResources').xPhp.name]",
+        //   "type": "modules",
+        //   "apiVersion": "2018-01-15",
+        //   "location": "[parameters('location')]",
+        //   "dependsOn": [
+        //     "[parameters('AutomationAccountName')]",
+        //     "[variables('dscResources').xWebAdministraton.name]",
+        //     "[variables('dscResources').xPSDesiredStateConfiguration.name]"
+        //   ],
+        //   "properties": {
+        //     "contentLink": {
+        //       "uri": "[variables('dscResources').xPhp.url]"
+        //     }
+        //   }
+        // },
         {
           "name": "[variables('dscConfigurations').NginxWebServerConfig.name]",
           "type": "configurations",

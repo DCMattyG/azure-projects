@@ -81,26 +81,26 @@
         }
       },
       "resources": [
-        {
-          "copy": {
-            "name": "moduleLoop",
-            "count": "[length(variables('dscResources'))]",
-            "mode": "serial"
-          },
-          // "name": "[variables('dscResources').nx.name]",
-          "name": "[variables('dscResources')[copyIndex('moduleLoop')].name]",
-          "type": "modules",
-          "apiVersion": "2018-01-15",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[parameters('automationAccountName')]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
-            }
-          }
-        },
+        // {
+        //   "copy": {
+        //     "name": "moduleLoop",
+        //     "count": "[length(variables('dscResources'))]",
+        //     "mode": "serial"
+        //   },
+        //   // "name": "[variables('dscResources').nx.name]",
+        //   "name": "[variables('dscResources')[copyIndex('moduleLoop')].name]",
+        //   "type": "modules",
+        //   "apiVersion": "2018-01-15",
+        //   "location": "[parameters('location')]",
+        //   "dependsOn": [
+        //     "[parameters('automationAccountName')]"
+        //   ],
+        //   "properties": {
+        //     "contentLink": {
+        //       "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
+        //     }
+        //   }
+        // },
         // {
         //   "name": "[variables('dscResources').nxNetworking.name]",
         //   "type": "modules",
@@ -239,6 +239,26 @@
           }
         }
       ]
+    },
+    {
+      "copy": {
+        "name": "moduleLoop",
+        "count": "[length(variables('dscResources'))]",
+        "mode": "serial"
+      },
+      // "name": "[variables('dscResources').nx.name]",
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscResources')[copyIndex('moduleLoop')].name)]",
+      "type": "Microsoft.Automation/automationAccounts/modules",
+      "apiVersion": "2018-01-15",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[parameters('automationAccountName')]"
+      ],
+      "properties": {
+        "contentLink": {
+          "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
+        }
+      }
     }
   ],
   "outputs": {}

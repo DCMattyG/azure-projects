@@ -32,7 +32,8 @@
   },
   "functions": [],
   "variables": {
-    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]"
+    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
+    "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
   },
   "resources": [
     {
@@ -51,6 +52,47 @@
           },
           "fileShareName": {
             "value": "[parameters('fileShareName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "transferFiles",
+      "dependsOn": [
+        "storageDeploy"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('transferFiles')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[parameters('fileShareName')]"
+          },
+          "fromVolume": {
+            "value": {
+              "name": "websiterepo",
+              "gitRepo": {
+                "repository": "https://github.com/DCMattyG/azure-projects"
+              }
+            }
+          },
+          "toVolume": {
+            "value": {
+              "name": "websiteshare",
+              "azureFile": {
+                "shareName": "[parameters('fileShareName')]",
+                "storageAccountName": "[parameters('storageAccountName')]",
+                "storageAccountKey": "[listKeys(parameters('storageAccountName'),'2019-06-01').keys[0].value]"
+              }
+            }
           }
         }
       }

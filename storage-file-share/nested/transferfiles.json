@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "fromVolume": {
+        "type": "object",
+        "metadata": {
+          "description": "description"
+        }
+      },
+      "toVolume": {
+        "type": "object",
+        "metadata": {
+          "description": "description"
+        }
+      }
+    },
+    "functions": [],
+    "variables": {
+      "containerGroupName": "transfer-container",
+      "containerName": "transfer",
+      "containerImage": "alpine",
+      "cpuCores": "1.0",
+      "memoryInGb": "1.0"
+    },
+    "resources": [
+      {
+        "name": "[variables('containerGroupName')]",
+        "type": "Microsoft.ContainerInstance/containerGroups",
+        "apiVersion": "2018-10-01",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageAccountName'), 'default', parameters('fileShareName'))]"
+        ],
+        "properties": {
+          "containers": [
+            {
+              "name": "[variables('containerName')]",
+              "properties": {
+                "image": "[variables('containerImage')]",
+                "command": [
+                  "unzip",
+                  "/mnt/webrepo/azure-projects/storage-file-share/data/linuxWebsite.zip",
+                  "-d",
+                  "/mnt/webshare"
+
+                ],
+                "environmentVariables": [],
+                "resources": {
+                  "requests": {
+                    "cpu": "[variables('cpuCores')]",
+                    "memoryInGB": "[variables('memoryInGb')]"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "websiterepo",
+                    "mountPath": "/mnt/webrepo"
+                  },
+                  {
+                    "name": "websiteshare",
+                    "mountPath": "/mnt/webshare"
+                  }
+                ]
+              }
+            }
+          ],
+          "osType": "Linux",
+          "restartPolicy": "OnFailure",
+          "volumes": [
+            "[parameters('fromVolume')]",
+            "[parameters('toVolume')]"
+          ]
+        }
+      }
+    ],
+    "outputs": {}
+}

@@ -90,7 +90,7 @@
               "azureFile": {
                 "shareName": "[parameters('fileShareName')]",
                 "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[listKeys(parameters('storageAccountName'),'2019-06-01').keys[0].value]"
+                "storageAccountKey": "[reference('storageDeploy').outputs.storageAccountKey.value]"
               }
             }
           }

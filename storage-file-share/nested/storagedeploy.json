@@ -4,7 +4,6 @@
   "parameters": {
     "storageAccountName": {
       "type": "string",
-      "defaultValue": "[concat('storage', uniqueString(resourceGroup().id))]",
       "metadata": {
         "description": "Specifies the name of the Azure Storage account."
       }
@@ -19,13 +18,7 @@
     }
   },
   "functions": [],
-  "variables": {
-    "containerGroupName": "transfer-container",
-    "containerName": "transfer",
-    "containerImage": "alpine",
-    "cpuCores": "1.0",
-    "memoryInGb": "1.0"
-  },
+  "variables": {},
   "resources": [
     {
       "name": "[parameters('storageAccountName')]",
@@ -48,72 +41,12 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
       ]
-    },
-    {
-      "name": "[variables('containerGroupName')]",
-      "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2018-10-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageAccountName'), 'default', parameters('fileShareName'))]"
-      ],
-      "properties": {
-        "containers": [
-          {
-            "name": "[variables('containerName')]",
-            "properties": {
-              "image": "[variables('containerImage')]",
-              "command": [
-                // "cp",
-                // "-r",
-                // "/mnt/webrepo/azure-projects/storage-file-share/data/.",
-                // "/mnt/webshare"
-                "unzip",
-                "/mnt/webrepo/azure-projects/storage-file-share/data/linuxWebsite.zip",
-                "-d",
-                "/mnt/webshare"
-
-              ],
-              "environmentVariables": [],
-              "resources": {
-                "requests": {
-                  "cpu": "[variables('cpuCores')]",
-                  "memoryInGB": "[variables('memoryInGb')]"
-                }
-              },
-              "volumeMounts": [
-                {
-                  "name": "websiterepo",
-                  "mountPath": "/mnt/webrepo"
-                },
-                {
-                  "name": "websiteshare",
-                  "mountPath": "/mnt/webshare"
-                }
-              ]
-            }
-          }
-        ],
-        "osType": "Linux",
-        "restartPolicy": "OnFailure",
-        "volumes": [
-          {
-            "name": "websiterepo",
-            "gitRepo": {
-              "repository": "https://github.com/DCMattyG/azure-projects"
-            }
-          },
-          {
-            "name": "websiteshare",
-            "azureFile": {
-                "shareName": "[parameters('fileShareName')]",
-                "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[listKeys(parameters('storageAccountName'),'2019-06-01').keys[0].value]"
-            }
-          }
-        ]
-      }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "storageAccountKey": {
+      "type": "string",
+       "value": "[listKeys(parameters('storageAccountName'),'2019-06-01').keys[0].value]"
+    }
+  }
 }

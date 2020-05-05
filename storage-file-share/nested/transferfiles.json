@@ -81,8 +81,8 @@
           "osType": "Linux",
           "restartPolicy": "OnFailure",
           "volumes": [
-            // "[parameters('fromVolume')]",
-            // "[parameters('toVolume')]"
+            "[parameters('fromVolume')]",
+            "[parameters('toVolume')]"
           ]
         }
       }

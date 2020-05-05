@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the name of the Azure Storage account."
+      },
+      "defaultValue": "[concat('storage', uniqueString(resourceGroup().id))]"
+    },
+    "fileShareName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
+      }
+    }
+  },
+  "functions": [],
+  "variables": {
+    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]"
+  },
+  "resources": [
+    {
+      "name": "storageDeploy",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('storageDeploy')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[parameters('fileShareName')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

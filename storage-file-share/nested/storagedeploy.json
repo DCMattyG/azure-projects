@@ -64,10 +64,15 @@
             "properties": {
               "image": "[variables('containerImage')]",
               "command": [
-                "cp",
-                "-r",
-                "/mnt/webrepo/azure-projects/storage-file-share/data/.",
+                // "cp",
+                // "-r",
+                // "/mnt/webrepo/azure-projects/storage-file-share/data/.",
+                // "/mnt/webshare"
+                "unzip",
+                "/mnt/webrepo/azure-projects/storage-file-share/data/linuxWebsite.zip",
+                "-d",
                 "/mnt/webshare"
+
               ],
               "environmentVariables": [],
               "resources": {

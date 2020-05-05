@@ -37,7 +37,11 @@
         "compileName": "[guid('AzureAutomationCompile', 'linuxconfig')]",
         "description": "Nginx web server install and configuration",
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/nginxWebServer.ps1', parameters('_artifactsLocationSasToken'))]",
-        "parameters": {}
+        "parameters": {
+          "storageAccountName": "[parameters('storageAccountName')]",
+          "storageAccountKey": "[parameters('storageAccountKey')]",
+          "fileShareName": "[parameters('fileShareName')]"
+        }
       },
       {
         "name": "windowsconfig",
@@ -108,7 +112,7 @@
         "name": "configLoop",
         "count": "[length(variables('dscConfigurations'))]"
       },
-      "name": "[variables('dscConfigurations')[copyIndex('configLoop')].name]",
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('configLoop')].name)]",
       "type": "Microsoft.Automation/automationAccounts/configurations",
       "apiVersion": "2018-01-15",
       "location": "[parameters('location')]",
@@ -124,24 +128,24 @@
         }
       }
     }
-    // {
-    //   "copy": {
-    //     "name": "compileLoop",
-    //     "count": "[length(variables('dscConfigurations'))]"
-    //   },
-    //   "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].compileName]",
-    //   "type": "Microsoft.Automation/automationAccounts/compilationjobs",
-    //   "apiVersion": "2018-01-15",
-    //   "dependsOn": [
-    //     "configLoop"
-    //   ],
-    //   "properties": {
-    //     "configuration": {
-    //       "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
-    //     },
-    //     "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
-    //   }
-    // }
+    {
+      "copy": {
+        "name": "compileLoop",
+        "count": "[length(variables('dscConfigurations'))]"
+      },
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
+      "type": "Microsoft.Automation/automationAccounts/compilationjobs",
+      "apiVersion": "2018-01-15",
+      "dependsOn": [
+        "configLoop"
+      ],
+      "properties": {
+        "configuration": {
+          "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
+        },
+        "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
+      }
+    }
   ],
   "outputs": {}
 }

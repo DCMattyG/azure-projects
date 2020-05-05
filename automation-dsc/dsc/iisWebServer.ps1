@@ -3,6 +3,7 @@ $phpZipFile = 'php-7.4.5-nts-Win32-vc15-x64.zip'
 $vcRedistPath = 'https://aka.ms/vs/15/release/'
 $vcRedistFile = 'VC_redist.x64.exe'
 $phpIniPath = 'https://raw.githubusercontent.com/dsccommunity/xPhp/dev/Samples/PhpConfigTemplate.txt'
+$websitePath = 'https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-windows-dsc/data/website.zip'
 $siteName = 'Default Web Site'
 $siteID = 1
 $handlerName = "PHP"
@@ -32,72 +33,10 @@ Configuration windowsconfig
       DependsOn = '[WindowsFeature]IIS'
     }
 
-    # WindowsFeature AspNet
-    # {
-    #   Ensure = 'Present'
-    #   Name = 'Web-Asp-Net45'
-    #   DependsOn = @('[WindowsFeature]IIS')
-    # }
-
     WindowsFeature CGI {
-			#Enables CGI feature of IIS
 			Ensure = "Present"
 			Name = "Web-CGI"
 		}
-
-    # xWebsite DefaultSite
-    # {
-    #   Ensure = 'Present'
-    #   Name = 'Default Web Site'
-    #   State = 'Stopped'
-    #   PhysicalPath = 'C:\inetpub\wwwroot'
-    #   DependsOn = @('[WindowsFeature]IIS','[WindowsFeature]AspNet')
-    # }
-
-    # File demofolder
-    # {
-    #   Ensure = 'Present'
-    #   Type = 'Directory'
-    #   DestinationPath = "C:\inetpub\wwwroot\demo"
-    # }
-
-    # File Indexfile
-    # {
-    #   Ensure = 'Present'
-    #   Type = 'file'
-    #   DestinationPath = "C:\inetpub\wwwroot\demo\index.html"
-    #   Contents = "<html>
-    #   <header><title>This is Demo Website</title></header>
-    #   <body>
-    #   Welcome to DevopsGuru Channel
-    #   </body>
-    #   </html>"
-    # }
-
-    # xWebAppPool DemoWebAppPool
-    # {
-    #   Ensure = "Present"
-    #   State = "Started"
-    #   Name = "demo"
-    # }
-
-    # xWebsite DemoWebSite
-    # {
-    #   Ensure = 'Present'
-    #   State = 'Started'
-    #   Name = "Demo"
-    #   PhysicalPath = "C:\inetpub\wwwroot\demo"
-    # }
-
-    # xWebApplication demoWebApplication
-    # {
-    #   Name = "demo"
-    #   Website = "demo"
-    #   WebAppPool = "demo"
-    #   PhysicalPath = "C:\inetpub\wwwroot\demo"
-    #   Ensure = 'Present'
-    #   DependsOn = @('[xWebSite]DemoWebSite')
-    # }
 
     File dscPath {
 			Ensure = "Present"
@@ -116,6 +55,12 @@ Configuration windowsconfig
       Uri = ($vcRedistPath + $vcRedistFile)
       DestinationPath = ("C:\dsc\" + $vcRedistFile)
     }
+
+    xRemoteFile websiteFile {
+      DependsOn = "[File]dscPath"
+      Uri = $websitePath
+      DestinationPath = "C:\dsc\website.zip"
+    }
     
     Package VS2015-64 {
       DependsOn = "[xRemoteFile]vcRedistFile"
@@ -131,6 +76,13 @@ Configuration windowsconfig
       Ensure = "Present"
       Path = ("C:\dsc\" + $phpZipFile)
       Destination = "C:\PHP"
+    }
+
+    Archive websiteExtract {
+      DependsOn = "[xRemoteFile]websiteFile", "[WindowsFeature]IIS"
+      Ensure = "Present"
+      Path = "C:\dsc\website.zip"
+      Destination = "C:\inetpub\wwwroot"
     }
 
     File phpIni {
@@ -212,16 +164,6 @@ Configuration windowsconfig
       State = 'Started'
       ServerAutoStart = $true
       DefaultPage = "index.php"
-      # PhysicalPath = $DestinationPath
-    }
-
-    File indexPhp {
-      DependsOn = "[xWebsite]indexPhpDefault"
-      Ensure = "Present"
-      Type = "File"
-      Contents = "<?php phpinfo(); ?>"
-      DestinationPath = "C:\inetpub\wwwroot\index.php"
-      Force = $true
     }
 
     # This module doesn't work at all...

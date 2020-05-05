@@ -50,9 +50,6 @@
           "automationAccountName": {
             "value": "[variables('automationAccountName')]"
           },
-          "compileName": {
-            "value": "[parameters('compileName')]"
-          },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },

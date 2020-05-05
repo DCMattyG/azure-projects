@@ -2,6 +2,20 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+      "storageAccountName": {
+        "type": "string",
+        "metadata": {
+          "description": "Specifies the name of the Azure Storage account."
+        }
+      },
+      "fileShareName": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 63,
+        "metadata": {
+          "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
+        }
+      },
       "fromVolume": {
         "type": "object",
         "metadata": {
@@ -43,7 +57,6 @@
                   "/mnt/webrepo/azure-projects/storage-file-share/data/linuxWebsite.zip",
                   "-d",
                   "/mnt/webshare"
-
                 ],
                 "environmentVariables": [],
                 "resources": {
@@ -68,8 +81,8 @@
           "osType": "Linux",
           "restartPolicy": "OnFailure",
           "volumes": [
-            "[parameters('fromVolume')]",
-            "[parameters('toVolume')]"
+            // "[parameters('fromVolume')]",
+            // "[parameters('toVolume')]"
           ]
         }
       }

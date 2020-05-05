@@ -2,20 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "storageAccountName": {
-        "type": "string",
-        "metadata": {
-          "description": "Specifies the name of the Azure Storage account."
-        }
-      },
-      "fileShareName": {
-        "type": "string",
-        "minLength": 3,
-        "maxLength": 63,
-        "metadata": {
-          "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
-        }
-      },
       "fromVolume": {
         "type": "object",
         "metadata": {
@@ -43,9 +29,6 @@
         "type": "Microsoft.ContainerInstance/containerGroups",
         "apiVersion": "2018-10-01",
         "location": "[resourceGroup().location]",
-        "dependsOn": [
-          "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageAccountName'), 'default', parameters('fileShareName'))]"
-        ],
         "properties": {
           "containers": [
             {

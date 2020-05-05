@@ -70,12 +70,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "storageAccountName": {
-            "value": "[parameters('storageAccountName')]"
-          },
-          "fileShareName": {
-            "value": "[parameters('fileShareName')]"
-          },
           "fromVolume": {
             "value": {
               "name": "websiterepo",

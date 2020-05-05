@@ -166,8 +166,8 @@
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
-            "[variables('dscResources').nx.name]",
-            "[variables('dscResources').nxNetworking.name]"
+            // "[variables('dscResources').nx.name]",
+            // "[variables('dscResources').nxNetworking.name]"
           ],
           "properties": {
             "state": "Published",
@@ -185,9 +185,9 @@
           "location": "[parameters('location')]",
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
-            "[variables('dscResources').xWebAdministraton.name]",
-            "[variables('dscResources').xPSDesiredStateConfiguration.name]",
-            "[variables('dscResources').xPhp.name]"
+            // "[variables('dscResources').xWebAdministraton.name]",
+            // "[variables('dscResources').xPSDesiredStateConfiguration.name]",
+            // "[variables('dscResources').xPhp.name]"
           ],
           "properties": {
             "state": "Published",

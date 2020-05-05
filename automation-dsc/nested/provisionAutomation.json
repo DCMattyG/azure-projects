@@ -127,25 +127,25 @@
           "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
         }
       }
+    },
+    {
+      "copy": {
+        "name": "compileLoop",
+        "count": "[length(variables('dscConfigurations'))]"
+      },
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
+      "type": "Microsoft.Automation/automationAccounts/compilationjobs",
+      "apiVersion": "2018-01-15",
+      "dependsOn": [
+        "configLoop"
+      ],
+      "properties": {
+        "configuration": {
+          "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
+        },
+        "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
+      }
     }
-    // {
-    //   "copy": {
-    //     "name": "compileLoop",
-    //     "count": "[length(variables('dscConfigurations'))]"
-    //   },
-    //   "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
-    //   "type": "Microsoft.Automation/automationAccounts/compilationjobs",
-    //   "apiVersion": "2018-01-15",
-    //   "dependsOn": [
-    //     "configLoop"
-    //   ],
-    //   "properties": {
-    //     "configuration": {
-    //       "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
-    //     },
-    //     "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
-    //   }
-    // }
   ],
   "outputs": {}
 }

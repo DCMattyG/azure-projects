@@ -28,6 +28,12 @@
       "metadata": {
         "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
       }
+    },
+    "zipFilePath": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
     }
   },
   "functions": [],
@@ -89,7 +95,7 @@
             }
           },
           "zipFilePath": {
-            "value": "/azure-projects/storage-file-share/data/linuxWebsite.zip"
+            "value": "[parameters('zipFilePath')]"
           }
         }
       }

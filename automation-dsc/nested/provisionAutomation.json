@@ -48,40 +48,23 @@
     "dscResources": {
       "nx": {
         "name": "nx",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg",
-        "dependsOn": [
-          "[parameters('automationAccountName')]"
-        ]
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
       },
       "nxNetworking": {
         "name": "nxNetworking",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg",
-        "dependsOn": [
-          "[parameters('automationAccountName')]"
-        ]
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg"
       },
       "xWebAdministraton": {
         "name": "xWebAdministration",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg",
-        "dependsOn": [
-          "[parameters('automationAccountName')]"
-        ]
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg"
       },
       "xPSDesiredStateConfiguration": {
         "name": "xPSDesiredStateConfiguration",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg",
-        "dependsOn": [
-          "[parameters('automationAccountName')]"
-        ]
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg"
       },
       "xPhp": {
         "name": "xPhp",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg",
-        "dependsOn": [
-          "[parameters('automationAccountName')]",
-          "xWebAdministration",
-          "xPSDesiredStateConfiguration"
-        ]
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg"
       }
     }
   },
@@ -101,14 +84,17 @@
         {
           "copy": {
             "name": "moduleLoop",
-            "count": "[length(variables('dscResources'))]"
+            "count": "[length(variables('dscResources'))]",
+            "mode": "serial"
           },
           // "name": "[variables('dscResources').nx.name]",
           "name": "[variables('dscResources')[copyIndex('moduleLoop')].name]",
           "type": "modules",
           "apiVersion": "2018-01-15",
           "location": "[parameters('location')]",
-          "dependsOn": "[variables('dscResources')[copyIndex('moduleLoop')].dependsOn]",
+          "dependsOn": [
+            "[parameters('automationAccountName')]"
+          ],
           "properties": {
             "contentLink": {
               "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"

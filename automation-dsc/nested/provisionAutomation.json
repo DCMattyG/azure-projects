@@ -36,13 +36,13 @@
         "name": "linuxconfig",
         "compileName": "[guid('AzureAutomationCompile', 'linuxconfig')]",
         "description": "Nginx web server install and configuration",
-        "script": "dsc/nginxWebServer.ps1"
+        "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/nginxWebServer.ps1', parameters('_artifactsLocationSasToken'))]"
       },
-      "IISWebServer": {
+      "IISWebServerConfig": {
         "name": "windowsconfig",
         "compileName": "[guid('AzureAutomationCompile', 'windowsconfig')]",
         "description": "IIS web server install and configuration",
-        "script": "dsc/iisWebServer.ps1"
+        "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/iisWebServer.ps1', parameters('_artifactsLocationSasToken'))]"
       }
     },
     "dscResources": {
@@ -66,8 +66,7 @@
         "name": "xPhp",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg"
       }
-    },
-    "scriptLocation": "[concat(parameters('_artifactsLocation'), variables('dscConfigurations').NginxWebServerConfig.script, parameters('_artifactsLocationSasToken'))]"
+    }
   },
   "resources": [
     {
@@ -169,12 +168,12 @@
             "overwrite": "true",
             "source": {
               "type": "uri",
-              "value": "[variables('scriptLocation')]"
+              "value": "[variables('dscConfigurations').NginxWebServerConfig.scriptLocation]"
             }
           }
         },
         {
-          "name": "[variables('dscConfigurations').IISWebServer.name]",
+          "name": "[variables('dscConfigurations').IISWebServerConfig.name]",
           "type": "configurations",
           "apiVersion": "2018-01-15",
           "location": "[parameters('location')]",
@@ -189,7 +188,7 @@
             "overwrite": "true",
             "source": {
               "type": "uri",
-              "value": "[variables('scriptLocation')]"
+              "value": "[variables('dscConfigurations').IISWebServerConfig.scriptLocation]"
             }
           }
         },
@@ -214,17 +213,17 @@
           }
         },
         {
-          "name": "[variables('dscConfigurations').IISWebServer.compileName]",
+          "name": "[variables('dscConfigurations').IISWebServerConfig.compileName]",
           "type": "compilationjobs",
           "apiVersion": "2018-01-15",
           "tags": {},
           "dependsOn": [
             "[parameters('AutomationAccountName')]",
-            "[variables('dscConfigurations').IISWebServer.name]"
+            "[variables('dscConfigurations').IISWebServerConfig.name]"
           ],
           "properties": {
             "configuration": {
-              "name": "[variables('dscConfigurations').IISWebServer.name]"
+              "name": "[variables('dscConfigurations').IISWebServerConfig.name]"
             },
             "parameters": {
               // "storageAccountName": "[parameters('storageAccountName')]",

@@ -2,261 +2,72 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
+      },
+      "defaultValue": ""
+    },
     "hubNetwork": {
       "type": "object",
       "metadata": {
         "description": "description"
-      },
-      "defaultValue": {
-        "vnetName": "hub-vnet",
-        "addressSpace": "10.0.0.0/27",
-        "gwSubnet": "GatewaySubnet",
-        "gwPrefix": "10.0.0.0/27"
       }
     },
     "virtualNetworks": {
       "type": "array",
       "metadata": {
         "description": "description"
-      },
-      "defaultValue": [
-        {
-          "vnetName": "lin-vm-vnet",
-          "addressSpace": "10.1.0.0/16",
-          "subnets": [
-            {
-              "subnetName": "default",
-              "addressPrefix": "10.1.0.0/24",
-              "routeTable": "linux-routes"
-            }
-          ]
-        },
-        {
-          "vnetName": "win-vm-vnet",
-          "addressSpace": "10.2.0.0/16",
-          "subnets": [
-            {
-              "subnetName": "default",
-              "addressPrefix": "10.2.0.0/24",
-              "routeTable": "windows-routes"
-            }
-          ]
-        }
-      ]
+      }
     },
     "routeTables": {
       "type": "array",
       "metadata": {
         "description": "description"
-      },
-      "defaultValue": [
-        {
-          "name": "linux-routes",
-          "routes": [
-            {
-              "name": "route-to-windows",
-              "properties": {
-                "addressPrefix": "10.2.0.0/16",
-                "nextHopType": "VirtualNetworkGateway"
-              }
-            }
-          ]
-        },
-        {
-          "name": "windows-routes",
-          "routes": [
-            {
-              "name": "route-to-linux",
-              "properties": {
-                "addressPrefix": "10.1.0.0/16",
-                "nextHopType": "VirtualNetworkGateway"
-              }
-            }
-          ]
-        }
-      ]
+      }
     },
     "vnetPeers": {
       "type": "array",
       "metadata": {
         "description": "description"
-      },
-      "defaultValue": [
-        {
-          "name": "hub-to-linux",
-          "from": "hub-vnet",
-          "to": "lin-vm-vnet",
-          "vnetAccess": true,
-          "forwardedTraffic": true,
-          "gatewayTransit": true,
-          "remoteGateways": false
-        },
-        {
-          "name": "linux-to-hub",
-          "from": "lin-vm-vnet",
-          "to": "hub-vnet",
-          "vnetAccess": true,
-          "forwardedTraffic": true,
-          "gatewayTransit": false,
-          "remoteGateways": true
-        },
-        {
-          "name": "hub-to-windows",
-          "from": "hub-vnet",
-          "to": "win-vm-vnet",
-          "vnetAccess": true,
-          "forwardedTraffic": true,
-          "gatewayTransit": true,
-          "remoteGateways": false
-        },
-        {
-          "name": "windows-to-hub",
-          "from": "win-vm-vnet",
-          "to": "hub-vnet",
-          "vnetAccess": true,
-          "forwardedTraffic": true,
-          "gatewayTransit": false,
-          "remoteGateways": true
-        }
-      ]
+      }
     }
   },
   "functions": [],
-  "variables": {},
+  "variables": {
+    "provisionNetwork": "[uri(parameters('_artifactsLocation'), concat('nested/provisionNetwork.json', parameters('_artifactsLocationSasToken')))]"
+  },
   "resources": [
     {
-      "name": "[parameters('hubNetwork').vnetName]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2019-11-01",
-      "location": "[resourceGroup().location]",
+      "name": "provisionNetwork",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
       "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('hubNetwork').addressSpace]"
-          ]
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('provisionNetwork')]",
+          "contentVersion": "1.0.0.0"
         },
-        "subnets": [
-          {
-            "name": "[parameters('hubNetwork').gwSubnet]",
-            "properties": {
-              "addressPrefix": "[parameters('hubNetwork').gwPrefix]"
-            }
+        "parameters": {
+          "hubNetwork": {
+            "value": "[parameters('hubNetwork')]"
+          },
+          "virtualNetworks": {
+            "value": "[parameters('virtualNetworks')]"
+          },
+          "routeTables": {
+            "value": "[parameters('routeTables')]"
+          },
+          "vnetPeers": {
+            "value": "[parameters('vnetPeers')]"
           }
-        ]
-      }
-    },
-    {
-      "copy": {
-        "name": "routeLoop",
-        "count": "[length(parameters('routeTables'))]"
-      },
-      "name": "[parameters('routeTables')[copyIndex('routeLoop')].name]",
-      "type": "Microsoft.Network/routeTables",
-      "apiVersion": "2019-04-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "routes": "[parameters('routeTables')[copyIndex('routeLoop')].routes]"
-      }
-    },
-    {
-      "copy": {
-        "name": "vnetLoop",
-        "count": "[length(parameters('virtualNetworks'))]"
-      },
-      "name": "[parameters('virtualNetworks')[copyIndex('vnetLoop')].vnetName]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('hubNetwork').vnetName)]",
-        "routeLoop"
-      ],
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2019-11-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('virtualNetworks')[copyIndex('vnetLoop')].addressSpace]"
-          ]
-        },
-        "copy": [
-          {
-            "name": "subnets",
-            "count": "[length(parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets)]",
-            "input": {
-              "name": "[parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets[copyIndex('subnets')].subnetName]",
-              "properties": {
-                "addressPrefix": "[parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets[copyIndex('subnets')].addressPrefix]",
-                "routeTable": {
-                  "id": "[resourceId('Microsoft.Network/routeTables', parameters('virtualNetworks')[copyIndex('vnetLoop')].subnets[copyIndex('subnets')].routeTable)]"
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2019-02-01",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "hub-public-ip",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic"
-      }
-    },
-    {
-      "name": "hub-gateway",
-      "type": "Microsoft.Network/virtualNetworkGateways",
-      "apiVersion": "2019-11-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', 'hub-public-ip')]",
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('hubNetwork').vnetName)]",
-        "vnetLoop"
-      ],
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "vnetGatewayConfig",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('hubNetwork').vnetName, parameters('hubNetwork').gwSubnet)]"
-              },
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'hub-public-ip')]"
-              }
-            }
-          }
-        ],
-        "sku": {
-          "name": "Basic",
-          "tier": "Basic"
-        },
-        "gatewayType": "Vpn",
-        "vpnType": "PolicyBased",
-        "enableBgp": false
-      }
-    },
-    {
-      "copy": {
-        "name": "peerLoop",
-        "count": "[length(parameters('vnetPeers'))]"
-      },
-      "name": "[concat(parameters('vnetPeers')[copyIndex('peerLoop')].from, '/', parameters('vnetPeers')[copyIndex('peerLoop')].name)]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworkGateways', 'hub-gateway')]",
-        "routeLoop"
-      ],
-      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "apiVersion": "2019-11-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "allowVirtualNetworkAccess": "[parameters('vnetPeers')[copyIndex('peerLoop')].vnetAccess]",
-        "allowForwardedTraffic": "[parameters('vnetPeers')[copyIndex('peerLoop')].forwardedTraffic]",
-        "allowGatewayTransit": "[parameters('vnetPeers')[copyIndex('peerLoop')].gatewayTransit]",
-        "useRemoteGateways": "[parameters('vnetPeers')[copyIndex('peerLoop')].remoteGateways]",
-        "remoteVirtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetPeers')[copyIndex('peerLoop')].to)]"
         }
       }
     }

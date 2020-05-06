@@ -1,0 +1,142 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string"
+    },
+    "automationAccountName": {
+      "type": "string"
+    },
+    "storageAccountName": {
+      "type": "string"
+    },
+    "storageAccountKey": {
+      "type": "string"
+    },
+    "fileShareName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "dscConfigurations": [
+      {
+        "name": "linuxconfig",
+        "compileName": "[guid('AzureAutomationCompile', 'linuxconfig')]",
+        "description": "Nginx web server install and configuration",
+        "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/nginxWebServer.ps1', parameters('_artifactsLocationSasToken'))]",
+        "parameters": {
+          "storageAccountName": "[parameters('storageAccountName')]",
+          "storageAccountKey": "[parameters('storageAccountKey')]",
+          "fileShareName": "[parameters('fileShareName')]"
+        }
+      },
+      {
+        "name": "windowsconfig",
+        "compileName": "[guid('AzureAutomationCompile', 'windowsconfig')]",
+        "description": "IIS web server install and configuration",
+        "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/iisWebServer.ps1', parameters('_artifactsLocationSasToken'))]",
+        "parameters": {}
+      }
+    ],
+    "dscResources": [
+      {
+        "name": "nx",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
+      },
+      {
+        "name": "nxNetworking",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg"
+      },
+      {
+        "name": "xWebAdministration",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg"
+      },
+      {
+        "name": "xPSDesiredStateConfiguration",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg"
+      },
+      {
+        "name": "xPhp",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[parameters('automationAccountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiversion": "2018-01-15",
+      "location": "[resourceGroup().location]",
+      "comments": "Automation account",
+      "properties": {
+        "sku": {
+          "name": "Basic"
+        }
+      },
+      "resources": []
+    },
+    {
+      "copy": {
+        "name": "moduleLoop",
+        "count": "[length(variables('dscResources'))]",
+        "mode": "serial"
+      },
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscResources')[copyIndex('moduleLoop')].name)]",
+      "type": "Microsoft.Automation/automationAccounts/modules",
+      "apiVersion": "2018-01-15",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[parameters('automationAccountName')]"
+      ],
+      "properties": {
+        "contentLink": {
+          "uri": "[variables('dscResources')[copyIndex('moduleLoop')].url]"
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "configLoop",
+        "count": "[length(variables('dscConfigurations'))]"
+      },
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('configLoop')].name)]",
+      "type": "Microsoft.Automation/automationAccounts/configurations",
+      "apiVersion": "2018-01-15",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "moduleLoop"
+      ],
+      "properties": {
+        "state": "Published",
+        "overwrite": "true",
+        "source": {
+          "type": "uri",
+          "value": "[variables('dscConfigurations')[copyIndex('configLoop')].scriptLocation]"
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "compileLoop",
+        "count": "[length(variables('dscConfigurations'))]"
+      },
+      "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
+      "type": "Microsoft.Automation/automationAccounts/compilationjobs",
+      "apiVersion": "2018-01-15",
+      "dependsOn": [
+        "configLoop"
+      ],
+      "properties": {
+        "configuration": {
+          "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
+        },
+        "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
+      }
+    }
+  ],
+  "outputs": {}
+}

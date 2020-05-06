@@ -140,8 +140,8 @@
             }
           },
           "variables": {
-            "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
-            "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
+            "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/provisionStorage.json', parameters('_artifactsLocationSasToken')))]",
+            "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferFiles.json', parameters('_artifactsLocationSasToken')))]"
           },
           "resources": [
             {
@@ -203,7 +203,12 @@
               }
             }
           ],
-          "outputs": {}
+          "outputs": {
+            "storageAccountKey": {
+              "type": "string",
+              "value": "[reference('storageDeploy').outputs.storageAccountKey.value]"
+            }
+          }
         },
         "parameters": {
           "_artifactsLocation": {
@@ -223,6 +228,98 @@
           },
           "zipFilePath": {
             "value": "[parameters('zipFilePath')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "automationDeployment",
+      "resourceGroup": "[parameters('mgmtRg')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('mgmtRg'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "_artifactsLocation": {
+              "type": "string"
+            },
+            "_artifactsLocationSasToken": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            },
+            "storageAccountKey": {
+              "type": "string"
+            },
+            "fileShareName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "automationAccountName": "[concat('DSC-',take(guid(resourceGroup().id),5))]",
+            "provisionAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/provisionAutomation.json', parameters('_artifactsLocationSasToken')))]"
+          },
+          "resources": [
+            {
+              "name": "automationDeploy",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2018-02-01",
+              "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                  "uri": "[variables('provisionAutomation')]",
+                  "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                  "_artifactsLocation": {
+                    "value": "[parameters('_artifactsLocation')]"
+                  },
+                  "_artifactsLocationSasToken": {
+                    "value": "[parameters('_artifactsLocationSasToken')]"
+                  },
+                  "automationAccountName": {
+                    "value": "[variables('automationAccountName')]"
+                  },
+                  "storageAccountName": {
+                    "value": "[parameters('storageAccountName')]"
+                  },
+                  "storageAccountKey": {
+                    "value": "[parameters('storageAccountKey')]"
+                  },
+                  "fileShareName": {
+                    "value": "[parameters('fileShareName')]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {}
+        },
+        "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "storageAccountKey": {
+            "value": "reference('storageDeployment').outputs.storageAccountKey.value"
+          },
+          "fileShareName": {
+            "value": "[parameters('fileShareName')]"
           }
         }
       }

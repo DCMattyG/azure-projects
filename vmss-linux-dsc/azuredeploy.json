@@ -2,51 +2,11 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "The Azure location to deploy all resources"
-      },
-      "allowedValues": [
-        "japaneast",
-        "eastus2",
-        "westeurope",
-        "southeastasia",
-        "southcentralus",
-        "australiaeast",
-        "koreacentral",
-        "westus2",
-        "brazilsouth",
-        "uksouth",
-        "westcentralus",
-        "northeurope",
-        "canadacentral",
-        "australiasoutheast",
-        "centralindia",
-        "francecentral"
-      ]
-    },
-    "appName": {
-      "type": "string"
-    },
-    "adminUsername": {
-      "type": "string"
-    },
-    "adminPassword": {
-      "type": "securestring"
-    },
-    "automationAccountName": {
-      "type": "String"
-    },
-    "nodeConfigurationName": {
-      "type": "String"
-    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
         "description": "Path to the nested templates used in this deployment"
-      },
-      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/"
+      }
     },
     "_artifactsLocationSasToken": {
       "type": "string",
@@ -54,6 +14,21 @@
         "description": "SAS token to access artifacts location, if required"
       },
       "defaultValue": ""
+    },
+    "appName": {
+      "type": "string"
+    },
+    "automationAccountName": {
+      "type": "String"
+    },
+    "nodeConfigurationName": {
+      "type": "String"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
     }
   },
   "functions": [],
@@ -76,9 +51,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
           "appName": {
             "value": "[parameters('appName')]"
           }
@@ -96,9 +68,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
           "appName": {
             "value": "[parameters('appName')]"
           }
@@ -116,9 +85,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
           "appName": {
             "value": "[parameters('appName')]"
           }
@@ -137,9 +103,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
           "appName": {
             "value": "[parameters('appName')]"
           },

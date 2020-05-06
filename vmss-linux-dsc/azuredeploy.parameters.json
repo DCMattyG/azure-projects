@@ -2,8 +2,11 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "value": "westus2"
+    "_artifactsLocation": {
+      "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/"
+    },
+    "appName": {
+      "value": "vmss-linux-test"
     },
     "automationAccountName": {
       "value": "DSC-75dac"

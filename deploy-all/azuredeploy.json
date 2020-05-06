@@ -238,7 +238,8 @@
       "name": "automationDeployment",
       "resourceGroup": "[parameters('mgmtRg')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('mgmtRg'))]"
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('mgmtRg'))]",
+        "storageDeployment"
       ],
       "properties": {
         "mode": "Incremental",

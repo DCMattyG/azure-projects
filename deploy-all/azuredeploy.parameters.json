@@ -15,7 +15,7 @@
       "value": "mgmt-rg"
     },
     "networkRg": {
-      "value": "net-rg"
+      "value": "network-rg"
     },
     "windowsRg": {
       "value": "windows-rg"

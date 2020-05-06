@@ -73,10 +73,7 @@
     }
   },
   "functions": [],
-  "variables": {
-    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
-    "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
-  },
+  "variables": {},
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
@@ -116,11 +113,42 @@
       ],
       "properties": {
         "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "parameters": {},
-          "variables": {},
+          "parameters": {
+            "_artifactsLocation": {
+              "type": "string",
+              "defaultValue": "[parameters('_artifactsLocation')]"
+            },
+            "_artifactsLocationSasToken": {
+              "type": "string",
+              "defaultValue": "[parameters('_artifactsLocationSasToken')]"
+            },
+            "storageAccountName": {
+              "type": "string",
+              "defaultValue": "[parameters('storageAccountName')]"
+            },
+            "fileShareName": {
+              "type": "string",
+              "defaultValue": "[parameters('fileShareName')]"
+            },
+            "zipFileRepo": {
+              "type": "string",
+              "defaultValue": "[parameters('zipFileRepo')]"
+            },
+            "zipFilePath": {
+              "type": "string",
+              "defaultValue": "[parameters('zipFilePath')]"
+            }
+          },
+          "variables": {
+            "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
+            "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
+          },
           "resources": [
             {
               "name": "storageDeploy",

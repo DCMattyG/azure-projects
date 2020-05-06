@@ -121,28 +121,22 @@
           "contentVersion": "1.0.0.0",
           "parameters": {
             "_artifactsLocation": {
-              "type": "string",
-              "defaultValue": "[parameters('_artifactsLocation')]"
+              "value": "[parameters('_artifactsLocation')]"
             },
             "_artifactsLocationSasToken": {
-              "type": "string",
-              "defaultValue": "[parameters('_artifactsLocationSasToken')]"
+              "value": "[parameters('_artifactsLocationSasToken')]"
             },
             "storageAccountName": {
-              "type": "string",
-              "defaultValue": "[parameters('storageAccountName')]"
+              "value": "[parameters('storageAccountName')]"
             },
             "fileShareName": {
-              "type": "string",
-              "defaultValue": "[parameters('fileShareName')]"
+              "value": "[parameters('fileShareName')]"
             },
             "zipFileRepo": {
-              "type": "string",
-              "defaultValue": "[parameters('zipFileRepo')]"
+              "value": "[parameters('zipFileRepo')]"
             },
             "zipFilePath": {
-              "type": "string",
-              "defaultValue": "[parameters('zipFilePath')]"
+              "value": "[parameters('zipFilePath')]"
             }
           },
           "variables": {

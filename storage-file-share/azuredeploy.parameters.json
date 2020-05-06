@@ -11,6 +11,9 @@
     "fileShareName": {
       "value": "website"
     },
+    "zipFileRepo": {
+      "value": "https://github.com/DCMattyG/azure-projects"
+    },
     "zipFilePath": {
       "value": "/azure-projects/storage-file-share/data/linuxWebsite.zip"
     }

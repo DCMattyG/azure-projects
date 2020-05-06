@@ -29,6 +29,12 @@
         "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
       }
     },
+    "zipFileRepo": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
     "zipFilePath": {
       "type": "string",
       "metadata": {
@@ -78,15 +84,15 @@
         "parameters": {
           "fromVolume": {
             "value": {
-              "name": "websiterepo",
+              "name": "repoVol",
               "gitRepo": {
-                "repository": "https://github.com/DCMattyG/azure-projects"
+                "repository": "[parameters('zipFileRepo')]"
               }
             }
           },
           "toVolume": {
             "value": {
-              "name": "websiteshare",
+              "name": "shareVol",
               "azureFile": {
                 "shareName": "[parameters('fileShareName')]",
                 "storageAccountName": "[parameters('storageAccountName')]",

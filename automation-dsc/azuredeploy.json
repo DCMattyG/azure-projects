@@ -2,13 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "The Azure location to deploy all resources"
-      },
-      "defaultValue": "[resourceGroup().location]"
-    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
@@ -22,10 +15,6 @@
         "description": "SAS token to access artifacts location, if required"
       },
       "defaultValue": ""
-    },
-    "compileName": {
-      "type": "string",
-      "defaultValue": "[guid(resourceGroup().id, deployment().name)]"
     }
   },
   "variables": {
@@ -45,7 +34,7 @@
         },
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[resourceGroup().location]"
           },
           "automationAccountName": {
             "value": "[variables('automationAccountName')]"

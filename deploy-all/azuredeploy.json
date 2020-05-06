@@ -70,6 +70,30 @@
       "metadata": {
         "description": "description"
       }
+    },
+    "hubNetwork": {
+      "type": "object",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "virtualNetworks": {
+      "type": "array",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "routeTables": {
+      "type": "array",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "vnetPeers": {
+      "type": "array",
+      "metadata": {
+        "description": "description"
+      }
     }
   },
   "functions": [],
@@ -321,6 +345,97 @@
           },
           "fileShareName": {
             "value": "[parameters('fileShareName')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "networkDeployment",
+      "resourceGroup": "[parameters('networkRg')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('networkRg'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "_artifactsLocation": {
+              "type": "string"
+            },
+            "_artifactsLocationSasToken": {
+              "type": "string"
+            },
+            "hubNetwork": {
+              "type": "object"
+            },
+            "virtualNetworks": {
+              "type": "array"
+            },
+            "routeTables": {
+              "type": "array"
+            },
+            "vnetPeers": {
+              "type": "array"
+            }
+          },
+          "variables": {
+            "provisionNetwork": "[uri(parameters('_artifactsLocation'), concat('nested/provisionNetwork.json', parameters('_artifactsLocationSasToken')))]"
+          },
+          "resources": [
+            {
+              "name": "networkDeploy",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2018-02-01",
+              "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                  "uri": "[variables('provisionNetwork')]",
+                  "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                  "hubNetwork": {
+                    "value": "[parameters('hubNetwork')]"
+                  },
+                  "virtualNetworks": {
+                    "value": "[parameters('virtualNetworks')]"
+                  },
+                  "routeTables": {
+                    "value": "[parameters('routeTables')]"
+                  },
+                  "vnetPeers": {
+                    "value": "[parameters('vnetPeers')]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {}
+        },
+        "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "hubNetwork": {
+            "value": "[parameters('hubNetwork')]"
+          },
+          "virtualNetworks": {
+            "value": "[parameters('virtualNetworks')]"
+          },
+          "routeTables": {
+            "value": "[parameters('routeTables')]"
+          },
+          "vnetPeers": {
+            "value": "[parameters('vnetPeers')]"
           }
         }
       }

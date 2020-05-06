@@ -15,20 +15,23 @@
       },
       "defaultValue": ""
     },
-    "appName": {
-      "type": "string"
-    },
+    // "appName": {
+    //   "type": "string"
+    // },
     "automationAccountName": {
       "type": "String"
     },
-    "nodeConfigurationName": {
-      "type": "String"
-    },
+    // "nodeConfigurationName": {
+    //   "type": "String"
+    // },
     "adminUsername": {
       "type": "string"
     },
     "adminPassword": {
       "type": "securestring"
+    },
+    "vmssParams": {
+      "type": "array"
     }
   },
   "functions": [],
@@ -36,8 +39,8 @@
     "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
     "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
-    "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]",
-    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
+    "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]"
+    // "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
@@ -52,7 +55,7 @@
         },
         "parameters": {
           "appName": {
-            "value": "[parameters('appName')]"
+            "value": "[parameters('vmssParams').appName]"
           }
         }
       }
@@ -69,7 +72,7 @@
         },
         "parameters": {
           "appName": {
-            "value": "[parameters('appName')]"
+            "value": "[parameters('vmssParams').appName]"
           }
         }
       }
@@ -86,7 +89,7 @@
         },
         "parameters": {
           "appName": {
-            "value": "[parameters('appName')]"
+            "value": "[parameters('vmssParams').appName]"
           }
         }
       },
@@ -103,9 +106,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "appName": {
-            "value": "[parameters('appName')]"
-          },
+          // "appName": {
+          //   "value": "[parameters('appName')]"
+          // },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
@@ -115,12 +118,15 @@
           "automationAccountName": {
             "value": "[parameters('automationAccountName')]"
           },
-          "nodeConfigurationName": {
-            "value": "[parameters('nodeConfigurationName')]"
+          "vmssConfig": {
+            "value": "[parameters('vmssParams')]"
           },
-          "cloudInitData": {
-            "value": "[variables('cloudInitData')]"
-          },
+          // "nodeConfigurationName": {
+          //   "value": "[parameters('nodeConfigurationName')]"
+          // },
+          // "cloudInitData": {
+          //   "value": "[variables('cloudInitData')]"
+          // },
           "virtualNetworkName": {
             "value": "[reference('networking').outputs.virtualNetworkName.value]"
           },

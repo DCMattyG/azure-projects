@@ -2,18 +2,18 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "appName": {
-      "type": "string"
-    },
+    // "appName": {
+    //   "type": "string"
+    // },
     "adminUsername": {
       "type": "string"
     },
     "adminPassword": {
       "type": "string"
     },
-    "cloudInitData": {
-      "type": "string"
-    },
+    // "cloudInitData": {
+    //   "type": "string"
+    // },
     "virtualNetworkName": {
       "type": "string"
     },
@@ -29,26 +29,29 @@
     "automationAccountName": {
       "type": "String"
     },
-    "nodeConfigurationName": {
-      "type": "String"
+    // "nodeConfigurationName": {
+    //   "type": "String"
+    // }
+    "vmssParams": {
+      "type": "array"
     }
   },
   "variables": {
-    "instanceSize": "Standard_D2s_v3",
-    "instanceCount": 3,
-    "upgradePolicy": "Manual",
-    "singlePlacementGroup": true,
-    "osDiskType": "Premium_LRS",
-    "priority": "Regular",
-    "platformFaultDomainCount": 5,
-    "nicName": "[concat(parameters('appName'), '-nic01')]",
-    "namingInfix": "[toLower(substring(concat(parameters('appName'), uniqueString(resourceGroup().id)), 0, 9))]",
+    // "instanceSize": "Standard_D2s_v3",
+    // "instanceCount": 3,
+    // "upgradePolicy": "Manual",
+    // "singlePlacementGroup": true,
+    // "osDiskType": "Premium_LRS",
+    // "priority": "Regular",
+    // "platformFaultDomainCount": 5,
+    // "scaleInPolicy": {
+    //   "rules": [
+    //     "Default"
+    //   ]
+    // },
+    "nicName": "[concat(parameters('vmssParams').appName, '-nic01')]",
+    "namingInfix": "[toLower(substring(concat(parameters('vmssParams').appName, uniqueString(resourceGroup().id)), 0, 9))]",
     "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
-    "scaleInPolicy": {
-      "rules": [
-        "Default"
-      ]
-    },
     "networkInterfaceConfigurations": [
       {
         "name": "[variables('nicName')]",
@@ -75,38 +78,33 @@
   },
   "resources": [
     {
-      "name": "[parameters('appName')]",
+      "name": "[parameters('vmssParams').appName]",
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "apiVersion": "2019-07-01",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "[variables('instanceSize')]",
+        "name": "[parameters('vmssParams').vmssConfig.instanceSize]",
         "tier": "Standard",
-        "capacity": "[variables('instanceCount')]"
+        "capacity": "[parameters('vmssParams').vmssConfig.instanceCount]"
       },
       "properties": {
         "overprovision": false,
         "upgradePolicy": {
-          "mode": "[variables('upgradePolicy')]"
+          "mode": "[parameters('vmssParams').vmssConfig.upgradePolicy]"
         },
-        "singlePlacementGroup": "[variables('singlePlacementGroup')]",
+        "singlePlacementGroup": "[parameters('vmssParams').vmssConfig.singlePlacementGroup]",
         "virtualMachineProfile": {
           "storageProfile": {
             "osDisk": {
               "createOption": "fromImage",
               "caching": "ReadWrite",
               "managedDisk": {
-                "storageAccountType": "[variables('osDiskType')]"
+                "storageAccountType": "[parameters('vmssParams').vmssConfig.osDiskType]"
               }
             },
-            "imageReference": {
-              "publisher": "Canonical",
-              "offer": "UbuntuServer",
-              "sku": "16.04-LTS",
-              "version": "latest"
-            }
+            "imageReference": "[parameters('vmssParams').vmssConfig.imageReference]"
           },
-          "priority": "[variables('priority')]",
+          "priority": "[parameters('vmssParams').vmssConfig.priority]",
           "networkProfile": {
             "copy": [
               {
@@ -152,7 +150,7 @@
                     "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
                   },
                   "settings": {
-                    "NodeConfigurationName": "[parameters('nodeConfigurationName')]",
+                    "NodeConfigurationName": "[parameters('vmssParams').dscConfig]",
                     "ExtensionAction": "Register",
                     "ConfigurationMode": "ApplyAndAutoCorrect",
                     "RefreshFrequencyMins": 30,
@@ -166,11 +164,11 @@
             "computerNamePrefix": "[variables('namingInfix')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
-            "customData": "[base64(parameters('cloudInitData'))]"
+            "customData": "[base64(parameters('vmssParams').vmssConfig.cloudInitData)]"
           }
         },
-        "scaleInPolicy": "[variables('scaleInPolicy')]",
-        "platformFaultDomainCount": "[variables('platformFaultDomainCount')]"
+        "scaleInPolicy": "[parameters('vmssParams').vmssConfig.scaleInPolicy]",
+        "platformFaultDomainCount": "[parameters('vmssParams').vmssConfig.platformFaultDomainCount]"
       }
     }
   ],

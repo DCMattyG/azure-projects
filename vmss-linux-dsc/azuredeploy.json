@@ -118,7 +118,7 @@
           "automationAccountName": {
             "value": "[parameters('automationAccountName')]"
           },
-          "vmssConfig": {
+          "vmssParams": {
             "value": "[parameters('vmssParams')]"
           },
           // "nodeConfigurationName": {

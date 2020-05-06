@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "_artifactsLocation": {
-      "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/deplopy-network/"
+      "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/deploy-network/"
     },
     "_artifactsLocationSasToken": {
       "value": ""

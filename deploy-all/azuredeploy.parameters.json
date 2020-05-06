@@ -1,5 +1,36 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "location": {
+      "value": "westus"
+    },
+    "_artifactsLocation":{
+      "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/deploy-all/"
+    },
+    "_artifactsLocationSasToken": {
+      "value": ""
+    },
+    "mgmtRg": {
+      "value": "mgmt-rg"
+    },
+    "networkRg": {
+      "value": "net-rg"
+    },
+    "windowsRg": {
+      "value": "windows-rg"
+    },
+    "linuxRg": {
+      "value": "linux-rg"
+    },
+    "fileShareName": {
+      "value": "website"
+    },
+    "zipFileRepo": {
+      "value": "https://github.com/DCMattyG/azure-projects"
+    },
+    "zipFilePath": {
+      "value": "/azure-projects/storage-file-share/data/linuxWebsite.zip"
+    }
+  }
 }

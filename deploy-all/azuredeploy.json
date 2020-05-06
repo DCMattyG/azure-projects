@@ -5,83 +5,78 @@
     "location": {
       "type": "string",
       "metadata": {
-          "description": "Azure resource location"
-      },
-      "defaultValue": "westus2"
-    },
-    "mgmtRg": {
-      "type": "string",
-      "metadata": {
-          "description": "Resource group for management components"
-      },
-      "defaultValue": "mgmt-rg"
-    },
-    "networkRg": {
-      "type": "string",
-      "metadata": {
-          "description": "Resource group for networking components"
-      },
-      "defaultValue": "net-rg"
-    },
-    "linuxRg": {
-      "type": "string",
-      "metadata": {
-          "description": "Resource group for linux components"
-      },
-      "defaultValue": "linux-rg"
-    },
-    "winRg": {
-      "type": "string",
-      "metadata": {
-          "description": "Resource group for windows components"
-      },
-      "defaultValue": "windows-rg"
-    },
-    // "appName": {
-    //   "type": "string",
-    //   "metadata": {
-    //     "description": "Application name prepended with win-* and linux-* accordingly"
-    //   }
-    // },
-    // "adminUsername": {
-    //   "type": "string",
-    //   "metadata": {
-    //     "description": "Username for Windows and Linux VM's"
-    //   }
-    // },
-    // "adminPassword": {
-    //   "type": "securestring",
-    //   "metadata": {
-    //     "description": "Password for Windows and Linux VM's"
-    //   }
-    // },
-    "storageDetails": {
-      "type": "object",
-      "metadata": {
-        "description": "Variables for Storage and File Share creation"
-      },
-      "defaultValue": {
-        "storageAccountName": "[concat('storage', uniqueString(parameters('mgmtRg')))]",
-        "fileShareName": "website"
+        "description": "Azure resource location"
       }
     },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
         "description": "Path to the nested templates used in this deployment"
-      },
-      "defaultValue": "https://raw.githubusercontent.com/DCMattyG/azure-projects/"
+      }
     },
     "_artifactsLocationSasToken": {
       "type": "string",
       "metadata": {
         "description": "SAS token to access artifacts location (if required)"
+      }
+    },
+    "mgmtRg": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group for management components"
+      }
+    },
+    "networkRg": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group for networking components"
+      }
+    },
+    "linuxRg": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group for linux components"
+      }
+    },
+    "windowsRg": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group for windows components"
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the name of the Azure Storage account."
       },
-      "defaultValue": ""
+      "defaultValue": "[concat('storage', uniqueString(parameters('mgmtRg')))]"
+    },
+    "fileShareName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Specifies the name of the File Share. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only."
+      }
+    },
+    "zipFileRepo": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
+    },
+    "zipFilePath": {
+      "type": "string",
+      "metadata": {
+        "description": "description"
+      }
     }
   },
   "functions": [],
-  "variables": {},
+  "variables": {
+    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
+    "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
+  },
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
@@ -108,7 +103,7 @@
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2018-05-01",
       "location": "[parameters('location')]",
-      "name": "[parameters('winRg')]",
+      "name": "[parameters('windowsRg')]",
       "properties": {}
     },
     {
@@ -130,21 +125,59 @@
           },
           "resources": [
             {
-              "name": "storageFileShare",
+              "name": "storageDeploy",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2019-10-01",
+              "apiVersion": "2018-02-01",
               "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                  "uri": "[[variables('storageFileShare')]",
+                  "uri": "[variables('storageDeploy')]",
                   "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                   "storageAccountName": {
-                    "value": "[parameters('storageDetails').storageAccountName]"
+                    "value": "[parameters('storageAccountName')]"
                   },
                   "fileShareName": {
-                    "value": "[parameters('storageDetails').fileShareName]"
+                    "value": "[parameters('fileShareName')]"
+                  }
+                }
+              }
+            },
+            {
+              "name": "transferFiles",
+              "dependsOn": [
+                "storageDeploy"
+              ],
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2018-02-01",
+              "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                  "uri": "[variables('transferFiles')]",
+                  "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                  "fromVolume": {
+                    "value": {
+                      "name": "repovol",
+                      "gitRepo": {
+                        "repository": "[parameters('zipFileRepo')]"
+                      }
+                    }
+                  },
+                  "toVolume": {
+                    "value": {
+                      "name": "sharevol",
+                      "azureFile": {
+                        "shareName": "[parameters('fileShareName')]",
+                        "storageAccountName": "[parameters('storageAccountName')]",
+                        "storageAccountKey": "[reference('storageDeploy').outputs.storageAccountKey.value]"
+                      }
+                    }
+                  },
+                  "zipFilePath": {
+                    "value": "[parameters('zipFilePath')]"
                   }
                 }
               }

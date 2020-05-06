@@ -5,14 +5,8 @@
     "_artifactsLocation": {
       "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/"
     },
-    "appName": {
-      "value": "vmss-linux-test"
-    },
     "automationAccountName": {
       "value": "dscauto"
-    },
-    "nodeConfigurationName": {
-      "value": "linuxconfig.NginxWebServer"
     },
     "vmssParams": {
       "value": [

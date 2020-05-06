@@ -73,7 +73,10 @@
     }
   },
   "functions": [],
-  "variables": {},
+  "variables": {
+    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
+    "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
+  },
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
@@ -117,10 +120,7 @@
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "parameters": {},
-          "variables": {
-            "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
-            "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
-          },
+          "variables": {},
           "resources": [
             {
               "name": "storageDeploy",

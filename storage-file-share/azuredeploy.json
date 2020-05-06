@@ -84,7 +84,7 @@
         "parameters": {
           "fromVolume": {
             "value": {
-              "name": "repoVol",
+              "name": "repovol",
               "gitRepo": {
                 "repository": "[parameters('zipFileRepo')]"
               }
@@ -92,7 +92,7 @@
           },
           "toVolume": {
             "value": {
-              "name": "shareVol",
+              "name": "sharevol",
               "azureFile": {
                 "shareName": "[parameters('fileShareName')]",
                 "storageAccountName": "[parameters('storageAccountName')]",

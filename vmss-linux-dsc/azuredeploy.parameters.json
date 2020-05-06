@@ -9,33 +9,31 @@
       "value": "dscauto"
     },
     "vmssParams": {
-      "value": [
-        {
-          "appName": "vmss-linux-test",
-          "dscConfig": "linuxconfig.NginxWebServer",
-          "vmssConfig": {
-            "imageReference": {
-              "publisher": "Canonical",
-              "offer": "UbuntuServer",
-              "sku": "16.04-LTS",
-              "version": "latest"
-            },
-            "instanceSize": "Standard_D2s_v3",
-            "instanceCount": 3,
-            "upgradePolicy": "Manual",
-            "singlePlacementGroup": true,
-            "osDiskType": "Premium_LRS",
-            "priority": "Regular",
-            "platformFaultDomainCount": 5,
-            "scaleInPolicy": {
-              "rules": [
-                "Default"
-              ]
-            },
-            "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
-          }
+      "value": {
+        "appName": "vmss-linux-test",
+        "dscConfig": "linuxconfig.NginxWebServer",
+        "vmssConfig": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "16.04-LTS",
+            "version": "latest"
+          },
+          "instanceSize": "Standard_D2s_v3",
+          "instanceCount": 3,
+          "upgradePolicy": "Manual",
+          "singlePlacementGroup": true,
+          "osDiskType": "Premium_LRS",
+          "priority": "Regular",
+          "platformFaultDomainCount": 5,
+          "scaleInPolicy": {
+            "rules": [
+              "Default"
+            ]
+          },
+          "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
         }
-      ]
+      }
     }
   }
 }

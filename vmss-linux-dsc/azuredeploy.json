@@ -31,7 +31,7 @@
       "type": "securestring"
     },
     "vmssParams": {
-      "type": "array"
+      "type": "object"
     }
   },
   "functions": [],

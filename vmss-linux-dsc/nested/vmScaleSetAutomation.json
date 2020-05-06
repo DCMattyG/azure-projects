@@ -33,7 +33,7 @@
     //   "type": "String"
     // }
     "vmssParams": {
-      "type": "array"
+      "type": "object"
     }
   },
   "variables": {

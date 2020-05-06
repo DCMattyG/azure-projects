@@ -73,10 +73,7 @@
     }
   },
   "functions": [],
-  "variables": {
-    "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
-    "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
-  },
+  "variables": {},
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
@@ -121,7 +118,8 @@
           "contentVersion": "1.0.0.0",
           "parameters": {},
           "variables": {
-            "storageFileShare": "[uri(parameters('_artifactsLocation'), concat('master/storage-file-share/storagedeploy.json', parameters('_artifactsLocationSasToken')))]"
+            "storageDeploy": "[uri(parameters('_artifactsLocation'), concat('nested/storagedeploy.json', parameters('_artifactsLocationSasToken')))]",
+            "transferFiles": "[uri(parameters('_artifactsLocation'), concat('nested/transferfiles.json', parameters('_artifactsLocationSasToken')))]"
           },
           "resources": [
             {

@@ -341,7 +341,7 @@
             "value": "[parameters('storageAccountName')]"
           },
           "storageAccountKey": {
-            "value": "reference('storageDeployment').outputs.storageAccountKey.value"
+            "value": "[reference('storageDeployment').outputs.storageAccountKey.value]"
           },
           "fileShareName": {
             "value": "[parameters('fileShareName')]"

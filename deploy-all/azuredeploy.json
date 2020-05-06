@@ -121,22 +121,22 @@
           "contentVersion": "1.0.0.0",
           "parameters": {
             "_artifactsLocation": {
-              "value": "[parameters('_artifactsLocation')]"
+              "type": "string"
             },
             "_artifactsLocationSasToken": {
-              "value": "[parameters('_artifactsLocationSasToken')]"
+              "type": "string"
             },
             "storageAccountName": {
-              "value": "[parameters('storageAccountName')]"
+              "type": "string"
             },
             "fileShareName": {
-              "value": "[parameters('fileShareName')]"
+              "type": "string"
             },
             "zipFileRepo": {
-              "value": "[parameters('zipFileRepo')]"
+              "type": "string"
             },
             "zipFilePath": {
-              "value": "[parameters('zipFilePath')]"
+              "type": "string"
             }
           },
           "variables": {
@@ -204,6 +204,26 @@
             }
           ],
           "outputs": {}
+        },
+        "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[parameters('fileShareName')]"
+          },
+          "zipFileRepo": {
+            "value": "[parameters('zipFileRepo')]"
+          },
+          "zipFilePath": {
+            "value": "[parameters('zipFilePath')]"
+          }
         }
       }
     }

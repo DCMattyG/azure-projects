@@ -2,6 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string"
+    },
     // "appName": {
     //   "type": "string"
     // },
@@ -52,6 +58,7 @@
     "nicName": "[concat(parameters('vmssParams').appName, '-nic01')]",
     "namingInfix": "[toLower(substring(concat(parameters('vmssParams').appName, uniqueString(resourceGroup().id)), 0, 9))]",
     "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
+    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]",
     "networkInterfaceConfigurations": [
       {
         "name": "[variables('nicName')]",
@@ -164,7 +171,7 @@
             "computerNamePrefix": "[variables('namingInfix')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
-            "customData": "[base64(parameters('vmssParams').vmssConfig.cloudInitData)]"
+            "customData": "[base64(variables('cloudInitData'))]"
           }
         },
         "scaleInPolicy": "[parameters('vmssParams').vmssConfig.scaleInPolicy]",

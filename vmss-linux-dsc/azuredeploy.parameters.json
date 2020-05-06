@@ -30,8 +30,7 @@
             "rules": [
               "Default"
             ]
-          },
-          "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
+          }
         }
       }
     }

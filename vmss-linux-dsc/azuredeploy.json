@@ -106,6 +106,12 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
           // "appName": {
           //   "value": "[parameters('appName')]"
           // },

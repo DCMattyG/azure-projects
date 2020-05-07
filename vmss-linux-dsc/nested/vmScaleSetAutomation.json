@@ -15,7 +15,7 @@
       "type": "string"
     },
     "adminPassword": {
-      "type": "string"
+      "type": "securestring"
     },
     // "cloudInitData": {
     //   "type": "string"
@@ -165,57 +165,57 @@
               //     }
               //   }
               // }
-              {
-                "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
-                "properties": {
-                  "publisher": "Microsoft.Powershell",
-                  "type": "DSC",
-                  "typeHandlerVersion": "2.80",
-                  "autoUpgradeMinorVersion": true,
-                  "protectedSettings": {
-                    "Items": {
-                      "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
-                    }
-                  },
-                  "settings": {
-                    "Properties": [
-                      {
-                      "Name": "RegistrationKey",
-                      "Value": {
-                        "UserName": "PLACEHOLDER_DONOTUSE",
-                        "Password": "PrivateSettingsRef:registrationKeyPrivate"
-                      },
-                      "TypeName": "System.Management.Automation.PSCredential"
-                      },
-                      {
-                        "Name": "RegistrationUrl",
-                        "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
-                        "TypeName": "System.String"
-                      },
-                      {
-                        "Name": "NodeConfigurationName",
-                        "Value": "[parameters('vmssParams').dscConfig]",
-                        "TypeName": "System.String"
-                      },
-                      {
-                        "Name": "ConfigurationMode",
-                        "Value": "ApplyandAutoCorrect",
-                        "TypeName": "System.String"
-                      },
-                      {
-                        "Name": "RebootNodeIfNeeded",
-                        "Value": true,
-                        "TypeName": "System.Boolean"
-                      },
-                      {
-                        "Name": "ActionAfterReboot",
-                        "Value": "ContinueConfiguration",
-                        "TypeName": "System.String"
-                      }
-                    ]
-                  }
-                }
-              }
+              // {
+              //   "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
+              //   "properties": {
+              //     "publisher": "Microsoft.Powershell",
+              //     "type": "DSC",
+              //     "typeHandlerVersion": "2.80",
+              //     "autoUpgradeMinorVersion": true,
+              //     "protectedSettings": {
+              //       "Items": {
+              //         "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
+              //       }
+              //     },
+              //     "settings": {
+              //       "Properties": [
+              //         {
+              //         "Name": "RegistrationKey",
+              //         "Value": {
+              //           "UserName": "PLACEHOLDER_DONOTUSE",
+              //           "Password": "PrivateSettingsRef:registrationKeyPrivate"
+              //         },
+              //         "TypeName": "System.Management.Automation.PSCredential"
+              //         },
+              //         {
+              //           "Name": "RegistrationUrl",
+              //           "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
+              //           "TypeName": "System.String"
+              //         },
+              //         {
+              //           "Name": "NodeConfigurationName",
+              //           "Value": "[parameters('vmssParams').dscConfig]",
+              //           "TypeName": "System.String"
+              //         },
+              //         {
+              //           "Name": "ConfigurationMode",
+              //           "Value": "ApplyandAutoCorrect",
+              //           "TypeName": "System.String"
+              //         },
+              //         {
+              //           "Name": "RebootNodeIfNeeded",
+              //           "Value": true,
+              //           "TypeName": "System.Boolean"
+              //         },
+              //         {
+              //           "Name": "ActionAfterReboot",
+              //           "Value": "ContinueConfiguration",
+              //           "TypeName": "System.String"
+              //         }
+              //       ]
+              //     }
+              //   }
+              // }
             ]
           },
           "osProfile": {
@@ -229,64 +229,66 @@
         "platformFaultDomainCount": "[parameters('vmssParams').vmssConfig.platformFaultDomainCount]"
       }
     }
-    // {
-    //   "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
-    //   "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-    //   "name": "[concat(parameters('vmssParams').appName, '/EnableDSC')]",
-    //   "location": "[resourceGroup().location]",
-    //   "dependsOn": [
-    //     "[resourceId('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssParams').appName)]"
-    //   ],
-    //   "apiVersion": "2019-07-01",
-    //   "properties": {
-    //     "publisher": "Microsoft.Powershell",
-    //     "type": "DSC",
-    //     "typeHandlerVersion": "2.80",
-    //     "autoUpgradeMinorVersion": true,
-    //     "protectedSettings": {
-    //       "Items": {
-    //         "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
-    //       }
-    //     },
-    //     "settings": {
-    //       "Properties": [
-    //         {
-    //         "Name": "RegistrationKey",
-    //         "Value": {
-    //           "UserName": "PLACEHOLDER_DONOTUSE",
-    //           "Password": "PrivateSettingsRef:registrationKeyPrivate"
-    //         },
-    //         "TypeName": "System.Management.Automation.PSCredential"
-    //         },
-    //         {
-    //           "Name": "RegistrationUrl",
-    //           "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
-    //           "TypeName": "System.String"
-    //         },
-    //         {
-    //           "Name": "NodeConfigurationName",
-    //           "Value": "[parameters('vmssParams').dscConfig]",
-    //           "TypeName": "System.String"
-    //         },
-    //         {
-    //           "Name": "ConfigurationMode",
-    //           "Value": "ApplyandAutoCorrect",
-    //           "TypeName": "System.String"
-    //         },
-    //         {
-    //           "Name": "RebootNodeIfNeeded",
-    //           "Value": true,
-    //           "TypeName": "System.Boolean"
-    //         },
-    //         {
-    //           "Name": "ActionAfterReboot",
-    //           "Value": "ContinueConfiguration",
-    //           "TypeName": "System.String"
-    //         }
-    //       ]
-    //     }
-    //   }
-    // },
+    {
+      "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+      "name": "[concat(parameters('vmssParams').appName, '/EnableDSC')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssParams').appName)]"
+      ],
+      "apiVersion": "2019-07-01",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.80",
+        "autoUpgradeMinorVersion": true,
+        "protectedSettings": {
+          "Items": {
+            "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
+          }
+        },
+        "settings": {
+          "ModulesUrl": "[concat(parameters('_artifactsLocation'), 'config/dscRegistration.zip')]",
+          "ConfigurationFunction": "dscRegistration.ps1\\RegistrationMetaConfig",
+          "Properties": [
+            {
+            "Name": "RegistrationKey",
+            "Value": {
+              "UserName": "PLACEHOLDER_DONOTUSE",
+              "Password": "PrivateSettingsRef:registrationKeyPrivate"
+            },
+            "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "RegistrationUrl",
+              "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "NodeConfigurationName",
+              "Value": "[parameters('vmssParams').dscConfig]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationMode",
+              "Value": "ApplyandAutoCorrect",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "RebootNodeIfNeeded",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "ActionAfterReboot",
+              "Value": "ContinueConfiguration",
+              "TypeName": "System.String"
+            }
+          ]
+        }
+      }
+    },
     // {
     //   "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer')]",
     //   "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",

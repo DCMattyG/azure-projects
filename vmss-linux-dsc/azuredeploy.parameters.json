@@ -10,13 +10,13 @@
     },
     "vmssParams": {
       "value": {
-        "appName": "vmss-linux-test",
-        "dscConfig": "linuxconfig.NginxWebServer",
+        "appName": "vmss-windows-test",
+        "dscConfig": "windowsconfig.IISWebServer",
         "vmssConfig": {
           "imageReference": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "16.04-LTS",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2016-Datacenter",
             "version": "latest"
           },
           "instanceSize": "Standard_D2s_v3",

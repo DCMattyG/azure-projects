@@ -4,6 +4,9 @@
   "parameters": {
     "appName": {
       "type": "string"
+    },
+    "osType": {
+      "type": "String"
     }
   },
   "variables": {
@@ -38,7 +41,7 @@
             }
           },
           {
-            "name": "SSH",
+            "name": "[if(equals(parameters('osType'), 'UbuntuServer'), 'SSH', 'RDP')]",
             "properties": {
               "priority": 320,
               "protocol": "TCP",
@@ -47,7 +50,7 @@
               "sourceAddressPrefix": "*",
               "sourcePortRange": "*",
               "destinationAddressPrefix": "*",
-              "destinationPortRange": "22"
+              "destinationPortRange": "[if(equals(parameters('osType'), 'UbuntuServer'), '22', '3389')]"
             }
           }
         ]

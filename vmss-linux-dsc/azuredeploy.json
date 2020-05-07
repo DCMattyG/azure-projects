@@ -73,6 +73,9 @@
         "parameters": {
           "appName": {
             "value": "[parameters('vmssParams').appName]"
+          },
+          "osType": {
+            "value": "[parameters('vmssParams').vmssConfig.imageReference.offer]"
           }
         }
       }
@@ -90,6 +93,9 @@
         "parameters": {
           "appName": {
             "value": "[parameters('vmssParams').appName]"
+          },
+          "osType": {
+            "value": "[parameters('vmssParams').vmssConfig.imageReference.offer]"
           }
         }
       },

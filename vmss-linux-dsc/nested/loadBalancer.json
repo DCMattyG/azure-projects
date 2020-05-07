@@ -4,6 +4,9 @@
   "parameters": {
     "appName": {
       "type": "string"
+    },
+    "osType": {
+      "type": "string"
     }
   },
   "variables": {
@@ -47,7 +50,7 @@
               "protocol": "tcp",
               "frontendPortRangeStart": 50000,
               "frontendPortRangeEnd": 50119,
-              "backendPort": 22
+              "backendPort": "[if(equals(parameters('osType'), 'UbuntuServer'), 22, 3389)]"
             }
           }
         ],

@@ -250,7 +250,7 @@
         },
         "settings": {
           "ModulesUrl": "[concat(parameters('_artifactsLocation'), 'config/dscRegistration.zip')]",
-          "ConfigurationFunction": "dscRegistration.ps1\\RegistrationMetaConfig",
+          "ConfigurationFunction": "dscRegistration.ps1\\RegistrationConfig",
           "Properties": [
             {
             "Name": "RegistrationKey",

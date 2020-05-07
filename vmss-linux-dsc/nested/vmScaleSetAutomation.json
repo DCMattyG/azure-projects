@@ -145,26 +145,26 @@
           },
           "extensionProfile": {
             "extensions": [
-              {
-                "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
-                "properties": {
-                  "publisher": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'Microsoft.OSTCExtensions', 'Microsoft.Powershell')]",
-                  "type": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'DSCForLinux', 'DSC')]",
-                  "typeHandlerVersion": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), '2.70', '2.80')]",
-                  "autoUpgradeMinorVersion": true,
-                  "protectedSettings": {
-                    "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",
-                    "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
-                  },
-                  "settings": {
-                    "NodeConfigurationName": "[parameters('vmssParams').dscConfig]",
-                    "ExtensionAction": "Register",
-                    "ConfigurationMode": "ApplyAndAutoCorrect",
-                    "RefreshFrequencyMins": 30,
-                    "ConfigurationModeFrequencyMins": 15
-                  }
-                }
-              }
+              // {
+              //   "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
+              //   "properties": {
+              //     "publisher": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'Microsoft.OSTCExtensions', 'Microsoft.Powershell')]",
+              //     "type": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'DSCForLinux', 'DSC')]",
+              //     "typeHandlerVersion": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), '2.70', '2.80')]",
+              //     "autoUpgradeMinorVersion": true,
+              //     "protectedSettings": {
+              //       "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",
+              //       "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
+              //     },
+              //     "settings": {
+              //       "NodeConfigurationName": "[parameters('vmssParams').dscConfig]",
+              //       "ExtensionAction": "Register",
+              //       "ConfigurationMode": "ApplyAndAutoCorrect",
+              //       "RefreshFrequencyMins": 30,
+              //       "ConfigurationModeFrequencyMins": 15
+              //     }
+              //   }
+              // }
             ]
           },
           "osProfile": {
@@ -176,6 +176,63 @@
         },
         "scaleInPolicy": "[parameters('vmssParams').vmssConfig.scaleInPolicy]",
         "platformFaultDomainCount": "[parameters('vmssParams').vmssConfig.platformFaultDomainCount]"
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+      "name": "[concat(parameters('vmssParams').appName, '/', concat(variables('namingInfix'),'-EnableDSC'))]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssParams').appName)]"
+      ],
+      "apiVersion": "2019-07-01",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.80",
+        "autoUpgradeMinorVersion": true,
+        "protectedSettings": {
+          "Items": {
+            "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
+          }
+        },
+        "settings": {
+          "Properties": [
+            {
+            "Name": "RegistrationKey",
+            "Value": {
+              "UserName": "PLACEHOLDER_DONOTUSE",
+              "Password": "PrivateSettingsRef:registrationKeyPrivate"
+            },
+            "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "RegistrationUrl",
+              "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "NodeConfigurationName",
+              "Value": "[parameters('vmssParams').dscConfig]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationMode",
+              "Value": "ApplyandAutoCorrect",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "RebootNodeIfNeeded",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "ActionAfterReboot",
+              "Value": "ContinueConfiguration",
+              "TypeName": "System.String"
+            }
+          ]
+        }
       }
     }
   ],

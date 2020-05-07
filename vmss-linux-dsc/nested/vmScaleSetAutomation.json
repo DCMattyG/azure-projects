@@ -180,7 +180,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-      "name": "[concat(parameters('vmssParams').appName, '/', 'EnableDSC'))]",
+      "name": "[concat(parameters('vmssParams').appName, '/', 'EnableDSC')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssParams').appName)]"

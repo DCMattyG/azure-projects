@@ -228,7 +228,7 @@
         "scaleInPolicy": "[parameters('vmssParams').vmssConfig.scaleInPolicy]",
         "platformFaultDomainCount": "[parameters('vmssParams').vmssConfig.platformFaultDomainCount]"
       }
-    }
+    },
     {
       "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
       "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
@@ -288,7 +288,7 @@
           ]
         }
       }
-    },
+    }
     // {
     //   "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer')]",
     //   "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",

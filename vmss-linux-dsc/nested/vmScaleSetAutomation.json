@@ -183,7 +183,7 @@
       "name": "[concat(parameters('vmssParams').appName, '/EnableDSC')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssParams').appName)]"
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssParams').appName)]"
       ],
       "apiVersion": "2019-07-01",
       "properties": {

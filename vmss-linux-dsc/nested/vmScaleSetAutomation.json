@@ -146,33 +146,11 @@
           "extensionProfile": {
             "extensions": [
               {
-                "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer')]",
                 "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
                 "properties": {
-                  "publisher": "Microsoft.OSTCExtensions",
-                  "type": "DSCForLinux",
-                  "typeHandlerVersion": "2.70",
-                  "autoUpgradeMinorVersion": true,
-                  "protectedSettings": {
-                    "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",
-                    "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
-                  },
-                  "settings": {
-                    "NodeConfigurationName": "[parameters('vmssParams').dscConfig]",
-                    "ExtensionAction": "Register",
-                    "ConfigurationMode": "ApplyAndAutoCorrect",
-                    "RefreshFrequencyMins": 30,
-                    "ConfigurationModeFrequencyMins": 15
-                  }
-                }
-              },
-              {
-                "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
-                "name": "[concat(variables('namingInfix'),'-EnableDSC')]",
-                "properties": {
-                  "publisher": "Microsoft.Powershell",
-                  "type": "DSC",
-                  "typeHandlerVersion": "2.80",
+                  "publisher": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'Microsoft.OSTCExtensions', 'Microsoft.Powershell')]",
+                  "type": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'DSCForLinux', 'DSC')]",
+                  "typeHandlerVersion": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), '2.70', '2.80')]",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
                     "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",

@@ -21,7 +21,7 @@
           },
           "instanceSize": "Standard_D2s_v3",
           "instanceCount": 3,
-          "upgradePolicy": "Manual",
+          "upgradePolicy": "Automatic",
           "singlePlacementGroup": true,
           "osDiskType": "Premium_LRS",
           "priority": "Regular",

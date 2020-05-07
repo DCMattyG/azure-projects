@@ -230,7 +230,7 @@
       }
     },
     {
-      // "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
+      "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
       "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
       "name": "[concat(parameters('vmssParams').appName, '/EnableDSC')]",
       "location": "[resourceGroup().location]",
@@ -249,8 +249,8 @@
           }
         },
         "settings": {
-          "ModulesUrl": "[concat(parameters('_artifactsLocation'), 'config/dscRegistration.zip')]",
-          "ConfigurationFunction": "dscRegistration.ps1\\RegistrationConfig",
+          // "ModulesUrl": "[concat(parameters('_artifactsLocation'), 'config/dscRegistration.zip')]",
+          // "ConfigurationFunction": "dscRegistration.ps1\\RegistrationConfig",
           "Properties": [
             {
             "Name": "RegistrationKey",

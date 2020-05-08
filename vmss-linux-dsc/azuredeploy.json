@@ -15,15 +15,9 @@
       },
       "defaultValue": ""
     },
-    // "appName": {
-    //   "type": "string"
-    // },
     "automationAccountName": {
       "type": "String"
     },
-    // "nodeConfigurationName": {
-    //   "type": "String"
-    // },
     "adminUsername": {
       "type": "string"
     },
@@ -40,7 +34,6 @@
     "networking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
     "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]"
-    // "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
@@ -118,9 +111,6 @@
           "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
           },
-          // "appName": {
-          //   "value": "[parameters('appName')]"
-          // },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
@@ -133,12 +123,6 @@
           "vmssParams": {
             "value": "[parameters('vmssParams')]"
           },
-          // "nodeConfigurationName": {
-          //   "value": "[parameters('nodeConfigurationName')]"
-          // },
-          // "cloudInitData": {
-          //   "value": "[variables('cloudInitData')]"
-          // },
           "virtualNetworkName": {
             "value": "[reference('networking').outputs.virtualNetworkName.value]"
           },

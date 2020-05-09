@@ -560,6 +560,12 @@
           "automationAccountName": {
             "value": "[reference('automationDeployment').outputs.automationAccountName.value]"
           },
+          "mgmtRg": {
+            "value": "[parameters('mgmtRg')]"
+          },
+          "networkRg": {
+            "value": "[parameters('networkRg')]"
+          },
           "vmssParams": {
             "value": "[parameters('vmssParams')]"
           }

@@ -548,7 +548,7 @@
           "automationAccountName": {
             "value": "[reference('automationDeployment').outputs.automationAccountName.value]"
           },
-          "vssParams": {
+          "vmssParams": {
             "value": "[parameters('vmssParams')]"
           }
         }

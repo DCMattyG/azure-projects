@@ -31,7 +31,7 @@
   "functions": [],
   "variables": {
     "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
-    "netSecurityGroup": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/networkSecurityGroup.json', parameters('_artifactsLocationSasToken')))]",
+    "networkSecurityGroup": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/networkSecurityGroup.json', parameters('_artifactsLocationSasToken')))]",
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
     "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]"
   },
@@ -60,7 +60,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('netSecurityGroup')]",
+          "uri": "[variables('networkSecurityGroup')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

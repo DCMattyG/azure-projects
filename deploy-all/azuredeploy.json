@@ -458,7 +458,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
       "name": "vmScaleSetDeployment",
-      "resourceGroup": "[parameters('vmssParams').resourceGroup]",
+      "resourceGroup": "[parameters('vmssParams').appRg]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', parameters('vmssParams').resourceGroup)]",
         "storageDeployment",

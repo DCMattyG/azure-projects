@@ -137,8 +137,9 @@
     "vmssParams": {
       "value": {
         "appName": "vmss-windows-test",
-        "resourceGroup": "windows-rg",
+        "appRg": "windows-rg",
         "virtualNetwork": "win-vm-net",
+        "vnetRg": "network-rg",
         "dscConfig": "windowsconfig.IISWebServer",
         "vmssConfig": {
           "imageReference": {

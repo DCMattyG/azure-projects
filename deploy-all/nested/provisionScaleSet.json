@@ -33,7 +33,7 @@
     "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
     "networkSecurityGroup": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/networkSecurityGroup.json', parameters('_artifactsLocationSasToken')))]",
     "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
-    "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]"
+    "vmScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/vmScaleSet.json', parameters('_artifactsLocationSasToken')))]"
   },
   "resources": [
     {
@@ -54,7 +54,7 @@
       }
     },
     {
-      "name": "networking",
+      "name": "networkSecurityGroup",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-02-01",
       "properties": {
@@ -95,13 +95,13 @@
       "dependsOn": ["publicIpAddress"]
     },
     {
-      "name": "vmScaleSetAutomation",
+      "name": "vmScaleSet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-02-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('vmScaleSetAutomation')]",
+          "uri": "[variables('vmScaleSet')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

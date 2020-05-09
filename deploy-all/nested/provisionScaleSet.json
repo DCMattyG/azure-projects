@@ -1,0 +1,148 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
+      },
+      "defaultValue": ""
+    },
+    "automationAccountName": {
+      "type": "String"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "vmssParams": {
+      "type": "object"
+    }
+  },
+  "functions": [],
+  "variables": {
+    "publicIpAddress": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
+    "netSecurityGroup": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/networkSecurityGroup.json', parameters('_artifactsLocationSasToken')))]",
+    "loadBalancer": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/loadBalancer.json', parameters('_artifactsLocationSasToken')))]",
+    "vmScaleSetAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/vmScaleSet/vmScaleSetAutomation.json', parameters('_artifactsLocationSasToken')))]"
+  },
+  "resources": [
+    {
+      "name": "publicIpAddress",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('publicIpAddress')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appName": {
+            "value": "[parameters('vmssParams').appName]"
+          }
+        }
+      }
+    },
+    {
+      "name": "networking",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('netSecurityGroup')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appName": {
+            "value": "[parameters('vmssParams').appName]"
+          },
+          "osType": {
+            "value": "[parameters('vmssParams').vmssConfig.imageReference.offer]"
+          }
+        }
+      }
+    },
+    {
+      "name": "loadBalancer",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('loadBalancer')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appName": {
+            "value": "[parameters('vmssParams').appName]"
+          },
+          "osType": {
+            "value": "[parameters('vmssParams').vmssConfig.imageReference.offer]"
+          }
+        }
+      },
+      "dependsOn": ["publicIpAddress"]
+    },
+    {
+      "name": "vmScaleSetAutomation",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vmScaleSetAutomation')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('automationAccountName')]"
+          },
+          "vmssParams": {
+            "value": "[parameters('vmssParams')]"
+          },
+          "virtualNetworkName": {
+            "value": "[parameters('vmssParams').virtualNetwork]"
+          },
+          "nsgName": {
+            "value": "[reference('networking').outputs.nsgName.value]"
+          },
+          "loadBalancerName": {
+            "value": "[reference('loadBalancer').outputs.loadBalancerName.value]"
+          },
+          "backendPoolName": {
+            "value": "[reference('loadBalancer').outputs.backendPoolName.value]"
+          }
+        }
+      },
+      "dependsOn": [
+        "publicIpAddress",
+        "networking",
+        "loadBalancer"
+      ]
+    }
+  ],
+  "outputs": {}
+}

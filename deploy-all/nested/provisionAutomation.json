@@ -138,5 +138,10 @@
       }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "automationAccountName": {
+      "type": "string",
+       "value": "[parameters('automationAccountName')]"
+    }
+  }
 }

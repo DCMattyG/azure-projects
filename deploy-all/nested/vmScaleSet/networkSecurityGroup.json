@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appName": {
+      "type": "string"
+    },
+    "osType": {
+      "type": "String"
+    }
+  },
+  "variables": {
+    "nsgName": "[concat(parameters('appName'), '-nsg-vnet-nic01')]",
+    "networkSecurityGroups": [
+      {
+        "name": "[variables('nsgName')]",
+        "rules": [
+          {
+            "name": "HTTP",
+            "properties": {
+              "priority": 300,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "80"
+            }
+          },
+          {
+            "name": "[if(equals(parameters('osType'), 'UbuntuServer'), 'SSH', 'RDP')]",
+            "properties": {
+              "priority": 320,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "[if(equals(parameters('osType'), 'UbuntuServer'), '22', '3389')]"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[variables('networkSecurityGroups')[copyIndex()].name]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2019-02-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": "[variables('networkSecurityGroups')[copyIndex()].rules]"
+      },
+      "copy": {
+        "name": "networkSecurityGroups",
+        "count": "[length(variables('networkSecurityGroups'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "nsgName": {
+      "type": "string",
+      "value": "[variables('nsgName')]"
+    }
+  }
+}

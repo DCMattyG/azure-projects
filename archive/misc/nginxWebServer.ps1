@@ -77,58 +77,43 @@ fi
       DependsOn = "[nxPackage]autofs"
     }
 
+    nxFile nginxconfig_folder {
+      DestinationPath = "/etc/nginx/sites-available"
+      Type = "directory"
+      Recurse = $true
+      Force = $true
+   }
+
+    nxFile nginxconfig {
+       SourcePath = "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-linux-dsc/config/default"
+       DestinationPath = "/etc/nginx/sites-available/default"
+       Mode = "644"
+       Type = "file"
+       Force = $true
+       DependsOn = "[nxFile]nginxconfig_folder"
+    }
+
     nxPackage php {
       Name = "php7.0-fpm"
       Ensure = "Present"
       PackageManager = "apt"
-      DependsOn = "[nxScript]mountFileShare"
+      DependsOn = "[nxFile]nginxconfig", "[nxScript]mountFileShare"#, "[nxFile]nginxphp"
     }
 
     nxPackage nginx {
       Name = "nginx"
       Ensure = "Present"
       PackageManager = "apt"
-      # Arguments = "-o Dpkg::Options::='--force-confold'"
+      Arguments = "-o Dpkg::Options::='--force-confold'"
       DependsOn = "[nxPackage]php"
     }
 
-    nxScript configureNginx {
-      GetScript = @"
-#!/bin/bash
-cat /etc/nginx/sites-available/default
-"@
-      SetScript = @"
-#!/bin/bash
-update='
-        location ~ \.php$ {
-                include snippets/fastcgi-php.conf;      
-                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
-        }'
-
-perl -i.bak -spe 'BEGIN{undef $/;} s/(\t#location ~ \\\.php\$ \{[^\}]*(?=\})})/`$replace/smg' -- -replace="`$update" /etc/nginx/sites-available/default
-
-old_sites='index index.html index.htm index.nginx-debian.html;'
-new_sites='index index.php index.html index.htm index.nginx-debian.html;'
-
-perl -i.bak -spe 'BEGIN{undef $/;} s/`$old/`$new/smg' -- -old="`$old_sites" -new="`$new_sites" /etc/nginx/sites-available/default
-
-old_root='root /var/www/html;'
-new_root='root /fileshares/$fileShareName;'
-
-perl -i.bak -spe 'BEGIN{undef $/;} s/`$old/`$new/smg' -- -old="`$old_root" -new="`$new_root" /etc/nginx/sites-available/default
-
-sudo service nginx restart
-"@
-      TestScript = @"
-#!/bin/bash
-if ! grep -q "index index.php index.html index.htm index.nginx-debian.html;" /etc/nginx/sites-available/default
-then
-  exit 1
-else
-  exit 0
-fi
-"@
-      DependsOn = "[nxScript]mountFileShare", "[nxPackage]php", "[nxPackage]nginx"
+    nxService nginxsvcstart {
+      Name = "nginx"
+      State = "running"
+      Enabled = $true
+      Controller = "systemd"
+      DependsOn = "[nxPackage]nginx"
     }
 
     # nxFirewall FWConfig {

@@ -133,6 +133,34 @@
           "remoteGateways": true
         }
       ]
+    },
+    "vmssParams": {
+      "value": {
+        "appName": "vmss-windows-test",
+        "resourceGroup": "windows-rg",
+        "virtualNetwork": "win-vm-net",
+        "dscConfig": "windowsconfig.IISWebServer",
+        "vmssConfig": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2016-Datacenter",
+            "version": "latest"
+          },
+          "instanceSize": "Standard_D2s_v3",
+          "instanceCount": 3,
+          "upgradePolicy": "Automatic",
+          "singlePlacementGroup": true,
+          "osDiskType": "Premium_LRS",
+          "priority": "Regular",
+          "platformFaultDomainCount": 5,
+          "scaleInPolicy": {
+            "rules": [
+              "Default"
+            ]
+          }
+        }
+      }
     }
   }
 }

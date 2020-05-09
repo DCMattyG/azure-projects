@@ -94,6 +94,15 @@
       "metadata": {
         "description": "description"
       }
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "vmssParams": {
+      "type": "object"
     }
   },
   "functions": [],
@@ -328,7 +337,12 @@
               }
             }
           ],
-          "outputs": {}
+          "outputs": {
+            "automationAccountName": {
+              "type": "string",
+              "value": "[reference('automationDeploy').outputs.automationAccountName.value]"
+            }
+          }
         },
         "parameters": {
           "_artifactsLocation": {
@@ -436,6 +450,106 @@
           },
           "vnetPeers": {
             "value": "[parameters('vnetPeers')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "vmScaleSetDeployment",
+      "resourceGroup": "[parameters('vmssParams').resourceGroup]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('vmssParams').resourceGroup)]",
+        "storageDeployment",
+        "automationDeployment",
+        "networkDeployment"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "_artifactsLocation": {
+              "type": "string"
+            },
+            "_artifactsLocationSasToken": {
+              "type": "string"
+            },
+            "adminUsername": {
+              "type": "string"
+            },
+            "adminPassword": {
+              "type": "securestring"
+            },
+            "automationAccountName": {
+              "type": "string"
+            },
+            "vmssParams": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "provisionScaleSet": "[uri(parameters('_artifactsLocation'), concat('nested/provisionScaleSet.json', parameters('_artifactsLocationSasToken')))]"
+          },
+          "resources": [
+            {
+              "name": "vmScaleSetDeploy",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2018-02-01",
+              "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                  "uri": "[variables('provisionScaleSet')]",
+                  "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                  "_artifactsLocation": {
+                    "value": "[parameters('_artifactsLocation')]"
+                  },
+                  "_artifactsLocationSasToken": {
+                    "value": "[parameters('_artifactsLocationSasToken')]"
+                  },
+                  "adminUsername": {
+                    "value": "[parameters('adminUsername')]"
+                  },
+                  "adminPassword": {
+                    "value": "[parameters('adminPassword')]"
+                  },
+                  "automationAccountName": {
+                    "value": "[parameters('automationAccountName')]"
+                  },
+                  "vmssParams": {
+                    "value": "[parameters('vmssParams')]"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {}
+        },
+        "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "automationAccountName": {
+            "value": "[reference('automationDeployment').outputs.automationAccountName.value]"
+          },
+          "vssParams": {
+            "value": "[parameters('vmssParams')]"
           }
         }
       }

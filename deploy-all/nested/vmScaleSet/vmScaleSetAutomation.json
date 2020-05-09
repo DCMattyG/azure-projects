@@ -1,0 +1,226 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "nsgName": {
+      "type": "string"
+    },
+    "loadBalancerName": {
+      "type": "string"
+    },
+    "backendPoolName": {
+      "type": "String"
+    },
+    "automationAccountName": {
+      "type": "String"
+    },
+    "vmssParams": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "nicName": "[concat(parameters('vmssParams').appName, '-nic01')]",
+    "namingInfix": "[toLower(substring(concat(parameters('vmssParams').appName, uniqueString(resourceGroup().id)), 0, 9))]",
+    "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
+    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]",
+    "networkInterfaceConfigurations": [
+      {
+        "name": "[variables('nicName')]",
+        "primary": true,
+        "subnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), 'default')]",
+        "applicationGatewayBackendAddressPools": [],
+        "loadBalancerBackendAddressPools": [
+          {
+            "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancerName'), parameters('backendPoolName'))]"
+          }
+        ],
+        "applicationSecurityGroups": [],
+        "loadBalancerInboundNatPools": [
+          {
+            "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatPools', parameters('loadBalancerName'), 'natpool')]"
+          }
+        ],
+        "enableAcceleratedNetworking": false,
+        "nsgName": "[parameters('nsgName')]",
+        "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('nsgName'))]",
+        "pipName": ""
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[parameters('vmssParams').appName]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2019-07-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('vmssParams').vmssConfig.instanceSize]",
+        "tier": "Standard",
+        "capacity": "[parameters('vmssParams').vmssConfig.instanceCount]"
+      },
+      "properties": {
+        "overprovision": false,
+        "upgradePolicy": {
+          "mode": "[parameters('vmssParams').vmssConfig.upgradePolicy]"
+        },
+        "singlePlacementGroup": "[parameters('vmssParams').vmssConfig.singlePlacementGroup]",
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "fromImage",
+              "caching": "ReadWrite",
+              "managedDisk": {
+                "storageAccountType": "[parameters('vmssParams').vmssConfig.osDiskType]"
+              }
+            },
+            "imageReference": "[parameters('vmssParams').vmssConfig.imageReference]"
+          },
+          "priority": "[parameters('vmssParams').vmssConfig.priority]",
+          "networkProfile": {
+            "copy": [
+              {
+                "name": "networkInterfaceConfigurations",
+                "count": "[length(variables('networkInterfaceConfigurations'))]",
+                "input": {
+                  "name": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].name]",
+                  "properties": {
+                    "primary": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].primary]",
+                    "enableAcceleratedNetworking": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].enableAcceleratedNetworking]",
+                    "ipConfigurations": [
+                      {
+                        "name": "[concat(variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].name, '-defaultIpConfiguration')]",
+                        "properties": {
+                          "subnet": {
+                              "id": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].subnetId]"
+                          },
+                          "primary": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].primary]",
+                          "applicationGatewayBackendAddressPools": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].applicationGatewayBackendAddressPools]",
+                          "loadBalancerBackendAddressPools": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].loadBalancerBackendAddressPools]",
+                          "loadBalancerInboundNatPools": "[variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].loadBalancerInboundNatPools]",
+                          "publicIPAddressConfiguration": "[if( equals( variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, ''), json('null'), union(json(concat('{\"name\": \"', variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].pipName, '\"}')) ,json('{\"properties\": { \"idleTimeoutInMinutes\": 15}}')))]"
+                        }
+                      }
+                    ],
+                    "networkSecurityGroup": "[if( equals( variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].nsgId, ''), json('null'),json(concat('{\"id\": \"', variables('networkInterfaceConfigurations')[copyIndex('networkInterfaceConfigurations')].nsgId, '\"}')))]"
+                  }
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": []
+          },
+          "osProfile": {
+            "computerNamePrefix": "[variables('namingInfix')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "customData": "[base64(variables('cloudInitData'))]"
+          }
+        },
+        "scaleInPolicy": "[parameters('vmssParams').vmssConfig.scaleInPolicy]",
+        "platformFaultDomainCount": "[parameters('vmssParams').vmssConfig.platformFaultDomainCount]"
+      }
+    },
+    {
+      "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'WindowsServer')]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+      "name": "[concat(parameters('vmssParams').appName, '/EnableDSC')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssParams').appName)]"
+      ],
+      "apiVersion": "2019-07-01",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.80",
+        "autoUpgradeMinorVersion": true,
+        "protectedSettings": {
+          "Items": {
+            "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
+          }
+        },
+        "settings": {
+          "Properties": [
+            {
+            "Name": "RegistrationKey",
+            "Value": {
+              "UserName": "PLACEHOLDER_DONOTUSE",
+              "Password": "PrivateSettingsRef:registrationKeyPrivate"
+            },
+            "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "RegistrationUrl",
+              "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "NodeConfigurationName",
+              "Value": "[parameters('vmssParams').dscConfig]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationMode",
+              "Value": "ApplyandAutoCorrect",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "RebootNodeIfNeeded",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "ActionAfterReboot",
+              "Value": "ContinueConfiguration",
+              "TypeName": "System.String"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer')]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+      "name": "[concat(parameters('vmssParams').appName, '/EnableDSC')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssParams').appName)]"
+      ],
+      "apiVersion": "2019-07-01",
+      "properties": {
+        "publisher": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'Microsoft.OSTCExtensions', 'Microsoft.Powershell')]",
+        "type": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), 'DSCForLinux', 'DSC')]",
+        "typeHandlerVersion": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), '2.70', '2.80')]",
+        "autoUpgradeMinorVersion": true,
+        "protectedSettings": {
+          "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",
+          "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
+        },
+        "settings": {
+          "NodeConfigurationName": "[parameters('vmssParams').dscConfig]",
+          "ExtensionAction": "Register",
+          "ConfigurationMode": "ApplyAndAutoCorrect",
+          "RefreshFrequencyMins": 30,
+          "ConfigurationModeFrequencyMins": 15
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

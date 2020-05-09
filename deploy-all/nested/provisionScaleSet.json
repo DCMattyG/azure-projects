@@ -123,9 +123,6 @@
           "vmssParams": {
             "value": "[parameters('vmssParams')]"
           },
-          "virtualNetworkName": {
-            "value": "[parameters('vmssParams').virtualNetwork]"
-          },
           "nsgName": {
             "value": "[reference('networking').outputs.nsgName.value]"
           },

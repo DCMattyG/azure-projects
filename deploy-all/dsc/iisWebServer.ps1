@@ -24,7 +24,7 @@ Configuration windowsconfig
     $siteID = 1,
 
     [String]
-    $handlerName = "PHP"
+    $handlerName = "PHP",
 
     [parameter(Mandatory)]
     [String]

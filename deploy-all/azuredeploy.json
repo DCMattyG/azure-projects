@@ -460,7 +460,7 @@
       "name": "vmScaleSetDeployment",
       "resourceGroup": "[parameters('vmssParams').appRg]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('vmssParams').resourceGroup)]",
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('vmssParams').appRg)]",
         "storageDeployment",
         "automationDeployment",
         "networkDeployment"

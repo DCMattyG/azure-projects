@@ -101,8 +101,8 @@
     "adminPassword": {
       "type": "securestring"
     },
-    "vmssParams": {
-      "type": "object"
+    "vmssList": {
+      "type": "array"
     }
   },
   "functions": [],
@@ -455,12 +455,16 @@
       }
     },
     {
+      "copy": {
+        "name": "vmScaleSets",
+        "count": "[length(parameters('vmssList'))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
       "name": "vmScaleSetDeployment",
-      "resourceGroup": "[parameters('vmssParams').appRg]",
+      "resourceGroup": "[parameters('vmssList')[copyIndex('vmScaleSets')].appRg]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('vmssParams').appRg)]",
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('vmssList')[copyIndex('vmScaleSets')].appRg)]",
         "storageDeployment",
         "automationDeployment",
         "networkDeployment"
@@ -495,8 +499,8 @@
             "networkRg": {
               "type": "string"
             },
-            "vmssParams": {
-              "type": "object"
+            "vmssList": {
+              "type": "array"
             }
           },
           "variables": {
@@ -536,7 +540,7 @@
                     "value": "[parameters('networkRg')]"
                   },
                   "vmssParams": {
-                    "value": "[parameters('vmssParams')]"
+                    "value": "[parameters('vmssList')[copyIndex('vmScaleSets')]]"
                   }
                 }
               }
@@ -566,8 +570,8 @@
           "networkRg": {
             "value": "[parameters('networkRg')]"
           },
-          "vmssParams": {
-            "value": "[parameters('vmssParams')]"
+          "vmssList": {
+            "value": "[parameters('vmssList')]"
           }
         }
       }

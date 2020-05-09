@@ -540,7 +540,7 @@
                     "value": "[parameters('networkRg')]"
                   },
                   "vmssParams": {
-                    "value": "[parameters('vmssList')[copyIndex('vmScaleSets')]]"
+                    "value": "[parameters('vmssParams')]"
                   }
                 }
               }
@@ -570,8 +570,8 @@
           "networkRg": {
             "value": "[parameters('networkRg')]"
           },
-          "vmssList": {
-            "value": "[parameters('vmssList')]"
+          "vmssParams": {
+            "value": "[parameters('vmssList')[copyIndex('vmScaleSets')]]"
           }
         }
       }

@@ -21,16 +21,16 @@
       "type": "string"
     },
     "backendPoolName": {
-      "type": "String"
+      "type": "string"
     },
     "automationAccountName": {
-      "type": "String"
+      "type": "string"
     },
     "mgmtRg": {
-      "type": "String"
+      "type": "string"
     },
     "networkRg": {
-      "type": "String"
+      "type": "string"
     },
     "vmssParams": {
       "type": "object"

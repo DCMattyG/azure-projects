@@ -6,7 +6,7 @@
       "type": "string"
     },
     "osType": {
-      "type": "String"
+      "type": "string"
     }
   },
   "variables": {

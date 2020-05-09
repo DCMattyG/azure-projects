@@ -16,7 +16,7 @@
       "defaultValue": ""
     },
     "automationAccountName": {
-      "type": "String"
+      "type": "string"
     },
     "adminUsername": {
       "type": "string"
@@ -25,10 +25,10 @@
       "type": "securestring"
     },
     "mgmtRg": {
-      "type": "String"
+      "type": "string"
     },
     "networkRg": {
-      "type": "String"
+      "type": "string"
     },
     "vmssParams": {
       "type": "object"

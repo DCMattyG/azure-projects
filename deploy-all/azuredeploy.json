@@ -490,10 +490,10 @@
               "type": "string"
             },
             "mgmtRg": {
-              "type": "String"
+              "type": "string"
             },
             "networkRg": {
-              "type": "String"
+              "type": "string"
             },
             "vmssParams": {
               "type": "object"

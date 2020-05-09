@@ -39,7 +39,7 @@
   "variables": {
     "nicName": "[concat(parameters('vmssParams').appName, '-nic01')]",
     "namingInfix": "[toLower(substring(concat(parameters('vmssParams').appName, uniqueString(resourceGroup().id)), 0, 9))]",
-    "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
+    "automationAccountId": "[resourceId(parameters('mgmtRg'), 'Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
     "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]",
     "networkInterfaceConfigurations": [
       {
@@ -155,7 +155,7 @@
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
           "Items": {
-            "registrationKeyPrivate": "[listKeys(resourceId(parameters('mgmtRg'), 'Microsoft.Automation/automationAccounts', variables('automationAccountId')), '2018-01-15').Keys[0].value]"
+            "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
           }
         },
         "settings": {
@@ -170,7 +170,7 @@
             },
             {
               "Name": "RegistrationUrl",
-              "Value": "[reference(resourceId(parameters('mgmtRg'), 'Microsoft.Automation/automationAccounts', variables('automationAccountId')), '2018-01-15').registrationUrl]",
+              "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
               "TypeName": "System.String"
             },
             {
@@ -212,8 +212,8 @@
         "typeHandlerVersion": "[if(equals(parameters('vmssParams').vmssConfig.imageReference.offer, 'UbuntuServer'), '2.70', '2.80')]",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "RegistrationKey": "[listKeys(resourceId(parameters('mgmtRg'), 'Microsoft.Automation/automationAccounts', variables('automationAccountId')), '2018-01-15').Keys[0].value]",
-          "RegistrationUrl": "[reference(resourceId(parameters('mgmtRg'), 'Microsoft.Automation/automationAccounts', variables('automationAccountId')), '2018-01-15').registrationUrl]"
+          "RegistrationKey": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]",
+          "RegistrationUrl": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]"
         },
         "settings": {
           "NodeConfigurationName": "[parameters('vmssParams').dscConfig]",

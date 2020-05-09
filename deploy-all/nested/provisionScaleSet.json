@@ -124,7 +124,7 @@
             "value": "[parameters('vmssParams')]"
           },
           "nsgName": {
-            "value": "[reference('networking').outputs.nsgName.value]"
+            "value": "[reference('networkSecurityGroup').outputs.nsgName.value]"
           },
           "loadBalancerName": {
             "value": "[reference('loadBalancer').outputs.loadBalancerName.value]"
@@ -136,7 +136,7 @@
       },
       "dependsOn": [
         "publicIpAddress",
-        "networking",
+        "networkSecurityGroup",
         "loadBalancer"
       ]
     }

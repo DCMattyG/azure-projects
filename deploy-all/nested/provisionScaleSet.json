@@ -24,6 +24,12 @@
     "adminPassword": {
       "type": "securestring"
     },
+    "mgmtRg": {
+      "type": "String"
+    },
+    "networkRg": {
+      "type": "String"
+    },
     "vmssParams": {
       "type": "object"
     }
@@ -119,6 +125,12 @@
           },
           "automationAccountName": {
             "value": "[parameters('automationAccountName')]"
+          },
+          "mgmtRg": {
+            "value": "[parameters('mgmtRg')]"
+          },
+          "networkRg": {
+            "value": "[parameters('networkRg')]"
           },
           "vmssParams": {
             "value": "[parameters('vmssParams')]"

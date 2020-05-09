@@ -39,7 +39,9 @@
         "compileName": "[guid('AzureAutomationCompile', 'windowsconfig')]",
         "description": "IIS web server install and configuration",
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/iisWebServer.ps1', parameters('_artifactsLocationSasToken'))]",
-        "parameters": {}
+        "parameters": {
+          "websiteZip": "[concat(parameters('_artifactsLocation'), 'data/windowsWebsite.zip', parameters('_artifactsLocationSasToken'))]"
+        }
       }
     ],
     "dscResources": [

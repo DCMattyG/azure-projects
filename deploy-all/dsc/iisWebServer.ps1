@@ -18,9 +18,6 @@ Configuration windowsconfig
     $vcRedistName = 'Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27033',
 
     [String]
-    $websiteZip = 'https://raw.githubusercontent.com/DCMattyG/azure-projects/master/vmss-windows-dsc/data/website.zip',
-
-    [String]
     $siteName = 'Default Web Site',
 
     [Int32]
@@ -28,6 +25,10 @@ Configuration windowsconfig
 
     [String]
     $handlerName = "PHP"
+
+    [parameter(Mandatory)]
+    [String]
+    $websiteZip
   )
 
   Import-DscResource -Module xPSDesiredStateConfiguration

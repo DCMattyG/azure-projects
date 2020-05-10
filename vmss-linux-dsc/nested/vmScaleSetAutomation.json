@@ -37,7 +37,7 @@
     "nicName": "[concat(parameters('vmssParams').appName, '-nic01')]",
     "namingInfix": "[toLower(substring(concat(parameters('vmssParams').appName, uniqueString(resourceGroup().id)), 0, 9))]",
     "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
-    "cloudInitData": "[if(equals(parameters('vmssParams').vmssConfig.cloudInitFile, ''), json(' '), concat('#include\n', parameters('_artifactsLocation'), parameters('vmssParams').vmssConfig.cloudInitFile, parameters('_artifactsLocationSasToken')))]",
+    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), parameters('vmssParams').vmssConfig.cloudInitFile, parameters('_artifactsLocationSasToken'))]",
     "networkInterfaceConfigurations": [
       {
         "name": "[variables('nicName')]",

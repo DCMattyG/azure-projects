@@ -499,8 +499,8 @@
             "networkRg": {
               "type": "string"
             },
-            "vmssList": {
-              "type": "array"
+            "vmssParams": {
+              "type": "object"
             }
           },
           "variables": {

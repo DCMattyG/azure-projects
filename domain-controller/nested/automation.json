@@ -54,7 +54,7 @@
     ]
   },
   "resources": [
-        {
+    {
       "name": "[variables('automationAccountName')]",
       "type": "Microsoft.Automation/automationAccounts",
       "apiversion": "2018-01-15",

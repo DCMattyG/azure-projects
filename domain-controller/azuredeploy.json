@@ -45,7 +45,8 @@
     "provisionAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/automation.json', parameters('_artifactsLocationSasToken')))]",
     "provisionPublicIp": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
     "provisionNetworking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
-    "provisionVirtualMachine": "[uri(parameters('_artifactsLocation'), concat('nested/virtualMachine.json', parameters('_artifactsLocationSasToken')))]"
+    "provisionVirtualMachine": "[uri(parameters('_artifactsLocation'), concat('nested/virtualMachine.json', parameters('_artifactsLocationSasToken')))]",
+    "updateNetworkDns": "[uri(parameters('_artifactsLocation'), concat('nested/updateDns.json', parameters('_artifactsLocationSasToken')))]"
   },
   "resources": [
     {
@@ -146,6 +147,29 @@
       "dependsOn": [
         "provisionAutomation",
         "provisionNetworking"
+      ]
+    },
+    {
+      "name": "updateNetworkDns",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('updateNetworkDns')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetwork": {
+            "value": "[reference('provisionNetworking').outputs.virtualNetwork.value]"
+          },
+          "dnsServer": {
+            "value": "[reference('provisionNetworking').outputs.dnsServer.value]"
+          }
+        }
+      },
+      "dependsOn": [
+        "provisionVirtualMachine"
       ]
     }
   ],

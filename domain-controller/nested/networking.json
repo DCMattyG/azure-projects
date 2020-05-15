@@ -102,6 +102,10 @@
     }
   ],
   "outputs": {
+    "virtualNetwork": {
+      "type": "object",
+      "value": "[variables('virtualNetwork')]"
+    },
     "virtualNetworkName": {
       "type": "string",
       "value": "[variables('virtualNetwork').name]"
@@ -113,6 +117,10 @@
     "vNicName": {
       "type": "string",
       "value": "[variables('vNicConfig').name]"
+    },
+    "dnsServer": {
+      "type": "string",
+      "value": "[variables('vNicConfig').privateIpAddress]"
     }
   }
 }

@@ -1,4 +1,4 @@
-Configuration domain
+Configuration domaincontroller
 {
    param (
     [Int]$RetryCount = 20,
@@ -16,7 +16,7 @@ Configuration domain
   $DomainName = Get-AutomationVariable -Name 'domainName'
   [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
 
-  Node CreatADDC
+  Node CreateADDC
   {
     NetAdapterBinding DisableIPv6
     {

@@ -1,5 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "_artifactsLocation": {
+      "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/domain-controller/"
+    },
+    "vmName": {
+      "value": "dc-core-01"
+    },
+    "domainName": {
+      "value": "superfakeco.com"
+    }
+  }
 }

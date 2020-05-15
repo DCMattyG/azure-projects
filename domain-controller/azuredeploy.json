@@ -1,11 +1,236 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the nested templates used in this deployment"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "SAS token to access artifacts location, if required"
+      },
+      "defaultValue": ""
+    },
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Domain Controller VM Name"
+      }
+    },
+    "userName": {
+      "type": "string",
+      "metadata": {
+        "description": "Domain Admin Username"
+      }
+    },
+    "userPass": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Domain Admin Password"
+      }
+    },
+    "domainName": {
+      "type": "string",
+      "metadata": {
+        "description": "Domain Name (FQDN)"
+      }
+    }
+  },
   "functions": [],
-  "variables": {},
-  "resources": [
+  "variables": {
+    "provisionAutomation": "[uri(parameters('_artifactsLocation'), concat('nested/automation.json', parameters('_artifactsLocationSasToken')))]",
+    "provisionPublicIp": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
+    "provisionNetworking": "[uri(parameters('_artifactsLocation'), concat('nested/networking.json', parameters('_artifactsLocationSasToken')))]",
+    "automationAccountName": "[concat('DSC-',take(guid(resourceGroup().id),5))]",
+    "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', variables('automationAccountName'))]",
+    "dscConfig": "domain.CreateADDC",
+    "virtualMachineName": "dc-core-01",
+    "virtualMachineSize": "Standard_D2s_v3",
+    "osDiskType": "Premium_LRS",
+    "publicIpAddressName": "[concat(variables('virtualMachineName'), '-ip')]",
     
+    "vnetName": "[concat(variables('virtualMachineName'), '-vnet')]"
+
+  },
+  "resources": [
+    {
+      "name": "provisionAutomation",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('provisionAutomation')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          },
+          "userName": {
+            "value": "[parameters('userName')]"
+          },
+          "userPass": {
+            "value": "[parameters('userPass')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "provisionPublicIp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('provisionPublicIp')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmName": {
+            "value": "[parameters('vmName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "provisionNetworking",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('provisionNetworking')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmName": {
+            "value": "[parameters('vmName')]"
+          }
+        }
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+    {
+      "name": "[variables('virtualMachineName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('virtualMachineSize')]"
+        },
+        "storageProfile": {
+          "osDisk": {
+            "createOption": "fromImage",
+            "managedDisk": {
+              "storageAccountType": "[variables('osDiskType')]"
+            }
+          },
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-datacenter-core-g2",
+            "version": "latest"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[variables('virtualMachineName')]",
+          "adminUsername": "[parameters('userName')]",
+          "adminPassword": "[parameters('userPass')]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true,
+            "provisionVmAgent": true
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('virtualMachineName'), '/EnableDSC')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+      ],
+      "apiVersion": "2019-07-01",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.80",
+        "autoUpgradeMinorVersion": true,
+        "protectedSettings": {
+          "Items": {
+            "registrationKeyPrivate": "[listKeys(variables('automationAccountId'), '2018-01-15').Keys[0].value]"
+          }
+        },
+        "settings": {
+          "Properties": [
+            {
+            "Name": "RegistrationKey",
+            "Value": {
+              "UserName": "PLACEHOLDER_DONOTUSE",
+              "Password": "PrivateSettingsRef:registrationKeyPrivate"
+            },
+            "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "RegistrationUrl",
+              "Value": "[reference(variables('automationAccountId'), '2018-01-15').registrationUrl]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "NodeConfigurationName",
+              "Value": "[variables('dscConfig')]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "ConfigurationMode",
+              "Value": "ApplyandAutoCorrect",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "RebootNodeIfNeeded",
+              "Value": true,
+              "TypeName": "System.Boolean"
+            },
+            {
+              "Name": "ActionAfterReboot",
+              "Value": "ContinueConfiguration",
+              "TypeName": "System.String"
+            }
+          ]
+        }
+      }
+    }
   ],
   "outputs": {}
 }

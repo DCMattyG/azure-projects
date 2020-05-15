@@ -45,8 +45,8 @@
     ],
     "dscConfigurations": [
       {
-        "name": "domaincontroller",
-        "compileName": "[guid('AzureAutomationCompile', 'domaincontroller')]",
+        "name": "domain",
+        "compileName": "[guid('AzureAutomationCompile', 'domain')]",
         "description": "Create active directory domain",
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/domainController.ps1', parameters('_artifactsLocationSasToken'))]",
         "parameters": {}

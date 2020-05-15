@@ -141,12 +141,12 @@
           "automationAccountName": {
             "value": "[reference('provisionAutomation').outputs.automationAccountName.value]"
           }
-        },
-        "dependsOn": [
-          "provisionAutomation",
-          "provisionNetworking"
-        ]
-      }
+        }
+      },
+      "dependsOn": [
+        "provisionAutomation",
+        "provisionNetworking"
+      ]
     }
   ],
   "outputs": {}

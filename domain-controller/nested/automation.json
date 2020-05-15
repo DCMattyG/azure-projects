@@ -3,35 +3,19 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Path to the nested templates used in this deployment"
-      }
+      "type": "string"
     },
     "_artifactsLocationSasToken": {
-      "type": "string",
-      "metadata": {
-        "description": "SAS token to access artifacts location, if required"
-      },
-      "defaultValue": ""
+      "type": "string"
     },
     "userName": {
-      "type": "string",
-      "metadata": {
-        "description": "Domain Admin Username"
-      }
+      "type": "string"
     },
     "userPass": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Domain Admin Password"
-      }
+      "type": "securestring"
     },
     "domainName": {
-      "type": "string",
-      "metadata": {
-        "description": "Domain Name (FQDN)"
-      }
+      "type": "string"
     }
   },
   "functions": [],
@@ -39,24 +23,24 @@
     "automationAccountName": "[concat('DSC-',take(guid(resourceGroup().id),5))]",
     "dscResources": [
       {
-        "name": "nx",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nx.1.0.0.nupkg"
+        "name": "xActiveDirectory",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xactivedirectory.3.0.0.nupkg"
       },
       {
-        "name": "nxNetworking",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/nxnetworking.1.1.0.nupkg"
+        "name": "xStorage",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xstorage.3.4.0.nupkg"
       },
       {
-        "name": "xWebAdministration",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xwebadministration.3.1.1.nupkg"
+        "name": "xSystemSecurity",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xsystemsecurity.1.5.1.nupkg"
       },
       {
-        "name": "xPSDesiredStateConfiguration",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xpsdesiredstateconfiguration.9.1.0.nupkg"
+        "name": "xDnsServer",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xdnsserver.2.0.0-preview0001.nupkg"
       },
       {
-        "name": "xPhp",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/xphp.1.2.0.nupkg"
+        "name": "NetworkingDsc",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/networkingdsc.8.0.0-preview0004.nupkg"
       }
     ],
     "dscConfigurations": [
@@ -162,5 +146,10 @@
       }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "automationAccountName": {
+      "type": "string",
+      "value": "[variables('automationAccountName')]"
+    }
+  }
 }

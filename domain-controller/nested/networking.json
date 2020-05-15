@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "vmName": {
-      "type": "string",
-      "metadata": {
-        "description": "Domain Controller VM Name"
-      }
+      "type": "string"
+    },
+    "publicIpAddressName": {
+      "type": "string"
     }
   },
   "functions": [],
@@ -74,8 +74,8 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroup').name)]",
-        "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+        "[resourceId('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetwork').name)]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -83,11 +83,11 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), 'default')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetwork').name, 'default')]"
               },
               "privateIPAllocationMethod": "Dynamic",
               "publicIpAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
               }
             }
           }
@@ -96,7 +96,7 @@
           "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup').name)]"
         }
       }
-    },
+    }
   ],
   "outputs": {
     "virtualNetworkName": {
@@ -106,6 +106,10 @@
     "nsgName": {
       "type": "string",
       "value": "[variables('networkSecurityGroup').name]"
+    },
+    "vNicName": {
+      "type": "string",
+      "value": "[variables('vNicName')]"
     }
   }
 }

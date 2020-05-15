@@ -3,10 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "vmName": {
-      "type": "string",
-      "metadata": {
-        "description": "Domain Controller VM Name"
-      }
+      "type": "string"
     }
   },
   "functions": [],
@@ -28,7 +25,7 @@
     }
   ],
   "outputs": {
-    "publicIpAddress": {
+    "publicIpAddressName": {
       "type": "string",
       "value": "[variables('publicIpAddressName')]"
     }

@@ -12,6 +12,7 @@ Configuration domaincontroller
   Import-DscResource -ModuleName xDnsServer
   Import-DSCResource -ModuleName NetworkingDsc
   Import-DscResource -ModuleName PSDesiredStateConfiguration
+
   $Admincreds = Get-AutomationPSCredential -Name 'domainCreds'
   $DomainName = Get-AutomationVariable -Name 'domainName'
   [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)

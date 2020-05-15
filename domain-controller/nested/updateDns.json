@@ -10,7 +10,9 @@
     }
   },
   "functions": [],
-  "variables": {},
+  "variables": {
+    "dnsServers": "[array(parameters('dnsServer'))]"
+  },
   "resources": [
     {
       "name": "[parameters('virtualNetwork').name]",
@@ -22,7 +24,7 @@
             "addressPrefixes": "[parameters('virtualNetwork').addressPrefixes]"
         },
         "dhcpOptions": {
-          "dnsServers": "[parameters('dnsServer')]"
+          "dnsServers": "[variables('dnsServers')]"
         },
         "subnets": "[parameters('virtualNetwork').subnets]"
       }

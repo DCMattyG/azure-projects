@@ -11,7 +11,10 @@
   },
   "functions": [],
   "variables": {
-    "vNicName": "[concat(parameters('vmName'), '-nic01')]",
+    "vNicConfig": {
+      "name": "[concat(parameters('vmName'), '-nic01')]",
+      "privateIpAddress": "10.0.0.100"
+    },
     "virtualNetwork": {
       "name": "[concat(parameters('vmName'), '-net')]",
       "addressPrefixes": [
@@ -68,7 +71,7 @@
       }
     },
     {
-      "name": "[variables('vNicName')]",
+      "name": "[variables('vNicConfig').name]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-07-01",
       "location": "[resourceGroup().location]",
@@ -84,7 +87,8 @@
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetwork').name, 'default')]"
               },
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[variables('vNicConfig').privateIpAddress]",
               "publicIpAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
               }
@@ -108,7 +112,7 @@
     },
     "vNicName": {
       "type": "string",
-      "value": "[variables('vNicName')]"
+      "value": "[variables('vNicConfig').name]"
     }
   }
 }

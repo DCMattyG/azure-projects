@@ -96,8 +96,7 @@
     {
       "copy": {
         "name": "moduleLoop",
-        "count": "[length(variables('dscResources'))]",
-        "mode": "serial"
+        "count": "[length(variables('dscResources'))]"
       },
       "name": "[concat(variables('automationAccountName'), '/', variables('dscResources')[copyIndex('moduleLoop')].name)]",
       "type": "Microsoft.Automation/automationAccounts/modules",

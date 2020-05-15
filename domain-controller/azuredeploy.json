@@ -111,9 +111,9 @@
           "publicIpAddressName": {
             "value": "[reference('provisionPublicIp').outputs.publicIpAddressName.value]"
           }
-        },
-        "dependsOn": ["provisionPublicIp"]
-      }
+        }
+      },
+      "dependsOn": ["provisionPublicIp"]
     },
     {
       "name": "provisionVirtualMachine",

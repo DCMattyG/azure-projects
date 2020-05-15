@@ -1,4 +1,4 @@
-Configuration domaincontroller
+Configuration domain
 {
    param (
     [Int]$RetryCount = 20,

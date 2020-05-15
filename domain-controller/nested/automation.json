@@ -71,6 +71,9 @@
       "name": "[concat(variables('automationAccountName'), '/', 'domainCreds')]",
       "type": "Microsoft.Automation/automationAccounts/credentials",
       "apiVersion": "2015-10-31",
+      "dependsOn": [
+        "[variables('automationAccountName')]"
+      ],
       "properties": {
         "userName": "[parameters('userName')]",
         "password": "[parameters('userPass')]",
@@ -81,6 +84,9 @@
       "name": "[concat(variables('automationAccountName'), '/', 'domainName')]",
       "type": "Microsoft.Automation/automationAccounts/variables",
       "apiVersion": "2015-10-31",
+      "dependsOn": [
+        "[variables('automationAccountName')]"
+      ],
       "properties": {
         "value": "[concat('\"', parameters('domainName'), '\"')]",
         "description": "Domain Name (FQDN)",

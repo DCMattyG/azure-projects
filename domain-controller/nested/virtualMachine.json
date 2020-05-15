@@ -40,9 +40,6 @@
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-07-01",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces/', parameters('vNicName'))]"
-      ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[variables('vmSpecs').virtualMachineSize]"

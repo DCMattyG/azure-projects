@@ -74,7 +74,6 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroup').name)]",
-        "[resourceId('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]",
         "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetwork').name)]"
       ],
       "properties": {

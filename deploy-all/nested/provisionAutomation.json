@@ -124,7 +124,8 @@
     {
       "copy": {
         "name": "compileLoop",
-        "count": "[length(variables('dscConfigurations'))]"
+        "count": "[length(variables('dscConfigurations'))]",
+        "mode": "serial"
       },
       "name": "[concat(parameters('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
       "type": "Microsoft.Automation/automationAccounts/compilationjobs",

@@ -92,7 +92,7 @@
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetwork').name, 'default')]"
               },
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[variables('vNicConfig').privateIpAddress]",
+              "privateIPAddress": "[variables('vNicConfig').privateIpAddress]"
             }
           }
         ],

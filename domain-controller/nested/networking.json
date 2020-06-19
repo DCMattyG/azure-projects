@@ -103,7 +103,7 @@
     },
     {
       "condition": "[parameters('createPublicIP')]",
-      "name": "[variables('vNicConfig').name]",
+      "name": "[concat(variables('vNicConfig').name, '-public')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-07-01",
       "location": "[resourceGroup().location]",

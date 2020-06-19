@@ -57,7 +57,7 @@
       "metadata": {
         "description": "Details of Existing Virtual Network/Subnet (if 'existingNetwork' is set to 'true')"
       },
-      "defaultValue": ""
+      "defaultValue": {}
     },
     "createPublicIP": {
       "type": "bool",

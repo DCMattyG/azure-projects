@@ -100,7 +100,7 @@
             "value": "[parameters('userPass')]"
           },
           "safeModePass": {
-            "value": "[parameters('userPass')]"
+            "value": "[parameters('safeModePass')]"
           },
           "domainName": {
             "value": "[parameters('domainName')]"

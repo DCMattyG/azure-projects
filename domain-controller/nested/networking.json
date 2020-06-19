@@ -148,7 +148,7 @@
     },
     "vNicName": {
       "type": "string",
-      "value": "[variables('vNicConfig').name]"
+      "value": "[if(parameters('createPublicIP'), concat(variables('vNicConfig').name, '-public'), variables('vNicConfig').name)]"
     },
     "dnsServer": {
       "type": "string",

@@ -63,6 +63,7 @@
   },
   "resources": [
     {
+      "condition": "[not(parameters('existingNetwork'))]",
       "name": "[variables('virtualNetwork').name]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2019-09-01",

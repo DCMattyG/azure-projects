@@ -13,9 +13,12 @@ Configuration domain
   Import-DSCResource -ModuleName NetworkingDsc
   Import-DscResource -ModuleName PSDesiredStateConfiguration
 
-  $Admincreds = Get-AutomationPSCredential -Name 'domainCreds'
+  $AdminCreds = Get-AutomationPSCredential -Name 'domainCreds'
   $DomainName = Get-AutomationVariable -Name 'domainName'
-  [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
+  [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($AdminCreds.UserName)", $AdminCreds.Password)
+
+  $SafeModeCreds = Get-AutomationVariable -Name 'safeModePassword'
+  [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
   Node CreateADDC
   {
@@ -87,7 +90,7 @@ Configuration domain
     xADDomain FirstDS {
       DomainName = $DomainName
       DomainAdministratorCredential = $DomainCreds
-      SafemodeAdministratorPassword = $DomainCreds
+      SafemodeAdministratorPassword = $DomainSafeModePwd
       DatabasePath = "C:\NTDS" #"F:\NTDS"
       LogPath = "C:\NTDS" #"F:\NTDS"
       SysvolPath = "C:\SYSVOL" #"F:\SYSVOL"

@@ -33,11 +33,38 @@
         "description": "Domain Admin Password"
       }
     },
+    "safeModePass": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Domain Safe Mode Password"
+      }
+    },
     "domainName": {
       "type": "string",
       "metadata": {
         "description": "Domain Name (FQDN)"
       }
+    },
+    "existingNet": {
+      "type": "bool",
+      "metadata": {
+        "description": "New or Existing Virtual Network ('false' will deploy a new vNet)"
+      },
+      "defaultValue": false
+    },
+    "existingNetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Existing Virtual Network (if 'existingNet' is set to 'true')"
+      },
+      "defaultValue": ""
+    },
+    "createPublicIP": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optionally Deploy a Public IP to the Domain Controller ('true' will create a public IP)"
+      },
+      "defaultValue": true
     }
   },
   "functions": [],
@@ -72,6 +99,9 @@
           "userPass": {
             "value": "[parameters('userPass')]"
           },
+          "safeModePass": {
+            "value": "[parameters('userPass')]"
+          },
           "domainName": {
             "value": "[parameters('domainName')]"
           }
@@ -79,6 +109,7 @@
       }
     },
     {
+      "condition": "[parameters('createPublicIP')]",
       "name": "provisionPublicIp",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-02-01",
@@ -109,8 +140,11 @@
           "vmName": {
             "value": "[parameters('vmName')]"
           },
+          "createPublicIP": {
+            "value": "[parameters('createPublicIP')]"
+          },
           "publicIpAddressName": {
-            "value": "[reference('provisionPublicIp').outputs.publicIpAddressName.value]"
+            "value": "[if(parameters('createPublicIP'), reference('provisionPublicIp').outputs.publicIpAddressName.value, '')]"
           }
         }
       },

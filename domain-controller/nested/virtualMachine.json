@@ -16,6 +16,9 @@
     },
     "automationAccountName": {
       "type": "string"
+    },
+    "createPublicIP": {
+      "type": "bool"
     }
   },
   "functions": [],

@@ -14,6 +14,9 @@
     "userPass": {
       "type": "securestring"
     },
+    "safeModePass": {
+      "type": "securestring"
+    },
     "domainName": {
       "type": "string"
     }
@@ -77,7 +80,20 @@
       "properties": {
         "userName": "[parameters('userName')]",
         "password": "[parameters('userPass')]",
-        "description": "Domain Admin credentials"
+        "description": "Domain Admin Credentials"
+      }
+    },
+    {
+      "name": "[concat(variables('automationAccountName'), '/', 'safeModePassword')]",
+      "type": "Microsoft.Automation/automationAccounts/credentials",
+      "apiVersion": "2015-10-31",
+      "dependsOn": [
+        "[variables('automationAccountName')]"
+      ],
+      "properties": {
+        "userName": "NULL",
+        "password": "[parameters('safeModePass')]",
+        "description": "Domain Safe Mode Password"
       }
     },
     {

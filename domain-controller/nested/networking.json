@@ -92,7 +92,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroup').name)]",
-        "[if(not(parameters('existingNetwork')), resourceId('Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '')]"
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetwork').name)]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -120,7 +120,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroup').name)]",
-        "[if(not(parameters('existingNetwork')), resourceId('Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '')]"
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetwork').name)]"
       ],
       "properties": {
         "ipConfigurations": [

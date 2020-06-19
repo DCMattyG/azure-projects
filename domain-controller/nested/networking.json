@@ -153,6 +153,10 @@
       "type": "string",
       "value": "[variables('vnetDetails').vnetName]"
     },
+    "vnetAddressSpace": {
+      "type": "array",
+      "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName)).addressSpace]"
+    },
     "nsgName": {
       "type": "string",
       "value": "[variables('networkSecurityGroup').name]"

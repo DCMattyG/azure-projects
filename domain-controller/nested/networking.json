@@ -10,6 +10,12 @@
     },
     "publicIpAddressName": {
       "type": "string"
+    },
+    "existingNetwork": {
+      "type": "bool"
+    },
+    "vnetParams": {
+      "type": "object"
     }
   },
   "functions": [],
@@ -31,6 +37,10 @@
           }
         }
       ]
+    },
+    "vnetDetails": {
+      "vnetName": "[if(parameters('existingNetwork'), parameters('vnetParams').name, variables('virtualNetwork').name)]",
+      "subnetName": "[if(parameters('existingNetwork'), parameters('vnetParams').subnet, 'default')]"
     },
     "networkSecurityGroup": {
       "name": "[concat(parameters('vmName'), '-nsg-vnet-nic01')]",
@@ -81,7 +91,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroup').name)]",
-        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetwork').name)]"
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName)]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -89,7 +99,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetwork').name, 'default')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetDetails').vnetName, variables('vnetDetails').subnetName)]"
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('vNicConfig').privateIpAddress]"
@@ -109,7 +119,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroup').name)]",
-        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetwork').name)]"
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName)]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -117,7 +127,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetwork').name, 'default')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetDetails').vnetName, variables('vnetDetails').subnetName)]"
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('vNicConfig').privateIpAddress]",
@@ -140,7 +150,7 @@
     },
     "virtualNetworkName": {
       "type": "string",
-      "value": "[variables('virtualNetwork').name]"
+      "value": "[variables('vnetDetails').vnetName]"
     },
     "nsgName": {
       "type": "string",

@@ -45,17 +45,17 @@
         "description": "Domain Name (FQDN)"
       }
     },
-    "existingNet": {
+    "existingNetwork": {
       "type": "bool",
       "metadata": {
         "description": "New or Existing Virtual Network ('false' will deploy a new vNet)"
       },
       "defaultValue": false
     },
-    "existingNetName": {
-      "type": "string",
+    "vnetParams": {
+      "type": "object",
       "metadata": {
-        "description": "Name of Existing Virtual Network (if 'existingNet' is set to 'true')"
+        "description": "Details of Existing Virtual Network/Subnet (if 'existingNetwork' is set to 'true')"
       },
       "defaultValue": ""
     },
@@ -145,6 +145,12 @@
           },
           "publicIpAddressName": {
             "value": "[if(parameters('createPublicIP'), reference('provisionPublicIp').outputs.publicIpAddressName.value, '')]"
+          },
+          "existingNetwork": {
+            "value": "[parameters('existingNetwork')]"
+          },
+          "vnetParams": {
+            "value": "[parameters('vnetParams')]"
           }
         }
       },

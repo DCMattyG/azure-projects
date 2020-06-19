@@ -74,7 +74,7 @@
       }
     },
     {
-      "condition": "[not(parameters('createPublicIP'))]"
+      "condition": "[not(parameters('createPublicIP'))]",
       "name": "[variables('vNicConfig').name]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-07-01",
@@ -102,7 +102,7 @@
       }
     },
     {
-      "condition": "[parameters('createPublicIP')]"
+      "condition": "[parameters('createPublicIP')]",
       "name": "[variables('vNicConfig').name]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-07-01",

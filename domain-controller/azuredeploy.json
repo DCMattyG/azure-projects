@@ -35,6 +35,14 @@
       },
       "defaultValue": false
     },
+    "deployType": {
+      "type": "string",
+      "allowedValues": [ "core", "full" ],
+      "metadata": {
+        "description": "Deployment Size (server core or full desktop)"
+      },
+      "defaultValue": "core"
+    },
     "userName": {
       "type": "string",
       "metadata": {
@@ -179,6 +187,9 @@
         "parameters": {
           "vmName": {
             "value": "[parameters('vmName')]"
+          },
+          "deployType": {
+            "value": "[parameters('deployType')]"
           },
           "userName": {
             "value": "[parameters('userName')]"

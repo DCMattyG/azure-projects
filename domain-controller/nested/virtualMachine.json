@@ -5,6 +5,9 @@
     "vmName": {
       "type": "string"
     },
+    "deployType": {
+      "type": "string"
+    },
     "vNicName": {
       "type": "string"
     },
@@ -21,16 +24,30 @@
   "functions": [],
   "variables": {
     "automationAccountId": "[resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
-    "vmSpecs": {
-      "virtualMachineName": "dc-core-01",
-      "virtualMachineSize": "Standard_D2s_v3",
-      "osDiskType": "Premium_LRS",
-      "imageReference": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2019-datacenter-core-g2",
-        "version": "latest"
+    "vmOptions": {
+      "serverCore": {
+        "vmImage": {
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2019-Datacenter-Core",
+          "version": "latest"
+        },
+        "vmSize": "Standard_DS1_v2"
       },
+      "serverFull": {
+        "vmImage": {
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2019-Datacenter",
+          "version": "latest"
+        },
+        "vmSize": "Standard_D2s_v3"
+      }
+    },
+    "vmSpecs": {
+      "virtualMachineSize": "[if(equals(parameters('deployType'), 'core'), variables('vmOptions').serverCore.vmSize, variables('vmOptions').serverFull.vmSize)]",
+      "osDiskType": "Premium_LRS",
+      "imageReference": "[if(equals(parameters('deployType'), 'core'), variables('vmOptions').serverCore.vmImage, variables('vmOptions').serverFull.vmImage)]",
       "dscConfig": "domain.CreateADDC"
     }
   },

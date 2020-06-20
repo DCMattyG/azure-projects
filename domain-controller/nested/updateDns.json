@@ -6,10 +6,12 @@
       "type": "string"
     },
     "vnetAddressSpace": {
-      "type": "array"
+      "type": "array",
+      "defaultValue": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').addressSpace.addressPrefixes]"
     },
     "vnetSubnets": {
-      "type": "array"
+      "type": "array",
+      "defaultValue": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').subnets]"
     },
     "dnsServer": {
       "type": "string"

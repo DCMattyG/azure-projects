@@ -153,6 +153,10 @@
       "type": "array",
       "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').addressSpace.addressPrefixes]"
     },
+    "vnetSubnets": {
+      "type": "object",
+      "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').subnets]"
+    },
     "vNicName": {
       "type": "string",
       "value": "[if(parameters('createPublicIP'), concat(variables('vNicConfig').name, '-public'), variables('vNicConfig').name)]"

@@ -8,6 +8,9 @@
     "vnetAddressSpace": {
       "type": "array"
     },
+    "vnetSubnets": {
+      "type": "object"
+    },
     "dnsServer": {
       "type": "string"
     }
@@ -28,7 +31,19 @@
         },
         "dhcpOptions": {
           "dnsServers": "[variables('dnsServers')]"
-        }
+        },
+        "copy": [
+          {
+            "name": "subnets",
+            "count": "[length(parameters('vnetSubnets'))]",
+            "input": {
+              "name": "[parameters('vnetSubnets')[copyIndex('subnets')].name]",
+              "properties": {
+                "addressPrefix": "[parameters('vnetSubnets')[copyIndex('subnets')].properties.addressPrefix]"
+              }
+            }
+          }
+        ]
       }
     }
   ],

@@ -25,7 +25,7 @@
       "privateIpAddress": "10.0.0.100"
     },
     "virtualNetwork": {
-      "name": "[concat(parameters('vmName'), '-net')]",
+      "name": "[concat(resourceGroup().name, '-net')]",
       "addressPrefixes": [
         "10.0.0.0/16"
       ],

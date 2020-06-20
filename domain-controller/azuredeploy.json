@@ -225,10 +225,10 @@
             "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
           },
           "vnetAddressSpace": {
-            "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
+            "value": "[reference('provisionNetworking').outputs.vnetAddressSpace.value]"
           },
           "vnetSubnets": {
-            "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
+            "value": "[reference('provisionNetworking').outputs.vnetSubnets.value]"
           },
           "dnsServer": {
             "value": "[parameters('vmPrivateIP')]"

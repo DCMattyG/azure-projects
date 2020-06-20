@@ -27,7 +27,7 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "addressSpace": {
-            "addressPrefixes": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').addressSpace.addressPrefixes]"
+            "addressPrefixes": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01')]"
         },
         "dhcpOptions": {
           "dnsServers": "[variables('dnsServers')]"

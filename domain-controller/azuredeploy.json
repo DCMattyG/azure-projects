@@ -224,6 +224,12 @@
           "virtualNetworkName": {
             "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
           },
+          "vnetAddressSpace": {
+            "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
+          },
+          "vnetSubnets": {
+            "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
+          },
           "dnsServer": {
             "value": "[parameters('vmPrivateIP')]"
           }

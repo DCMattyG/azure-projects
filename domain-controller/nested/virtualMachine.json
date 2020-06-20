@@ -49,7 +49,8 @@
       "osDiskType": "Premium_LRS",
       "imageReference": "[if(equals(parameters('deployType'), 'core'), variables('vmOptions').serverCore.vmImage, variables('vmOptions').serverFull.vmImage)]",
       "dscConfig": "domain.CreateADDC"
-    }
+    },
+    "dscOn": false
   },
   "resources": [
     {
@@ -89,6 +90,7 @@
       }
     },
     {
+      "condition": "[variables('dscOn')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('vmName'), '/EnableDSC')]",
       "location": "[resourceGroup().location]",

@@ -150,6 +150,9 @@
           "vmPublicIP": {
             "value": "[parameters('vmPublicIP')]"
           },
+          "vmPrivateIP": {
+            "value": "[parameters('vmPrivateIP')]"
+          },
           "publicIpAddressName": {
             "value": "[if(parameters('vmPublicIP'), reference('provisionPublicIp').outputs.publicIpAddressName.value, '')]"
           },
@@ -217,7 +220,7 @@
             "value": "[reference('provisionNetworking').outputs.vnetSubnets.value]"
           },
           "dnsServer": {
-            "value": "[reference('provisionNetworking').outputs.dnsServer.value]"
+            "value": "[parameters('vmPrivateIP')]"
           }
         }
       },

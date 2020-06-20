@@ -5,6 +5,12 @@
     "virtualNetworkName": {
       "type": "string"
     },
+    "vnetAddressSpace": {
+      "type": "array"
+    },
+    "vnetSubnets": {
+      "type": "array"
+    },
     "dnsServer": {
       "type": "string"
     }
@@ -21,7 +27,7 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "addressSpace": {
-            "addressPrefixes": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').addressSpace.addressPrefixes]"
+            "addressPrefixes": "[parameters('vnetAddressSpace')]"
         },
         "dhcpOptions": {
           "dnsServers": "[variables('dnsServers')]"
@@ -29,11 +35,11 @@
         "copy": [
           {
             "name": "subnets",
-            "count": "[length(reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').subnets)]",
+            "count": "[length(parameters('vnetSubnets'))]",
             "input": {
-              "name": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').subnets[copyIndex('subnets')].name]",
+              "name": "[parameters('vnetSubnets')[copyIndex('subnets')].name]",
               "properties": {
-                "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName')), '2019-09-01').subnets[copyIndex('subnets')].properties.addressPrefix]"
+                "addressPrefix": "[parameters('vnetSubnets')[copyIndex('subnets')].properties.addressPrefix]"
               }
             }
           }

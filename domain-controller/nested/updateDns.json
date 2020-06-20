@@ -9,7 +9,7 @@
       "type": "array"
     },
     "vnetSubnets": {
-      "type": "object"
+      "type": "array"
     },
     "dnsServer": {
       "type": "string"

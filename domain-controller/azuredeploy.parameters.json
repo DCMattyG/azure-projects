@@ -6,10 +6,10 @@
       "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/domain-controller/"
     },
     "vmName": {
-      "value": "dc-core-01"
+      "value": "Contoso-DC-01"
     },
     "domainName": {
-      "value": "superfakeco.com"
+      "value": "contoso.com"
     }
   }
 }

@@ -21,6 +21,20 @@
         "description": "Domain Controller VM Name"
       }
     },
+    "vmPrivateIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine Private IP Address (static)"
+      },
+      "defaultValue": "10.0.0.100"
+    },
+    "vmPublicIP": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optionally Deploy a Public IP to the Domain Controller ('true' will create a public IP)"
+      },
+      "defaultValue": true
+    },
     "userName": {
       "type": "string",
       "metadata": {
@@ -48,23 +62,16 @@
     "existingNetwork": {
       "type": "bool",
       "metadata": {
-        "description": "New or Existing Virtual Network ('false' will deploy a new vNet)"
+        "description": "New or Existing Virtual Network ('false' will deploy a new vNet w/ address space of 10.0.0.0/16 amd a 'default' subnet of 10.0.0.0/24)"
       },
       "defaultValue": false
     },
-    "vnetParams": {
+    "existingNetworkParams": {
       "type": "object",
       "metadata": {
         "description": "Details of Existing Virtual Network/Subnet (if 'existingNetwork' is set to 'true')"
       },
       "defaultValue": {}
-    },
-    "createPublicIP": {
-      "type": "bool",
-      "metadata": {
-        "description": "Optionally Deploy a Public IP to the Domain Controller ('true' will create a public IP)"
-      },
-      "defaultValue": true
     }
   },
   "functions": [],
@@ -109,7 +116,7 @@
       }
     },
     {
-      "condition": "[parameters('createPublicIP')]",
+      "condition": "[parameters('vmPublicIP')]",
       "name": "provisionPublicIp",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-02-01",
@@ -140,17 +147,17 @@
           "vmName": {
             "value": "[parameters('vmName')]"
           },
-          "createPublicIP": {
-            "value": "[parameters('createPublicIP')]"
+          "vmPublicIP": {
+            "value": "[parameters('vmPublicIP')]"
           },
           "publicIpAddressName": {
-            "value": "[if(parameters('createPublicIP'), reference('provisionPublicIp').outputs.publicIpAddressName.value, '')]"
+            "value": "[if(parameters('vmPublicIP'), reference('provisionPublicIp').outputs.publicIpAddressName.value, '')]"
           },
           "existingNetwork": {
             "value": "[parameters('existingNetwork')]"
           },
-          "vnetParams": {
-            "value": "[parameters('vnetParams')]"
+          "existingNetworkParams": {
+            "value": "[parameters('existingNetworkParams')]"
           }
         }
       },

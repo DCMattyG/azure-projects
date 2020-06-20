@@ -5,7 +5,7 @@
     "vmName": {
       "type": "string"
     },
-    "createPublicIP": {
+    "vmPublicIP": {
       "type": "bool"
     },
     "publicIpAddressName": {
@@ -14,7 +14,7 @@
     "existingNetwork": {
       "type": "bool"
     },
-    "vnetParams": {
+    "existingNetworkParams": {
       "type": "object"
     }
   },
@@ -39,8 +39,8 @@
       ]
     },
     "vnetDetails": {
-      "vnetName": "[if(parameters('existingNetwork'), parameters('vnetParams').name, variables('virtualNetwork').name)]",
-      "subnetName": "[if(parameters('existingNetwork'), parameters('vnetParams').subnet, 'default')]"
+      "vnetName": "[if(parameters('existingNetwork'), parameters('existingNetworkParams').name, variables('virtualNetwork').name)]",
+      "subnetName": "[if(parameters('existingNetwork'), parameters('existingNetworkParams').subnet, 'default')]"
     },
     "networkSecurityGroup": {
       "name": "[concat(parameters('vmName'), '-nsg-vnet-nic01')]",
@@ -85,7 +85,7 @@
       }
     },
     {
-      "condition": "[not(parameters('createPublicIP'))]",
+      "condition": "[not(parameters('vmPublicIP'))]",
       "name": "[variables('vNicConfig').name]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-07-01",
@@ -113,7 +113,7 @@
       }
     },
     {
-      "condition": "[parameters('createPublicIP')]",
+      "condition": "[parameters('vmPublicIP')]",
       "name": "[concat(variables('vNicConfig').name, '-public')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-07-01",
@@ -159,7 +159,7 @@
     },
     "vNicName": {
       "type": "string",
-      "value": "[if(parameters('createPublicIP'), concat(variables('vNicConfig').name, '-public'), variables('vNicConfig').name)]"
+      "value": "[if(parameters('vmPublicIP'), concat(variables('vNicConfig').name, '-public'), variables('vNicConfig').name)]"
     },
     "dnsServer": {
       "type": "string",

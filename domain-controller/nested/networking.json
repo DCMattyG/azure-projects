@@ -154,7 +154,7 @@
       "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').addressSpace.addressPrefixes]"
     },
     "vnetSubnets": {
-      "type": "object",
+      "type": "array",
       "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').subnets]"
     },
     "vNicName": {

@@ -207,7 +207,7 @@
             "value": "[reference('provisionNetworking').outputs.vnetAddressSpace.value]"
           },
           "vnetSubnets": {
-            "value": "[reference('provisionNetworking').outputs.vnetSubents.value]"
+            "value": "[reference('provisionNetworking').outputs.vnetSubnets.value]"
           },
           "dnsServer": {
             "value": "[reference('provisionNetworking').outputs.dnsServer.value]"

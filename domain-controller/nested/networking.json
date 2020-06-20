@@ -154,8 +154,8 @@
       "value": "[variables('vnetDetails').vnetName]"
     },
     "vnetAddressSpace": {
-      "type": "array",
-      "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName)).addressSpace]"
+      "type": "object",
+      "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').addressSpace]"
     },
     "nsgName": {
       "type": "string",

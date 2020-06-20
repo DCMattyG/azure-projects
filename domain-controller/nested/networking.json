@@ -145,10 +145,6 @@
     }
   ],
   "outputs": {
-    "virtualNetwork": {
-      "type": "object",
-      "value": "[variables('virtualNetwork')]"
-    },
     "virtualNetworkName": {
       "type": "string",
       "value": "[variables('vnetDetails').vnetName]"
@@ -157,10 +153,6 @@
       "type": "array",
       "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').addressSpace.addressPrefixes]"
     },
-    "nsgName": {
-      "type": "string",
-      "value": "[variables('networkSecurityGroup').name]"
-    },
     "vNicName": {
       "type": "string",
       "value": "[if(parameters('createPublicIP'), concat(variables('vNicConfig').name, '-public'), variables('vNicConfig').name)]"
@@ -168,6 +160,10 @@
     "dnsServer": {
       "type": "string",
       "value": "[variables('vNicConfig').privateIpAddress]"
+    },
+    "vnetData": {
+      "type": "object",
+      "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01')]"
     }
   }
 }

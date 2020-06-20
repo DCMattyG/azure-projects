@@ -33,7 +33,7 @@
       "metadata": {
         "description": "Optionally Deploy a Public IP to the Domain Controller ('true' will create a public IP)"
       },
-      "defaultValue": true
+      "defaultValue": false
     },
     "userName": {
       "type": "string",

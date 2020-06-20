@@ -200,8 +200,11 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "virtualNetwork": {
-            "value": "[reference('provisionNetworking').outputs.virtualNetwork.value]"
+          "virtualNetworkName": {
+            "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
+          },
+          "vnetAddressSpace": {
+            "value": "[reference('provisionNetworking').outputs.vnetAddressSpace.value]"
           },
           "dnsServer": {
             "value": "[reference('provisionNetworking').outputs.dnsServer.value]"

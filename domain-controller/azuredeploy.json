@@ -51,8 +51,9 @@
     },
     "userPass": {
       "type": "securestring",
+      "minLength": 12,
       "metadata": {
-        "description": "Domain Admin Password"
+        "description": "Domain Admin Password (12-72 chars with at least one of each: lower/upper/digit/special)"
       }
     },
     "safeModePass": {

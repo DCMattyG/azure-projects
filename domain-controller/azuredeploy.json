@@ -225,10 +225,10 @@
             "value": "[reference('provisionNetworking').outputs.virtualNetworkName.value]"
           },
           "vnetAddressSpace": {
-            "value": "[reference('provisionNetworking').outputs.vnetAddressSpace.value]"
+            "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', 'Test-RG-net'), '2019-09-01').addressSpace.addressPrefixes]"
           },
           "vnetSubnets": {
-            "value": "[reference('provisionNetworking').outputs.vnetSubnets.value]"
+            "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', 'Test-Rg-net'), '2019-09-01').subnets]"
           },
           "dnsServer": {
             "value": "[parameters('vmPrivateIP')]"

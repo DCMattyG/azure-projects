@@ -152,14 +152,14 @@
       "type": "string",
       "value": "[variables('vnetDetails').vnetName]"
     },
-    "vnetAddressSpace": {
+    /*"vnetAddressSpace": {
       "type": "array",
       "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').addressSpace.addressPrefixes]"
     },
     "vnetSubnets": {
       "type": "array",
       "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/', variables('vnetDetails').vnetName), '2019-09-01').subnets]"
-    },
+    },*/
     "vNicName": {
       "type": "string",
       "value": "[if(parameters('vmPublicIP'), concat(variables('vNicConfig').name, '-public'), variables('vNicConfig').name)]"

@@ -12,7 +12,7 @@ Configuration domain
     [String]$IPAddress,
 
     [Parameter(Mandatory=$true)]
-    [String[]]$DNSForwarders = @("208.67.220.220", "208.67.222.222")
+    [String]$DNSForwarders
   )
 
   Import-DscResource -ModuleName xActiveDirectory
@@ -65,7 +65,7 @@ Configuration domain
 
     xDnsServerForwarder SetForwarders {
       IsSingleInstance = "Yes"
-      IPAddresses = $DNSForwarders
+      IPAddresses = $(ConvertFrom-Json $DNSForwarders)
       UseRootHint = $false
       DependsOn = "[WindowsFeature]DNS"
     }

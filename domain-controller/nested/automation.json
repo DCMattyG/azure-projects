@@ -20,6 +20,9 @@
     "domainName": {
       "type": "string"
     },
+    "dnsForwarders": {
+      "type": "array"
+    },
     "vmName": {
       "type": "string"
     },
@@ -60,7 +63,8 @@
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/domainController.ps1', parameters('_artifactsLocationSasToken'))]",
         "parameters": {
           "VMName": "[parameters('vmName')]",
-          "IPAddress": "[parameters('vmPrivateIP')]"
+          "IPAddress": "[parameters('vmPrivateIP')]",
+          "DNSForwarders": "[parameters('dnsForwarders')]"
         }
       }
     ]

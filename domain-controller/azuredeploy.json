@@ -68,6 +68,13 @@
         "description": "Domain Name (FQDN)"
       }
     },
+    "dnsForwarders": {
+      "type": "array",
+      "metadata": {
+        "description": "DNS Forwarders (Array)"
+      },
+      "defaultValue": ["8.8.4.4", "8.8.8.8"]
+    },
     "existingNetwork": {
       "type": "bool",
       "metadata": {
@@ -123,6 +130,9 @@
           },
           "domainName": {
             "value": "[parameters('domainName')]"
+          },
+          "dnsForwarders": {
+            "value": "[parameters('dnsForwarders')]"
           },
           "vmName": {
             "value": "[parameters('vmName')]"

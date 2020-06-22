@@ -9,7 +9,10 @@ Configuration domain
     [String]$VMName,
 
     [Parameter(Mandatory=$true)]
-    [String]$IPAddress
+    [String]$IPAddress,
+
+    [Parameter(Mandatory=$true)]
+    [Array]$DNSForwarders
   )
 
   Import-DscResource -ModuleName xActiveDirectory
@@ -29,7 +32,7 @@ Configuration domain
   Write-Host $(Get-ReversePtrName -IPAddress $IPAddress)
   Write-Host $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
   Write-Host "$VMName.$DomainName"
-  
+
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6
@@ -62,7 +65,7 @@ Configuration domain
 
     xDnsServerForwarder SetForwarders {
       IsSingleInstance = "Yes"
-      IPAddresses = @("208.67.220.220", "208.67.222.222")
+      IPAddresses = $DNSForwarders
       UseRootHint = $false
       DependsOn = "[WindowsFeature]DNS"
     }
@@ -107,21 +110,23 @@ Configuration domain
       DependsOn = "[WindowsFeature]ADDSInstall" #, "[xDisk]ADDataDisk"
     }
 
-    xDnsServerADZone 'addReverseADZone'
+    xDnsServerADZone AddReverseADZone
     {
       Name= $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
       DynamicUpdate = 'Secure'
       ReplicationScope = 'Domain' # Forest
       Ensure = 'Present'
+      DependsOn = "[xADDomain]FirstDS"
     }
 
-    xDnsRecord 'TestPtrRecord'
+    xDnsRecord TestPtrRecord
     {
       Name = $(Get-ReversePtrName -IPAddress $IPAddress)
       Target = "$VMName.$DomainName"
       Zone = $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
       Type = 'PTR'
       Ensure = 'Present'
+      DependsOn = "[xDnsServerADZone]AddReverseADZone"
     }
   }
 }

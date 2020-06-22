@@ -26,6 +26,10 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
+  Write-Host $(Get-ReversePtrName -IPAddress $IPAddress)
+  Write-Host $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
+  Write-Host "$VMName.$DomainName"
+  
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6

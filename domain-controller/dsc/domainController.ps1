@@ -6,6 +6,9 @@ Configuration domain
     [Int]$RetryIntervalSec = 30,
 
     [Parameter(Mandatory=$true)]
+    [String]$VMName,
+
+    [Parameter(Mandatory=$true)]
     [String]$IPAddress
   )
 
@@ -23,8 +26,6 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
-  Get-ReverseLookupZoneName -IPAddress $IPAddress | Out-File -FilePath 'C:\zone.txt'
-  
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6
@@ -96,10 +97,27 @@ Configuration domain
       DomainName = $DomainName
       DomainAdministratorCredential = $DomainCreds
       SafemodeAdministratorPassword = $DomainSafeModePwd
-      DatabasePath = "C:\NTDS" #"F:\NTDS"
-      LogPath = "C:\NTDS" #"F:\NTDS"
-      SysvolPath = "C:\SYSVOL" #"F:\SYSVOL"
-      DependsOn = "[WindowsFeature]ADDSInstall"#, "[xDisk]ADDataDisk"
+      DatabasePath = "C:\NTDS" # "F:\NTDS"
+      LogPath = "C:\NTDS" # "F:\NTDS"
+      SysvolPath = "C:\SYSVOL" # "F:\SYSVOL"
+      DependsOn = "[WindowsFeature]ADDSInstall" #, "[xDisk]ADDataDisk"
+    }
+
+    xDnsServerADZone 'addReverseADZone'
+    {
+      Name= $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
+      DynamicUpdate = 'Secure'
+      ReplicationScope = 'Domain' # Forest
+      Ensure = 'Present'
+    }
+
+    xDnsRecord 'TestPtrRecord'
+    {
+      Name = $(Get-ReversePtrName -IPAddress $IPAddress)
+      Target = "$VMName.$DomainName"
+      Zone = $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
+      Type = 'PTR'
+      Ensure = 'Present'
     }
   }
 }
@@ -120,4 +138,16 @@ Function Get-ReverseLookupZoneName {
   $ZoneName = $Addr + '.in-addr.arpa'
 
   Return $ZoneName
+}
+
+Function Get-ReversePtrName {
+  Param
+  (
+    [Parameter(Mandatory=$true)]
+    [String]$IPAddress
+  )
+
+  $PTRName = $IPAddress.Split('.')[3]
+
+  Return $PTRName
 }

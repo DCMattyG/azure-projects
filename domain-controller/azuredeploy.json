@@ -124,6 +124,9 @@
           "domainName": {
             "value": "[parameters('domainName')]"
           },
+          "vmName": {
+            "value": "[parameters('vmName')]"
+          },
           "vmPrivateIP": {
             "value": "[parameters('vmPrivateIP')]"
           }

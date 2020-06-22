@@ -1,9 +1,12 @@
 Configuration domain
 {
-   param (
+   Param (
     [Int]$RetryCount = 20,
 
-    [Int]$RetryIntervalSec = 30
+    [Int]$RetryIntervalSec = 30,
+
+    [Parameter(Mandatory=$true)]
+    [String]$IPAddress
   )
 
   Import-DscResource -ModuleName xActiveDirectory
@@ -20,6 +23,8 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
+  Get-ReverseLookupZoneName -IPAddress $IPAddress | Out-File -FilePath 'C:\zone.txt'
+  
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6
@@ -97,4 +102,22 @@ Configuration domain
       DependsOn = "[WindowsFeature]ADDSInstall"#, "[xDisk]ADDataDisk"
     }
   }
+}
+
+Function Get-ReverseLookupZoneName {
+  Param
+  (
+    [Parameter(Mandatory=$true)]
+    [String]$IPAddress
+  )
+
+  $IPArray = $IPAddress.Split('.')
+
+  [Array]::Reverse($IPArray)
+
+  $IPArrayTrim = $IPArray[1..$IPArray.Length]
+  $Addr = $IPArrayTrim -join '.'
+  $ZoneName = $Addr + '.in-addr.arpa'
+
+  Return $ZoneName
 }

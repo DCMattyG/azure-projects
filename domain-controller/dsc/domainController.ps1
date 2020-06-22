@@ -12,7 +12,7 @@ Configuration domain
     [String]$IPAddress,
 
     [Parameter(Mandatory=$true)]
-    [Array]$DNSForwarders
+    [String]$DNSForwarders
   )
 
   Import-DscResource -ModuleName xActiveDirectory

@@ -11,8 +11,8 @@ Configuration domain
     [Parameter(Mandatory=$true)]
     [String]$IPAddress,
 
-    [Parameter(Mandatory=$true)]
-    [String]$DNSForwarders
+    # [Parameter(Mandatory=$true)]
+    [Array]$DNSForwarders
   )
 
   Import-DscResource -ModuleName xActiveDirectory
@@ -29,10 +29,9 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
-  Write-Host $(Get-ReversePtrName -IPAddress $IPAddress)
-  Write-Host $(Get-ReverseLookupZoneName -IPAddress $IPAddress)
-  Write-Host "$VMName.$DomainName"
-
+  Write-Output $DNSForwarders
+  Write-Output $DNSForwarders.GetType()
+  
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6
@@ -65,7 +64,7 @@ Configuration domain
 
     xDnsServerForwarder SetForwarders {
       IsSingleInstance = "Yes"
-      IPAddresses = $(ConvertFrom-Json $DNSForwarders)
+      IPAddresses = @("208.67.220.220", "208.67.222.222")
       UseRootHint = $false
       DependsOn = "[WindowsFeature]DNS"
     }

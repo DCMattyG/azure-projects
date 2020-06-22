@@ -29,6 +29,8 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
   
+  Write-Output $DNSForwarders.Split(',')
+  
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6

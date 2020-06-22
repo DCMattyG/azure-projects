@@ -63,8 +63,7 @@
         "scriptLocation": "[concat(parameters('_artifactsLocation'), 'dsc/domainController.ps1', parameters('_artifactsLocationSasToken'))]",
         "parameters": {
           "VMName": "[parameters('vmName')]",
-          "IPAddress": "[parameters('vmPrivateIP')]",
-          "DNSForwarders": "[parameters('dnsForwarders')]"
+          "IPAddress": "[parameters('vmPrivateIP')]"
         }
       }
     ]

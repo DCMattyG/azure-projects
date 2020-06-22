@@ -64,7 +64,7 @@
         "parameters": {
           "VMName": "[parameters('vmName')]",
           "IPAddress": "[parameters('vmPrivateIP')]",
-          "DNSForwarders": { "Primary": "8.8.8.8" }
+          "DNSForwarders": "[array('8.8.8.8')]"
         }
       }
     ]

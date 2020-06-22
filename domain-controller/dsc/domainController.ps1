@@ -12,7 +12,7 @@ Configuration domain
     [String]$IPAddress,
 
     # [Parameter(Mandatory=$true)]
-    [Array]$DNSForwarders
+    $DNSForwarders
   )
 
   Import-DscResource -ModuleName xActiveDirectory
@@ -31,7 +31,7 @@ Configuration domain
 
   Write-Output $DNSForwarders
   Write-Output $DNSForwarders.GetType()
-  
+
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6

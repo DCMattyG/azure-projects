@@ -12,7 +12,7 @@ Configuration domain
     [String]$IPAddress,
 
     [Parameter(Mandatory=$true)]
-    [String]$DNSForwarders
+    [Array]$DNSForwarders
   )
 
   Import-DscResource -ModuleName xActiveDirectory
@@ -28,9 +28,6 @@ Configuration domain
 
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
-
-  Write-Output $DNSForwarders
-  Write-Output $DNSForwarders.GetType()
   
   Node CreateADDC
   {

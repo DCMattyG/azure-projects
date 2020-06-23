@@ -64,7 +64,7 @@
         "parameters": {
           "VMName": "[parameters('vmName')]",
           "IPAddress": "[parameters('vmPrivateIP')]",
-          "DNSForwarders": "[array('8.8.8.8')]"
+          "DNSForwarders": "[parameters('dnsForwarders')]"
         }
       }
     ]
@@ -166,7 +166,7 @@
         "name": "compileLoop",
         "count": "[length(variables('dscConfigurations'))]"
       },
-      "name": "[concat(variables('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
+      "name": "[concat(variables('automationAccountName'), '/', variables('dscConfigurations')[copyIndex()].compileName)]",
       "type": "Microsoft.Automation/automationAccounts/compilationjobs",
       "apiVersion": "2018-01-15",
       "dependsOn": [
@@ -174,9 +174,9 @@
       ],
       "properties": {
         "configuration": {
-          "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
+          "name": "[variables('dscConfigurations')[copyIndex()].name]"
         },
-        "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
+        "parameters": "[variables('dscConfigurations')[copyIndex()].parameters]"
       }
     }
   ],

@@ -166,7 +166,7 @@
         "name": "compileLoop",
         "count": "[length(variables('dscConfigurations'))]"
       },
-      "name": "[concat(variables('automationAccountName'), '/', variables('dscConfigurations')[copyIndex()].compileName)]",
+      "name": "[concat(variables('automationAccountName'), '/', variables('dscConfigurations')[copyIndex('compileLoop')].compileName)]",
       "type": "Microsoft.Automation/automationAccounts/compilationjobs",
       "apiVersion": "2018-01-15",
       "dependsOn": [
@@ -174,9 +174,9 @@
       ],
       "properties": {
         "configuration": {
-          "name": "[variables('dscConfigurations')[copyIndex()].name]"
+          "name": "[variables('dscConfigurations')[copyIndex('compileLoop')].name]"
         },
-        "parameters": "[variables('dscConfigurations')[copyIndex()].parameters]"
+        "parameters": "[variables('dscConfigurations')[copyIndex('compileLoop')].parameters]"
       }
     }
   ],

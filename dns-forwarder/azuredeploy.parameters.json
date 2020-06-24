@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "value": "https://raw.githubusercontent.com/DCMattyG/azure-projects/master/dns-forwarder/"
+    },
+    "vmName": {
+      "value": "dns-forward"
+    },
+    "userName": {
+      "value": "AzureAdmin"
+    },
+    "userPass": {
+      "value": "us3r@$$ign3dp@$$"
+    },
+    "vmNetwork": {
+      "value": "Corp-NET"
+    },
+    "vmSubnet": {
+      "value": "Domain"
+    },
+    "vmNetRG": {
+      "value": "Network-RG"
+    },
+    "vmIPAddress": {
+      "value": "10.0.0.100"
+    },
+    "trustedEndpoints": {
+        "value": [
+            "10.0.0.5"
+        ]
+    }
+  }
+}

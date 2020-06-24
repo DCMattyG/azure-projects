@@ -12,7 +12,7 @@
       "value": "AzureAdmin"
     },
     "userPass": {
-      "value": "us3r@$$ign3dp@$$"
+      "value": "<vm-password-here>"
     },
     "vmNetwork": {
       "value": "Corp-NET"

@@ -177,6 +177,27 @@
           "adminPassword": "[parameters('userPass')]"
         }
       }
+    },
+    {
+      "name": "[concat(parameters('vmName'), '/CustomScriptExtension')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2019-03-01",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "protectedSettings": {
+          "commandToExecute": "sh bindConfig.sh > /tmp/test.output",
+          "fileUris": [
+            "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh')]"
+          ]
+        }
+      }
     }
   ],
   "outputs": {}

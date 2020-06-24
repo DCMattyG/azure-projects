@@ -192,7 +192,7 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "commandToExecute": "sh bindConfig.sh > /tmp/test.output",
+          "commandToExecute": "[concat('sh bindConfig.sh > /tmp/test.output ', parameters('trustedEndpoints'))]",
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh')]"
           ]

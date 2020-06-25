@@ -36,19 +36,19 @@
     "vmNetwork": {
       "type": "string",
       "metadata": {
-        "description": "Virtual Machine vNet Name"
+        "description": "Virtual Machine Target vNet Name"
       }
     },
     "vmSubnet": {
       "type": "string",
       "metadata": {
-        "description": "Virtual Machine Subnet Name (subnet exists inside vmNetwork)"
+        "description": "Virtual Machine Target Subnet Name (subnet exists inside vmNetwork)"
       }
     },
     "vmNetRG": {
       "type": "string",
       "metadata": {
-        "description": "Virtual Machine vNet Resource Group (if different from VM resource group)"
+        "description": "Virtual Machine Target vNet Resource Group (if different from VM resource group)"
       },
       "defaultValue": ""
     },

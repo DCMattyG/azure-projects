@@ -159,7 +159,7 @@
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[parameters('vmPrivateIP')]",
               "publicIpAddress": {
-                "id": "[if(parameters('vmPublicIP'), reference(variables('publicIpAddressName')), json('{}'))]"
+                "id": "[if(parameters('vmPublicIP'),resourceId('Microsoft.Network/publicIpAddresses', variables('publicIpAddressName')), json('{}'))]"
               }
             }
           }

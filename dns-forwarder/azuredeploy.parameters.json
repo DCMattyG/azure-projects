@@ -15,10 +15,10 @@
       "value": "<vm-password-here>"
     },
     "vmNetwork": {
-      "value": "Corp-NET"
+      "value": "Cloud-NET"
     },
     "vmSubnet": {
-      "value": "Domain"
+      "value": "Infra"
     },
     "vmNetRG": {
       "value": "Network-RG"
@@ -28,7 +28,7 @@
     },
     "trustedEndpoints": {
         "value": [
-            "10.0.0.5"
+            "172.16.0.100"
         ]
     }
   }

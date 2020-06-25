@@ -105,7 +105,8 @@
       "version": "latest"
     },
     "virtualMachineSize": "Standard_B1ms",
-    "osDiskType": "Premium_LRS"
+    "osDiskType": "Premium_LRS",
+    "vmSubnetResourceId": "[if(equals(parameters('vmNetRG'), ''),  resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vmNetwork'), parameters('vmSubnet')), resourceId(parameters('vmNetRG'), 'Microsoft.Network/virtualNetworks/subnets', parameters('vmNetwork'), parameters('vmSubnet')))]"
   },
   "resources": [
     {
@@ -131,7 +132,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vmNetwork'), parameters('vmSubnet'))]"
+                "id": "[variables('vmSubnetResourceId')]"
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[parameters('vmIPAddress')]"
@@ -191,6 +192,7 @@
         "type": "CustomScript",
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
+        "settings": {},
         "protectedSettings": {
           "commandToExecute": "[concat('./bindConfig.sh', ' ', parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'), ' ', string(parameters('trustedEndpoints')))]",
           "fileUris": [

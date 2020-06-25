@@ -106,8 +106,7 @@
     },
     "virtualMachineSize": "Standard_B1ms",
     "osDiskType": "Premium_LRS",
-    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]",
-    "scriptCommand": "[concat('sh bindConfig.sh', ' ', parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'), ' ', string(parameters('trustedEndpoints')), ' > /tmp/test.output')]"
+    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
@@ -182,7 +181,6 @@
       }
     },
     {
-      "condition": false,
       "name": "[concat(parameters('vmName'), '/CustomScriptExtension')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[resourceGroup().location]",
@@ -204,10 +202,5 @@
       }
     }
   ],
-  "outputs": {
-    "scriptCommand": {
-      "type": "string",
-      "value": "[variables('scriptCommand')]"
-    }
-  }
+  "outputs": {}
 }

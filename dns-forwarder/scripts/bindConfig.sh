@@ -10,6 +10,13 @@ done
 
 ip_list="${ip_list:0:-2}"
 
+echo "Downloading..."
+echo "wget "${1}" -O /etc/bind/named.conf.options"
 sudo wget "${1}" -O /etc/bind/named.conf.options
+
+echo "Replacing..."
+echo "sed -i s/.*{{IP}}.*/${ip_list}/ /etc/bind/named.conf.options"
 sudo sed -i "s/.*{{IP}}.*/${ip_list}/" /etc/bind/named.conf.options
+
+echo "Restarting..."
 sudo service bind9 restart

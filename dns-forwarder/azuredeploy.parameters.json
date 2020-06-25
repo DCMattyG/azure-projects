@@ -23,8 +23,11 @@
     "vmNetRG": {
       "value": "Network-RG"
     },
-    "vmIPAddress": {
+    "vmPrivateIP": {
       "value": "10.0.0.100"
+    },
+    "vmPublicIP": {
+      "value": true
     },
     "trustedEndpoints": {
         "value": [

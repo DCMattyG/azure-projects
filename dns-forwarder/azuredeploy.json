@@ -221,7 +221,8 @@
         "protectedSettings": {
           "commandToExecute": "[concat('./bindConfig.sh', ' ', parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'), ' ', string(parameters('trustedEndpoints')))]",
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh', parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh', parameters('_artifactsLocationSasToken'))]",
+            "[concat(parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'))]"
           ]
         }
       }

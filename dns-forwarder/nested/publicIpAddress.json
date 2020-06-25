@@ -25,10 +25,6 @@
     }
   ],
   "outputs": {
-    "publicIpAddressName": {
-      "type": "string",
-      "value": "[variables('publicIpAddressName')]"
-    },
     "publicIpAddressConfig": {
       "type": "object",
       "value": {

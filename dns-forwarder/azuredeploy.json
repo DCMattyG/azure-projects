@@ -194,9 +194,9 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "commandToExecute": "[concat('sh bindConfig.sh > /tmp/test.output ', string(parameters('trustedEndpoints')))]",
+          "commandToExecute": "[concat('sh bindConfig.sh > /tmp/test.output ', concat(parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken')), ' ', string(parameters('trustedEndpoints')))]",
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh')]"
+            "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh', parameters('_artifactsLocationSasToken'))]"
           ]
         }
       }

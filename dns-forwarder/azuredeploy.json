@@ -106,7 +106,8 @@
     },
     "virtualMachineSize": "Standard_B1ms",
     "osDiskType": "Premium_LRS",
-    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
+    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]",
+    "scriptCommand": "[concat('sh bindConfig.sh', ' ', parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'), ' ', string(parameters('trustedEndpoints')), ' > /tmp/test.output')]"
   },
   "resources": [
     {
@@ -194,7 +195,7 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "protectedSettings": {
-          "commandToExecute": "[concat('sh bindConfig.sh ', parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'), ' ', string(parameters('trustedEndpoints')), ' > /tmp/test.output')]",
+          "commandToExecute": "[concat('sh bindConfig.sh', ' ', parameters('_artifactsLocation'), 'data/named.conf.options', parameters('_artifactsLocationSasToken'), ' ', string(parameters('trustedEndpoints')), ' > /tmp/test.output')]",
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), 'scripts/bindConfig.sh', parameters('_artifactsLocationSasToken'))]"
           ]
@@ -202,5 +203,10 @@
       }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "scriptCommand": {
+      "type": "string",
+      "value": "[variables('scriptCommand')]"
+    }
+  }
 }

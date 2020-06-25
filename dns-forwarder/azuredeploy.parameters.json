@@ -18,7 +18,7 @@
       "value": "Cloud-NET"
     },
     "vmSubnet": {
-      "value": "Infra"
+      "value": "Infrastructure"
     },
     "vmNetRG": {
       "value": "Network-RG"

@@ -14,5 +14,5 @@ done
 ip_list="${ip_list:0:-2}"
 
 sudo wget "${1}" -O /etc/bind/named.conf.options
-sudo sed -i "s/.*{{IP}}.*/${ip_list}/" /etc/bind/named.conf.options
+sudo sed -i "s|.*{{IP}}.*|${ip_list}|" /etc/bind/named.conf.options
 sudo service bind9 restart

@@ -227,10 +227,5 @@
       }
     }
   ],
-  "outputs": {
-    "endpointString": {
-      "type": "string",
-      "value": "[string(parameters('trustedEndpoints'))]"
-    }
-  }
+  "outputs": {}
 }

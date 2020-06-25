@@ -3,6 +3,7 @@
 input="${2:1:-1}"
 ip_list=""
 
+sudo apt update
 sudo apt install bind9 bind9utils bind9-doc -y
 
 IFS=',' read -ra ADDR <<< "$input"

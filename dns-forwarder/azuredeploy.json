@@ -74,7 +74,14 @@
   },
   "functions": [],
   "variables": {
-    "publicIpAddressName": "[concat(parameters('vmName'), '-ip')]",
+    "provisionPublicIp": "[uri(parameters('_artifactsLocation'), concat('nested/publicIpAddress.json', parameters('_artifactsLocationSasToken')))]",
+    "privateIpAddressConfig": {
+      "privateIPAllocationMethod": "Static",
+      "privateIPAddress": "[parameters('vmPrivateIP')]",
+      "subnet": {
+        "id": "[variables('vmSubnetResourceId')]"
+      }
+    },
     "networkSecurityGroup": {
       "name": "[concat(parameters('vmName'), '-nsg-vnet-nic01')]",
       "rules": [
@@ -119,15 +126,20 @@
   "resources": [
     {
       "condition": "[parameters('vmPublicIP')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIpAddressName')]",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2019-02-01",
-      "sku": {
-        "name": "Standard"
-      },
+      "name": "provisionPublicIp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-02-01",
       "properties": {
-        "publicIPAllocationMethod": "Static"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('provisionPublicIp')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmName": {
+            "value": "[parameters('vmName')]"
+          }
+        }
       }
     },
     {
@@ -146,22 +158,13 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup').name)]",
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]"
+        "provisionPublicIp"
       ],
       "properties": {
         "ipConfigurations": [
           {
             "name": "ipconfig1",
-            "properties": {
-              "subnet": {
-                "id": "[variables('vmSubnetResourceId')]"
-              },
-              "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[parameters('vmPrivateIP')]",
-              "publicIpAddress": {
-                "id": "[if(parameters('vmPublicIP'),resourceId('Microsoft.Network/publicIpAddresses', variables('publicIpAddressName')), json('{}'))]"
-              }
-            }
+            "properties": "[if(parameters('vmPublicIP'), union(variables('privateIpAddressConfig'), reference('provisionPublicIp').outputs.publicIpAddressConfig.value), variables('privateIpAddressConfig'))]"
           }
         ],
         "networkSecurityGroup": {

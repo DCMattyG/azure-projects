@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "${1}"
+echo "${2}"
+
 input="${2:1:-1}"
 ip_list=""
 

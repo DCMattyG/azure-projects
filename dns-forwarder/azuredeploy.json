@@ -105,8 +105,7 @@
       "version": "latest"
     },
     "virtualMachineSize": "Standard_B1ms",
-    "osDiskType": "Premium_LRS",
-    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
+    "osDiskType": "Premium_LRS"
   },
   "resources": [
     {

@@ -175,8 +175,7 @@
         "osProfile": {
           "computerName": "[parameters('vmName')]",
           "adminUsername": "[parameters('userName')]",
-          "adminPassword": "[parameters('userPass')]",
-          "customData": "[base64(variables('cloudInitData'))]"
+          "adminPassword": "[parameters('userPass')]"
         }
       }
     },

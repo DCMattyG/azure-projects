@@ -6,6 +6,8 @@ echo "${2}"
 input="${2:1:-1}"
 ip_list=""
 
+echo "${input}"
+
 IFS=',' read -ra ADDR <<< "$input"
 for ip in "${ADDR[@]}"; do
     ip_list="${ip_list}\t${ip};\n"

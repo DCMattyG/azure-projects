@@ -158,7 +158,7 @@
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[parameters('vmPrivateIP')]",
-              "publicIpAddress": "[if(parameters('vmPublicIP'), json(concat('{ \"id\": \"[resourceId(''Microsoft.Network/publicIpAddresses'', ', variables('publicIpAddressName'), ')]\" }')), json('{}'))]"
+              //"publicIpAddress": "[if(parameters('vmPublicIP'), json(concat('{ \"id\": \"[resourceId(''Microsoft.Network/publicIpAddresses'', ', variables('publicIpAddressName'), ')]\" }')), json('{}'))]"
             }
           }
         ],
@@ -225,5 +225,10 @@
       }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "publicIpObject": {
+      "type": "object",
+      "value": "[json(concat('{ \"id\": \"[resourceId(''Microsoft.Network/publicIpAddresses'', ', variables('publicIpAddressName'), ')]\" }'))]"
+    }
+  }
 }

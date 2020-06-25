@@ -1,0 +1,21 @@
+acl knownclients {
+        {{IP}}
+        localhost;
+        localnets;
+};
+
+options {
+        directory "/var/cache/bind";
+
+        recursion yes;
+        allow-query { knownclients; };
+
+        forwarders {
+                168.63.129.16;
+        };
+        forward only;
+
+        dnssec-validation yes;
+
+        listen-on-v6 { any; };
+};

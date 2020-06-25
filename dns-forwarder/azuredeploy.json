@@ -105,7 +105,8 @@
       "version": "latest"
     },
     "virtualMachineSize": "Standard_B1ms",
-    "osDiskType": "Premium_LRS"
+    "osDiskType": "Premium_LRS",
+    "cloudInitData": "[concat('#include\n', parameters('_artifactsLocation'), 'config/cloud-init.yml', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
@@ -174,7 +175,8 @@
         "osProfile": {
           "computerName": "[parameters('vmName')]",
           "adminUsername": "[parameters('userName')]",
-          "adminPassword": "[parameters('userPass')]"
+          "adminPassword": "[parameters('userPass')]",
+          "customData": "[base64(variables('cloudInitData'))]"
         }
       }
     },

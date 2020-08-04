@@ -31,6 +31,14 @@ Configuration domain
 
   Node CreateADDC
   {
+    File DNSLogFile
+    {
+        Type = "File"
+        Contents = $DNSForwarders
+        DestinationPath = 'C:\Windows\Temp\dns.txt'
+        Ensure = "Present"
+    }
+
     NetAdapterBinding DisableIPv6
     {
       InterfaceAlias = "Ethernet*"

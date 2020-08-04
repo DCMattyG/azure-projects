@@ -29,11 +29,8 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
-  Write-Output "DNS Forwarders: $($DNSForwarders)"
-  Write-Host "DNS Forwarders: $($DNSForwarders)"
-  Write-Information "DNS Forwarders: $($DNSForwarders)"
-  Write-Verbose "DNS Forwarders: $($DNSForwarders)"
-
+  Write-Log -Level INFORMATION -Message "DNS Forwarders: $($DNSForwarders)" -Path 'C:\Windows\Temp'
+  
   Node CreateADDC
   {
     NetAdapterBinding DisableIPv6
@@ -66,7 +63,7 @@ Configuration domain
 
     xDnsServerForwarder SetForwarders {
       IsSingleInstance = "Yes"
-      IPAddresses = $DNSForwarders
+      IPAddresses = @("208.67.220.220", "208.67.222.222") #$DNSForwarders
       UseRootHint = $false
       DependsOn = "[WindowsFeature]DNS"
     }

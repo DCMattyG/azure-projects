@@ -34,7 +34,7 @@ Configuration domain
     File DNSLogFile
     {
         Type = "File"
-        Contents = $DNSForwarders
+        Contents = "$($DNSForwarders)"
         DestinationPath = 'C:\Windows\Temp\dns.txt'
         Ensure = "Present"
     }

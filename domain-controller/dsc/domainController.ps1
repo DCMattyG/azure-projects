@@ -31,8 +31,6 @@ Configuration domain
 
   Node CreateADDC
   {
-    Write-Log -Level INFORMATION -Message "DNS Forwarders: $($DNSForwarders)" -Path 'C:\Windows\Temp'
-    
     NetAdapterBinding DisableIPv6
     {
       InterfaceAlias = "Ethernet*"

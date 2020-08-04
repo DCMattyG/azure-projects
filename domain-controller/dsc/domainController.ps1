@@ -29,10 +29,10 @@ Configuration domain
   $SafeModeCreds = Get-AutomationPSCredential -Name 'safeModePassword'
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
-  Write-Log -Level INFORMATION -Message "DNS Forwarders: $($DNSForwarders)" -Path 'C:\Windows\Temp'
-  
   Node CreateADDC
   {
+    Write-Log -Level INFORMATION -Message "DNS Forwarders: $($DNSForwarders)" -Path 'C:\Windows\Temp'
+    
     NetAdapterBinding DisableIPv6
     {
       InterfaceAlias = "Ethernet*"

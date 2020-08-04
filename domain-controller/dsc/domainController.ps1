@@ -30,6 +30,9 @@ Configuration domain
   [System.Management.Automation.PSCredential]$DomainSafeModePwd = New-Object System.Management.Automation.PSCredential ("NULL", $SafeModeCreds.Password)
 
   Write-Output "DNS Forwarders: $($DNSForwarders)"
+  Write-Host "DNS Forwarders: $($DNSForwarders)"
+  Write-Information "DNS Forwarders: $($DNSForwarders)"
+  Write-Verbose "DNS Forwarders: $($DNSForwarders)"
 
   Node CreateADDC
   {

@@ -61,7 +61,7 @@ Configuration domain
 
     xDnsServerForwarder SetForwarders {
       IsSingleInstance = "Yes"
-      IPAddresses = @("208.67.220.220", "208.67.222.222")
+      IPAddresses = $DNSForwarders
       UseRootHint = $false
       DependsOn = "[WindowsFeature]DNS"
     }
